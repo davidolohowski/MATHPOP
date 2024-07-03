@@ -263,6 +263,23 @@ $(document).ready(function () {
 <li>
   <a href="license.html">License</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-gear"></span>
+     
+    Quick Start
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="GC_prob.html">Probabilistic GC Catalog</a>
+    </li>
+    <li>
+      <a href="vignette.html">MATHPOP Tutorial</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -357,15 +374,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree954147228e027fcd985e9aa037dd374d9f37f616targetblank9541472a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree199856c41418d0fe7d72da53c2bc7e4e0a99b85ftargetblank199856ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/954147228e027fcd985e9aa037dd374d9f37f616" target="_blank">9541472</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/199856c41418d0fe7d72da53c2bc7e4e0a99b85f" target="_blank">199856c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree954147228e027fcd985e9aa037dd374d9f37f616targetblank9541472a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree199856c41418d0fe7d72da53c2bc7e4e0a99b85ftargetblank199856ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -375,7 +392,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/954147228e027fcd985e9aa037dd374d9f37f616" target="_blank">9541472</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/199856c41418d0fe7d72da53c2bc7e4e0a99b85f" target="_blank">199856c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -392,9 +409,13 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    analysis/.DS_Store
+    Ignored:    analysis/GC_prob_cache/
     Ignored:    data/.DS_Store
     Ignored:    data/point_source_data/.DS_Store
     Ignored:    data/prob_GC_data/.DS_Store
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
 
 </code></pre>
 <p>
@@ -439,6 +460,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/199856c41418d0fe7d72da53c2bc7e4e0a99b85f/analysis/index.Rmd" target="_blank">199856c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+wflow_publish(c("analysis/index.Rmd", "analysis/vignette.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/3030b0c46f4fc7eab17ac09bb960da7f6b08f051/docs/index.html" target="_blank">3030b0c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -514,12 +569,47 @@ Initial Build
 </div>
 </div>
 </div>
+<div id="mathpop" class="section level2">
+<h2>MATHPOP</h2>
 <p>Welcome to MATHPOP, a <code>R</code> software for inferring globular
-cluster counts in low-surface brightness galaxies (LSBGs) and
-ultra-diffuse galaxies (UDGs).</p>
-<ul>
-<li><a href="vignette.html">Vignette</a></li>
-</ul>
+cluster (GC) counts in low-surface brightness galaxies (LSBGs) and
+ultra-diffuse galaxies (UDGs). The <code>R</code> code in this repo is
+written based on the framework of MArk-dependently THinned POint Process
+(MATHPOP) proposed by Li et al. (2024), “<em>Discovery of Two
+Ultra-Diffuse Galaxies with Unusually Bright Globular Cluster Luminosity
+Functions via a Mark-Dependently Thinned Point Process
+(MATHPOP)</em>”.</p>
+</div>
+<div id="r-and-rstudio" class="section level2">
+<h2>R and RStudio</h2>
+<p>If you have not used <code>R</code> before, <code>R</code> is a
+powerful open source language designed for statistical computing and
+data analysis. Download <code>R</code> at <a
+href="https://cloud.r-project.org/">The Comprehensive R Archive Network
+(CRAN)</a> and <a
+href="https://posit.co/download/rstudio-desktop/"><code>RStudio</code></a>.
+<code>R</code> is the base language environment that executes all
+programs and code. <code>RStudio</code> is an integrated user interface
+wrapper that makes the base <code>R</code> easy to use (similar to
+<code>Jupyter Notebook</code> for <code>Python</code>).</p>
+</div>
+<div id="download-the-repo" class="section level2">
+<h2>Download the Repo</h2>
+<p>To use the code for your own data, go to the MATHPOP <a
+href="https://github.com/davidolohowski/MATHPOP">Github repo</a> and
+download the repository. The <code>R</code> code to fit the MATHPOP
+model is contained in the <code>code/</code> directory. The
+<code>data/</code> directory contains the GC data analyzed in the
+original paper.</p>
+</div>
+<div id="quick-start" class="section level2">
+<h2>Quick Start</h2>
+<p>For a quick example of how to use MATHPOP, see this <a
+href="vignette.html">vignette</a>.</p>
+<p>The MATHPOP method also proposes to use a probabilistic GC catalog,
+see this <a href="GC_prob.html">tutorial</a> on how to obtain a
+probabilistic GC catalog from point sources.</p>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
