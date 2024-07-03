@@ -1,0 +1,229 @@
+---
+title: "MATHPOP Tutorial"
+author: "Dayi David Li"
+date: "2024-06-27"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Preliminary
+
+### Load required packages
+
+This tutorial assumes that the users have installed `R` and `RStudio`, and have the data at hand. The data can either be a probabilistic GC catalog or a binary GC catalog.
+
+To start, we need to load the necessary `R` packages:
+
+```{r packages, echo=TRUE, results = 'hide', message=FALSE}
+library(tidyverse)
+library(sf)
+library(sp)
+library(raster)
+library(Rcpp)
+library(RcppArmadillo)
+library(spatstat)
+library(VGAM)
+```
+
+If you have not installed the above packages, install them with the command `install.packages('package name')` change `package name` to the name of whatever packages you need.
+
+### Load required functions from source files
+
+Next, load all the required functions through the source files as below. Make sure that the working directory is the one you are currently at. If you have downloaded the entire `R` project repository from Github, and you are working within the project directory, you should be fine.
+
+```{r sources, echo=TRUE, results = 'hide', message=FALSE}
+sourceCpp('code/cpp_help_func.cpp') # Necessary help functions written in C++
+source('code/fit_mod_MCMC.R') # Source file for running the model
+```
+
+### Load data
+
+The data we will demonstrate with in this tutorial is the GC catalog from the field V11-ACS from the PIPER survey. This field has two normal galaxies (early-type) and two known UDGs. The data we are using is the probabilistic GC catalog used in the main paper obtained by DOLPHOT. 
+
+#### Note: 
+You can also use a binary GC catalog, but it is assumed that the binary GC catalog is not truncated at the faint end, i.e., faint sources are not removed. However, this would require your data are low in noise at the faint end, so proceed with caution as otherwise the results are unreliable.
+
+We read in the data by:
+
+```{r data, echo=TRUE, message=FALSE}
+Y_obs <- read_csv('data/prob_GC_data/v11acs_pGC.csv') # Name the data object Y_obs
+head(Y_obs)
+```
+
+
+The `head` function looks at the first 6 rows of the data object. The data now contains the pixel coordinates of point sources in column `x`, `y`; The celestial coordinates `RA` and `DEC`; The point source magnitude `M` and color `C`. `field` indicates the image field ID from the survey. The rest of the columns with name `p##` are the probability of a source being a GC, obtained from multiple runs of clustering through the finite-mixture model.
+
+```{r data_processing, echo = TRUE, results = 'hide'}
+Y_obs <- as.data.frame(Y_obs) # Ensure Y_obs is a data.frame
+
+Y_obs[,c('x','y')] <- 76*Y_obs[,c('x','y')]/4300 # transform the pixel coordinates to physical coordinates
+
+Y_obs <- Y_obs %>%
+  dplyr::select(-RA, -DEC, -C, -field) # Deslect the columns that we do not need
+```
+
+The `read_csv` function will read in `Y_obs` as a `tibble` object. We need `Y_obs` as a `data.frame`. Otherwise, things can get messed up.
+
+We then need to transform the pixel coordinates `x`, `y` into physical coordinates in kpc. The image used here has 4300 pixels per side, which corresponds to 76 kpc a side for ACS images from PIPER survey.
+
+Afterwards, we only need the physical coordinates `x`, `y`, and the magnitude `M` of the sources, as well as the the probabilities a source is a GC.
+
+Plot the locations of point sources:
+
+```{r plot_ps, echo = TRUE}
+ggplot(Y_obs, aes(x,y)) + geom_point(aes(alpha = rowMeans(subset(Y_obs, select = -c(x,y,M)))), size = 0.1) + coord_fixed() + theme_minimal() + ggtitle('Location of Point Sources') + scale_alpha_identity(name = 'Probability')
+```
+
+Transparency of points is the probability that a source is a GC.
+
+## Construct Spatial Domain
+
+Our model assumption is that GC locations arises from Poisson point process $\mathbf{X} \subseteq \mathcal{S} \subseteq \mathbb{R}^2$, we thus first need to specify the observation window $\mathcal{S}$ (domain) of $\mathbf{X}$. In our example here, it is basically the field of view of the image, which is a square. Thus, we just need to specify the $x$ and $y$ coordinates of the four vertices of the square. Note that the $x$ and $y$ coordinates need to be in order, e.g., the first entry of the `X` vector represents the $x$ coordinates of the first vertex, so the first entry of the `Y` vector then need to represent the $y$ coordinates of the first vertex.
+
+```{r vertices, echo = TRUE, message=FALSE}
+X <- c(0, 76, 76, 0) # x coordinates of the four vertices of the spatial domain in kpc
+Y <- c(0, 0, 76, 76) # y coordinates of the four vertices of the spatial domain in kpc
+```
+
+We then use the above to construct a `spat_dom` object to specify our spatial domain. Since we are modeling the intensity function $\lambda(s), \ s \in \mathcal{S}$ of $\mathbf{X}$, it requires the computation of an integral of the following form in the likelihood function:
+$$
+\exp\left(-\int_\mathcal{S}\lambda(s)ds\right).
+$$
+The above integral is usually intractable, thus we require numerical integration. The current implementation of our method uses a simple grid over $\mathcal{S}$:
+$$
+\int_\mathcal{S}\lambda(s)ds \approx \sum_{i}^n\lambda(c_i)|A_i|,
+$$
+$n$ is the number of grid-cells, $c_i$ is the center of the $i$-th cell and $|A_i|$ is the area of the $i$-th cell.
+
+We thus need to specify the number of grid cells for the integration, this is specified by the `n_grid` argument in the code below. Here we use 100K grid points. You can also change it depends on how accurate you want your integration to be. Of course, the more you want, the longer it takes to fit the model.
+
+```{r spat_domain, echo = TRUE, message=FALSE}
+# Construct a list object that specifies the construction of our patial domain
+spat_dom <- list(vertices = cbind(X,Y),
+                 n_grid = 100000) 
+```
+
+### Construct integration grid
+
+After the spatial domain is constructed, we also need to construct grid to carry out integration. The likelihood function of a point process model requires the integration of the intensity function over the spatial domain. The code is as follows:
+
+## Specify known parameters of galaxies in the image and known quantities
+
+Now we can specify the known parameters of GC systems of galaxies in the image, which include normal, bright galaxies and UDGs. 
+
+In our model assumption, the GC system of each galaxy is modeled by a Sersic profile:
+$$
+\mathrm{S\acute{e}rsic}(s;N, R_h, n) = 
+        \frac{N b_{n}^{2n}}{2\pi R_h^2 n \Gamma(2n)e}\exp\left(-b_n\left(\frac{r(s)}{R_h}\right)^{1/n}\right),
+$$
+where
+
+$$
+r^2(s) = ((x - c_x)\cos(\theta) - (y - c_y)\sin(\theta))^2 + 
+    ((x- c_x)\sin(\theta)+ (y-c_y)\cos(\theta))^2/e^2, \ s = (x,y) \in \mathcal{S}
+$$
+We assume that the known parameters are the galactic center $(c_x, c_y)$, the aspect ratio $e$, and the orientation angle $\theta$. These should generally be the same as those of the galactic light distribution.
+
+To specify these known parameters, we need to construct a `list` object called `fixed_Theta`, which contains two other `list` objects called `gal` and `UDG`. `gal` contains the list of known parameters for each normal galaxy, while `UDG` contains the list of known parameters for each UDG.
+
+Both `gal` and `UDG` contain the list of galactic centers (`center`) in physical coordinates (kpc), the aspect ratio `e`, and the orientation angle `theta` (in radian). The `UDG` list also needs the specification of their IDs. Again, the specification of these parameters need to be in order. For example, the normal galaxy with pixel coordinate `(1125, 1780)` has aspect ratio `e = 1.3166`, and orientation angle `pi/18`.
+
+```{r par_gal, echo = TRUE, message=FALSE}
+fixed_Theta <- list(gal = list(center = rbind(c(1125, 1780), c(2300, 5800))/4300*76, # galactic centers of two normal galaxies
+                               e = c(1.3166, 1.5), # aspect ratio of the two normal galaxies
+                               theta = c(pi/18, pi/6)), # orientation angle of the two normal galaxies
+                    UDG = list(center = rbind(c(2628, 1532), c(2517, 3289))/4300*76, # galactic centers of two UDGs
+                               e = c(0.61, 1.4), # aspect ratio of the two UDGs
+                               theta = c(0, 0), # orientation angle of the two UDGs
+                               UDG_ID = c('W88', 'W89'))) # ID of the two UDGs
+```
+
+#### Note: 
+If an image does not contain normal galaxies, you can delete the `gal = ...` part of the above code. Everything else is the same. 
+
+We then specify the known quantities required to fit the model. Specifically, the completeness fraction
+
+$$
+f(m) = \frac{1}{\exp(1 + \alpha(m - m_{50}))},
+$$
+
+and the measurement uncertainty of GC magnitudes
+
+$$
+\sigma_M(m) = \beta_0\exp(\beta_1(m - m_1)).
+$$
+
+The required parameters are then $\alpha$, $m_{50}$, $\beta_0$, $\beta_1$, and $m_1$.
+
+```{r cf, echo = TRUE, message=FALSE}
+cf_error <- list(alpha = 1.5, m50 = 25.75, beta0 = 0.08836, beta1 = 0.645, m1 = 25.5)
+```
+
+## Specify Prior Distribution
+
+We now specify the prior distributions of the model parameters. We need to create a `list` object that provides the parameter values of the prior distributions specified in the paper. Since our prior distributions of parameters are all somewhat related to Gaussian distributions (see the main paper for prior specification), which have a mean parameter and standard deviation parameter, the code below will simply use `a` to denote the mean value and `b` for standard deviation (although what you name them does not really matter). 
+
+Similar to the specification of `fixed_Theta`, the prior list contains three individual list objects that specify the prior of GCs from IGM, normal galaxies, and UDGs:
+
+```{r prior}
+prior <- list(IGM = list(b0 = c(a = log(0.05), b = 0.4), # GC intensity in IGM
+                         mu = c(a = 26.3, b = 0.5), # GCLF TO point for IGM GCs
+                         sigma = c(a = log(1.3), b = 0.25)), # GCLF dispersion for IGM GCs
+              
+              gal = list(N = data.frame(a = c(log(300), log(400)), b = rep(0.25, 2)), # mean number of GCs in two normal galaxies
+                         R_eff = data.frame(a = c(log(10), log(12)), b = c(0.25, 0.2)), # Half-number radii of the GC systems for the two normal galaxies
+                         n = data.frame(a = log(rep(0.5, 2)), b = rep(0.5, 2)), # Sersic indices of the GC systems for the two normal galaxies
+                         mu = data.frame(a = rep(26.3, 2), b = rep(0.5, 2)), # GCLF TO points of the two normal galaxies
+                         sigma = data.frame(a = rep(log(1.3), 2), b = rep(0.25, 2))), # GCLF dispersion for the two normal galaxies
+              
+              UDG = list(N = data.frame(a = rep(0, 2), b = rep(50, 2)), # mean number of GCs in two UDGs
+                         R_eff = data.frame(a = c(log(4.4), log(1.6)), b = rep(0.5, 2)), # Half-number radii of GC systems of the two UDGs
+                         n = data.frame(a = log(rep(1, 2)), b = rep(0.75, 2)), # Sersic indices of GC systems of the two UDGs
+                         mu = data.frame(a = rep(26.3, 2), b = rep(0.5, 2)), # GCLF TO points of the two UDGs
+                         sigma = data.frame(a = rep(log(1.3), 2), b = rep(0.25, 2)))) # GCLF dispersion for the two UDGs
+```
+
+Moreover, if there are no normal galaxies in an image, again just remove the `gal = ...` part of the above code.
+
+Note that we currently do not allow changing the type of prior distributions, only the parameter values of the prior distributions. Changing the type of prior distributions will be addressed in the `R` package.
+
+## Tuning parameters for MCMC algorithm
+
+Since we use an adaptive MCMC algorithm, the chain requires an initial pilot run of standard Metropolis-Hasting algorithm, which requires specification of step-size (tuning) parameters for the chain to jump. Below are some specification of the tuning parameters. You can certainly change these as you wish.
+
+```{r}
+tune <- list(b0 = 0.01, Ng = 0.25, Nu = 0.1, R = 0.1, n = 0.1, mu = 0.1, sigma = 0.1)
+```
+
+## Fitting the Model
+
+Now we are ready to fit the model. We run the model using the following `fit_MATHPOP` function. 
+
+```{r, eval = FALSE}
+res_prob <- fit_MATHPOP(Data = Y_obs, spat_dom = spat_dom, 
+                        fixed_Theta = fixed_Theta, prior = prior, 
+                        cf_error = cf_error, M = 100000, 
+                        tune = tune, seed = 1)
+```
+
+The `fit_MATHPOP` function has the following arguments:
+
+* `Data` data.frame. Each row is an observed GC or point source in the data. Requires at least the columns `x`, `y` for the spatial coordinates of GCs (in physical coordinates), and the magnitudes `M`. If there are more columns, they need to be the probabilities a point source is a GC.
+* `spat_dom` List. A list object containing a list of `vertices` and a list of the number of integration grid `n_grid`.
+* `fixed_Theta` List. A list that specifies the known parameters of GC system, which contains two list objects `gal` and `UDG` that specify the respective known parameters of normal galaxies and UDGs. If there are no normal galaxies in the data, `gal` does not need to be specified.
+* `prior` List. A list that specifies the parameter values of the prior distributions of the model parameters. See above Section on prior.
+* `p = 1` Numeric. Crowding effect. A numerical value between $(0,1)$. In the current implementation, it is assumed that it is $1$ (no crowding). 
+* `cf_error` List. List of parameters for completeness fraction and measurement uncertainties. See above Section.
+* `M` Integer. Total number of iteration to run the MCMC algorithm.
+* `Theta = NULL` List. Starting values of the MCMC chain. Specified internally.
+* `tune` List. Tuning parameters for initial MCMC pilot run.
+* `n = 1000` Integer. Initial MCMC pilot run iteration. Specified internally.
+* `gamma = 0.1` Numeric $(>0)$. Scaling parameter for adaptive MCMC. Specified internally.
+* `prob_model = TRUE` Logical. Whether the GC data used is a probabilistic catalog or a binary catalog. 
+* `seed = 12345` Integer. Random seed.
+* `burnin = 0.1` Numeric. A real number between $0$ and $1$. Percentage of the sample to be discarded as burn-in for MCMC.
+
+
