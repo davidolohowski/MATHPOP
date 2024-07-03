@@ -10,5 +10,5 @@ editor_options:
 
 Welcome to MATHPOP, a `R` software for inferring globular cluster counts in low-surface brightness galaxies (LSBGs) and ultra-diffuse galaxies (UDGs).
 
-See this [vignette](vignette.html) for a quick tutorial on how to use it.
+* [Vignette](vignette.html)
 
