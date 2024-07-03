@@ -8,7 +8,26 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to MATHPOP, a `R` software for inferring globular cluster counts in low-surface brightness galaxies (LSBGs) and ultra-diffuse galaxies (UDGs).
+## MATHPOP
 
-* [Vignette](vignette.html)
+Welcome to MATHPOP, a `R` software for inferring globular cluster (GC) counts in low-surface brightness galaxies (LSBGs) and ultra-diffuse galaxies (UDGs). The `R` code in this repo is written based on the framework of MArk-dependently THinned POint Process (MATHPOP) proposed by Li et al. (2024), "*Discovery of Two Ultra-Diffuse Galaxies with Unusually Bright Globular Cluster Luminosity Functions via a Mark-Dependently Thinned Point Process (MATHPOP)*".
+
+## R and RStudio
+
+If you have not used `R` before, `R` is a powerful open source language designed for statistical computing and data analysis. Download `R` at [The Comprehensive R Archive Network (CRAN)](https://cloud.r-project.org/) and [`RStudio`](https://posit.co/download/rstudio-desktop/). `R` is the base language environment that executes all programs and code. `RStudio` is an integrated user interface wrapper that makes the base `R` easy to use (similar to `Jupyter Notebook` for `Python`). 
+
+## Download the Repo
+
+To use the code for your own data, go to the MATHPOP [Github repo](https://github.com/davidolohowski/MATHPOP) and download the repository. The `R` code to fit the MATHPOP model is contained in the `code/` directory. The `data/` directory contains the GC data analyzed in the original paper.
+
+## Quick Start
+
+For a quick example of how to use MATHPOP, see this [vignette](vignette.html).
+
+The MATHPOP method also proposes to use a probabilistic GC catalog, see this [tutorial](GC_prob.html) on how to obtain a probabilistic GC catalog from point sources.
+
+
+
+
+
 

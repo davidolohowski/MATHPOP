@@ -1,0 +1,126 @@
+---
+title: "GC_prob"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, echo=F}
+knitr::opts_chunk$set(autodep = TRUE)
+```
+
+
+## Introduction
+
+This vignette introduces how you can construct a probabilistic GC catalog based on a catalog of point sources. The method illustrated here is the one used for obtaining the L24 GC catalog in the original Li et al. (2024) paper.
+
+To start, we load the required packages:
+
+```{r packages, echo = TRUE, message=FALSE}
+library(tidyverse)
+library(mixtools)
+```
+
+## Read in the Data
+
+We then read in the point source data. Note the point source data used here are obtained by running DOLPHOT for the science images on the [PIPER survey](https://iopscience.iop.org/article/10.3847/1538-4357/ab6992).
+
+```{r ps_data, echo = TRUE, message=FALSE}
+fnames <- list.files('data/point_source_data/') # extract all point source data file names for each imaging visit in the PIPER survey.
+
+# read in all the point source data into one single data.frame
+dat_DOL <- data.frame()
+for (i in fnames) {
+  df <- read_csv(paste0('data/point_source_data/',i))
+  df <- bind_cols(df, field = rep(i, nrow(df)))
+  dat_DOL <- bind_rows(dat_DOL, df)
+}
+
+# NOTE: if you have all point source data in one single file, this chunk of code is not required.
+```
+
+Plot the Color-Magnitude Diagram (CMD) of the point sources (red box is a typical selection region of GC candidates under a binary selection criteria) :
+
+```{r CMD_plot, echo = T, message=F}
+ggplot(dat_DOL, aes(F475W - F814W, F814W)) + geom_point(size = 0.05) + scale_y_reverse() +
+  annotate('segment', x = 1.0, xend = 2.4, y = 26.5, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 1.0, xend = 1.0, y = 22, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 2.4, xend = 2.4, y = 22, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 1.0, xend = 2.4, y = 22, yend = 22, colour = 'red') +
+  theme_minimal()
+```
+
+### Preprocessing the Data
+
+Things look OK. Next, we conduct some initial preprocessing of the data, namely, we remove point sources with color $\mathrm{F475W} - \mathrm{F814W} < 0.0~\mathrm{mag}$ and $\mathrm{F814W} < 22.0~\mathrm{mag}$. These are intended to stabilize the finite-mixture model clustering later. The cut-off values here are relatively certain since sources removed are most certainly not GCs. Of course, the cut-off values for point sources can be adjusted and you can play around with it yourself.
+
+```{r preprocess, echo = T, message = F}
+CMD <- mutate(dat_DOL, C = F475W - F814W, M = F814W) %>%
+  dplyr::select(x, y, RA, DEC, C, M, field, F814W, F475W) %>%
+  filter(M > 22 & C > 0) %>% # remove sources with magnitude < 22 and color < 0.
+  mutate(err_F814W = 0.0884*exp(0.645*(F814W - 25.5))*(grepl('acs', field)) + 
+           0.0977*exp(0.613*(F814W - 25.5))*grepl('wfc3', field), # measurement uncertainties for F814W
+         err_F475W = 0.078*exp(0.699*(F475W - 26))*(grepl('acs', field)) + 
+           0.0544*exp(0.652*(F475W - 26))*grepl('wfc3', field)) %>% # measurement uncertainties for F475W
+  mutate(err_color = sqrt(err_F814W^2 + err_F475W^2)) # measurement uncertainties for colors
+```
+
+
+Plot the processed data again:
+
+```{r CMD_plot_2, echo = T, message = F}
+ggplot(CMD, aes(F475W - F814W, F814W)) + geom_point(size = 0.05) + scale_y_reverse() +
+  annotate('segment', x = 1.0, xend = 2.4, y = 26.5, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 1.0, xend = 1.0, y = 22, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 2.4, xend = 2.4, y = 22, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 1.0, xend = 2.4, y = 22, yend = 22, colour = 'red') +
+  theme_minimal()
+```
+
+## Fitting the Finite-Mixutre Model
+
+The clustering algorithm we use is a non-parametric finite-mixture model by [Benaglia et al. (2009)](https://www.tandfonline.com/doi/abs/10.1198/jcgs.2009.07175) and [Chauveau & Hoang (2016)](https://www.sciencedirect.com/science/article/abs/pii/S0167947316300925?via%3Dihub) implemented in the `R` package `mixtools`. 
+
+In the following code, we run the finite-mixture model once with the color-magnitude data being jittered by the measurement uncertainties. Note that we need to specify how many clusters there are in the data. Naturally, based on what we know of a typical CMD, there should be three clusters.
+
+```{r fmm, echo = T, message = F, cache = T}
+class_res <- mixtools::mvnpEM(data.frame(C = rnorm(nrow(CMD), CMD$C, CMD$err_color), 
+                                         M = rnorm(nrow(CMD), CMD$F814W, CMD$err_F814W)), # jitter the color-magnitude data
+                                             mu0 = 3, # three clusters
+                              verb = F, samebw = F, maxit = 200)
+```
+
+Get the probability that a source is a GC and plot it:
+
+```{r}
+prob <- class_res$posterior[, which.max(class_res$lambdahat)] # lambdahat is a vector containing the proportion of the sources in each of the three cluster. In this dataset, the GC cluser has the highest proportion. If using other dataset, this has to be changed accordingly.
+
+CMD$p <- prob # make a new column called 'p' for the CMD data to represent the probability
+
+# plot it
+ggplot(CMD, aes(C, M, color = p)) + geom_point(size = 0.1) +
+  scale_size_identity() +
+  scale_y_reverse() + theme_minimal() +
+  xlab('F475W - F814W') + ylab('F814W') +
+  scale_colour_viridis_c(name = 'p(GC)', limits = c(0,1)) +
+  annotate('segment', x = 1.0, xend = 2.4, y = 26.5, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 1.0, xend = 1.0, y = 22, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 2.4, xend = 2.4, y = 22, yend = 26.5, colour = 'red') +
+  annotate('segment', x = 1.0, xend = 2.4, y = 22, yend = 22, colour = 'red') 
+```
+
+
+Note that we here are only running the finite-mixture model once, but since we are considering measurement uncertainties as well, we will need to repeatedly fit the finite-mixture model multiple times with different realization of the jittering from the measurement uncertainty. In the original paper of Li et al. (2024), the finite-mixture model was run 500 times and the probabilities from each of these iterations were retained and stored in the dataset.
+
+
+
+
+
+
+
+
+
+

@@ -7,4 +7,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+## Introduction
+
+This page gives a brief introduction of the assumptions and construction of the MATHPOP methodology to infer globular cluster (GCs) counts in LSBGs/UDGs. For more details, see the original paper by Li et al. (2024).
+
+MATHPOP uses a marked point process model to jointly model the spatial location (point process) of observed GCs and their magnitudes (mark). It is assumed that the observed GC locations and their magnitudes in 
+
+
+
