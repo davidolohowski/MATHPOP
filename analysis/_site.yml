@@ -9,6 +9,13 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  - text: Quick Start
+    icon: fa-gear
+    menu: 
+      - text: Probabilistic GC Catalog
+        href: GC_prob.html
+      - text: MATHPOP Tutorial
+        href: vignette.html
   right:
   - icon: fab fa-github
     text: Source code
