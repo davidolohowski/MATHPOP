@@ -5,10 +5,6 @@ navbar:
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
   - text: Quick Start
     icon: fa-gear
     menu: 
@@ -16,6 +12,10 @@ navbar:
         href: GC_prob.html
       - text: MATHPOP Tutorial
         href: vignette.html
+  - text: About
+    href: about.html
+  - text: License
+    href: license.html
   right:
   - icon: fab fa-github
     text: Source code
