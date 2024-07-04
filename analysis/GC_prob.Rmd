@@ -29,7 +29,9 @@ library(mixtools)
 We then read in the point source data. Note the point source data used here are obtained by running DOLPHOT for the science images on the [PIPER survey](https://iopscience.iop.org/article/10.3847/1538-4357/ab6992).
 
 ```{r ps_data, echo = TRUE, message=FALSE}
-fnames <- list.files('data/point_source_data/') # extract all point source data file names for each imaging visit in the PIPER survey.
+fnames <- list.files('data/point_source_data/')
+fnames <- fnames[!grepl('Jans', fnames)]
+# extract all point source data file names for each imaging visit in the PIPER survey.
 
 # read in all the point source data into one single data.frame
 dat_DOL <- data.frame()
@@ -86,7 +88,7 @@ The clustering algorithm we use is a non-parametric finite-mixture model by [Ben
 
 In the following code, we run the finite-mixture model once with the color-magnitude data being jittered by the measurement uncertainties. Note that we need to specify how many clusters there are in the data. Naturally, based on what we know of a typical CMD, there should be three clusters.
 
-```{r fmm, echo = T, message = F, cache = T}
+```{r fmm, echo = T, message = F}
 class_res <- mixtools::mvnpEM(data.frame(C = rnorm(nrow(CMD), CMD$C, CMD$err_color), 
                                          M = rnorm(nrow(CMD), CMD$F814W, CMD$err_F814W)), # jitter the color-magnitude data
                                              mu0 = 3, # three clusters
