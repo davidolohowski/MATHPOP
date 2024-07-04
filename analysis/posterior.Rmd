@@ -1,0 +1,230 @@
+---
+title: "Posterior Results Analysis"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+This vignette provides the code for the analysis of the posterior results of MATHPOP model fitted to the 40 Perseus LSBGs considered in the original Li et al. (2024) paper. It also reproduces Figure 4 and provides the data contained in Table 3 of the paper. To fit the MATHPOP model, see [here](vignette.html).
+
+## Post Inference Results
+
+Due to the computational time to fit the MATHPOP model and the size of the MCMC results, we will not be fitting the model in any of the vignettes in this Github repo. We instead have post-processed and saved three individual runs of the MCMC runs of the MATHPOP model for each individual image we considered. These are contained in the `data/v####` folders, where `v###` is the imaging field ID. For example, `data/v11acs/res_prob_v11acs.RDS` contains the MCMC results for the MATHPOP model fitted to the DOLPHOT GC data.
+
+We first load all required packages and read in the MCMC results for MATHPOP models fitted to probabilistic GC catalog from DOLPHOT:
+
+```{r data_dol, echo = T, message=F, warning=F}
+library(tidyverse)
+library(ggpubr)
+library(ggridges)
+library(tikzDevice)
+library(posterior)
+library(xtable)
+library(wesanderson)
+library(ggnewscale)
+library(modeest)
+library(reshape2)
+library(HDInterval)
+
+# read in file paths
+fnames <- list.files('data/')
+fnames <- fnames[grepl('v', fnames)]
+file_paths <- paste0('data/',fnames,'/')
+
+# construct data frames for each model parameter of the GC system of a UDG
+summary_NGC <- data.frame()
+summary_RGC <- data.frame()
+summary_muGC <- data.frame()
+
+# generate a data frame containing all summary statistics of the model parameters
+set.seed(123456)
+# loop through each image
+for(i in 1:length(fnames)){
+  res_i_name <- paste0(file_paths[i], 'res_prob_', fnames[i], '.RDS')
+  file_read <- readRDS(res_i_name)
+  
+  # GC count summary
+  N_GC <- as.data.frame(apply(file_read[, grepl( "N_" , names(file_read)) & !grepl( "gal" , names(file_read))], 2, 
+                     function(x) rpois(nrow(file_read), x)))
+  
+  # Half-number radius summary
+  R_GC <- as.data.frame(file_read[, grepl( "R_" , names(file_read)) & !grepl( "gal" , names(file_read))])
+  
+  # GCLF TO summary
+  mu_GC <- as.data.frame(file_read[, grepl( "mu_" , names(file_read)) & !grepl( "gal" , names(file_read)) & !grepl( "_0" , names(file_read))])
+  UDG_ID <- gsub('N_', '', colnames(N_GC))
+  colnames(N_GC) <- UDG_ID
+  colnames(R_GC) <- UDG_ID
+  colnames(mu_GC) <- UDG_ID
+  
+  # obtain summary statistics for GC counts
+  N_GC <- melt(N_GC)
+  summary_N <- N_GC %>%
+    rename(ID = variable) %>%
+    group_by(ID) %>%
+    summarise_all(list(N_mode = mlv, N_median = median, N_mean = mean,
+                       N_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       N_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       `P(N_GC = 0)` = function(x) mean(x == 0))) 
+  
+  # obtain summary statistics for half-number radius
+  R_GC <- melt(R_GC)
+  summary_R <- R_GC %>%
+    rename(ID = variable) %>%
+    group_by(ID) %>%
+    summarise_all(list(R_mode = mlv, R_median = median, R_mean = mean,
+                       R_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       R_HDI_0.68_upper = function(x) hdi(x, 0.68)[2])) 
+  
+  # obtain summary statistics for GCLF TO
+  mu_GC <- melt(mu_GC)
+  summary_mu <- mu_GC %>%
+    rename(ID = variable) %>%
+    group_by(ID) %>%
+    summarise_all(list(mu_mode = mlv, mu_median = median, mu_mean = mean,
+                       mu_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       mu_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       mu_HDI_0.95_lower = function(x) hdi(x, 0.95)[1],
+                       mu_HDI_0.95_upper = function(x) hdi(x, 0.95)[2])) 
+  
+  summary_NGC <- bind_rows(summary_NGC, summary_N)
+  summary_RGC <- bind_rows(summary_RGC, summary_R)
+  summary_muGC <- bind_rows(summary_muGC, summary_mu)
+}
+
+summary_NGC$ID <- as.character(summary_NGC$ID)
+summary_RGC$ID <- as.character(summary_RGC$ID)
+summary_muGC$ID <- as.character(summary_muGC$ID)
+# W7 is observed in both V12-ACS and V14-ACS
+summary_NGC$ID[13] <- summary_RGC$ID[13] <- summary_muGC$ID[13] <- 'W7 (V12ACS)'
+summary_NGC$ID[22] <- summary_RGC$ID[22] <- summary_muGC$ID[22] <- 'W7 (V14ACS)'
+
+# post-processing
+summary_muGC <- summary_muGC %>%
+  mutate(minus_mu = mu_mean - mu_HDI_0.68_lower, plus_mu = mu_HDI_0.68_upper - mu_mean)
+
+summary_RGC <- summary_RGC %>%
+  mutate(minus_R = R_mode - R_HDI_0.68_lower, plus_R = R_HDI_0.68_upper - R_mode)
+
+summary_NGC <- summary_NGC %>%
+  mutate_at(2:7, as.numeric) %>%
+  arrange(`P(N_GC = 0)`) 
+
+# GC count summary from Janssens et al. 2024
+Jans_NGC <- data.frame(ID = summary_NGC$ID) %>%
+  mutate(Janssens = c(36, 52, 43, 20, 24, 23, 13, 20, 4, 9, 6, 13, 2, -2, 0, 8, 1, 9, 7, 9, 0, -2, 3,
+                      0, 7, -2, 0, 1, -4, -1, 1, -4, 4, 2, 6, 4, -1, -5, -2, -1, -1), 
+         J_se = c(8, 8, 6, 6, 13, 7, 6, 14, 8, 9, 8, 5, 7, 8, 10, 10, 7, 6, 6, 7, 10, 8, 12, 7, 
+                  8, 10, 9, 10, 9, 7, 8, 9, 8, 9, 7, 6, 5, 6, 7, 7, 7), 
+         Re = c(2.16, 2.23, 1.99, 1.42, 5.44, 4.57, 2.72, 1.83, 1.15, 1.5, 2.22, 2.31, 1.59, 2.11,
+                1.17, 1.8, 1.31, 2.58, 1.92, 1.99, 1.17, 1.72, 1.67, 1.82, 1.5, 0.83, 0.97, 3.7, 
+                3.13, 1.5, 0.91, 1.5, 0.96, 0.63, 1, 1.31, 1.54, 1.84, 1.31, 0.64, 0.81))
+
+summary_NGC <- merge(summary_NGC, Jans_NGC)
+  
+summary_dat <- merge(merge(summary_NGC, summary_muGC, by = 'ID'), summary_RGC, by = 'ID') %>%
+  arrange(desc(N_mode)) %>% 
+  mutate(data = 'DOLPHOT')
+```
+
+We will do the same for results obtained using SExtractor (J24) probabilistic GC catalog, and combine the summary table with the one from DOLPHOT:
+
+```{r data_jans, echo = T, message=F, warning=F}
+# everything here is the same as above, only changing the object names to identify it is based on J24.
+summary_NGC_J <- data.frame()
+summary_RGC_J <- data.frame()
+summary_muGC_J <- data.frame()
+
+set.seed(123456)
+
+for(i in 1:length(fnames)){
+  res_i_name <- paste0(file_paths[i], 'res_prob_', fnames[i], '_Jans.RDS')
+  file_read <- readRDS(res_i_name)
+  N_GC <- as.data.frame(apply(file_read[, grepl( "N_" , names(file_read)) & !grepl( "gal" , names(file_read))], 2, 
+                              function(x) rpois(nrow(file_read), x)))
+  R_GC <- as.data.frame(file_read[, grepl( "R_" , names(file_read)) & !grepl( "gal" , names(file_read))])
+  mu_GC <- as.data.frame(file_read[, grepl( "mu_" , names(file_read)) & !grepl( "gal" , names(file_read)) & !grepl( "_0" , names(file_read))])
+  UDG_ID <- gsub('N_', '', colnames(N_GC))
+  colnames(N_GC) <- UDG_ID
+  colnames(R_GC) <- UDG_ID
+  colnames(mu_GC) <- UDG_ID
+  
+  N_GC <- melt(N_GC)
+  summary_N <- N_GC %>%
+    rename(ID = variable) %>%
+    group_by(ID) %>%
+    summarise_all(list(N_mode = mlv, N_median = median, N_mean = mean,
+                       N_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       N_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       `P(N_GC = 0)` = function(x) mean(x == 0))) 
+  
+  R_GC <- melt(R_GC)
+  summary_R <- R_GC %>%
+    rename(ID = variable) %>%
+    group_by(ID) %>%
+    summarise_all(list(R_mode = mlv, R_median = median, R_mean = mean,
+                       R_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       R_HDI_0.68_upper = function(x) hdi(x, 0.68)[2])) 
+  
+  mu_GC <- melt(mu_GC)
+  summary_mu <- mu_GC %>%
+    rename(ID = variable) %>%
+    group_by(ID) %>%
+    summarise_all(list(mu_mode = mlv, mu_median = median, mu_mean = mean,
+                       mu_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       mu_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       mu_HDI_0.95_lower = function(x) hdi(x, 0.95)[1],
+                       mu_HDI_0.95_upper = function(x) hdi(x, 0.95)[2])) 
+  
+  summary_NGC_J <- bind_rows(summary_NGC_J, summary_N)
+  summary_RGC_J <- bind_rows(summary_RGC_J, summary_R)
+  summary_muGC_J <- bind_rows(summary_muGC_J, summary_mu)
+}
+
+summary_NGC_J$ID <- as.character(summary_NGC_J$ID)
+summary_RGC_J$ID <- as.character(summary_RGC_J$ID)
+summary_muGC_J$ID <- as.character(summary_muGC_J$ID)
+summary_NGC_J$ID[13] <- summary_RGC_J$ID[13] <- summary_muGC_J$ID[13] <- 'W7 (V12ACS)'
+summary_NGC_J$ID[22] <- summary_RGC_J$ID[22] <- summary_muGC_J$ID[22] <- 'W7 (V14ACS)'
+
+summary_NGC_J <- summary_NGC_J %>%
+  mutate_at(2:7, as.numeric) %>%
+  arrange(`P(N_GC = 0)`)
+
+summary_NGC_J <- merge(summary_NGC_J, Jans_NGC)
+
+summary_dat_J <- merge(merge(summary_NGC_J, summary_muGC_J, by = 'ID'), summary_RGC_J, by = 'ID') %>%
+  arrange(desc(N_mode)) %>%
+  mutate(data = 'SExtractor (J24)')
+```
+
+## Results Comparison
+
+Now we can plot the GC count comparison results using the two summary data sets:
+
+```{r GC_comp, echo = T, warning = F, message=F}
+# grabbing the summary statistics of GC counts from the two summary datasets
+N_sum <- bind_rows(summary_dat, summary_dat_J) %>%
+  dplyr::select(ID, N_mean, N_mode, N_HDI_0.68_lower, N_HDI_0.68_upper, Janssens, J_se, data) %>%
+  melt(., id = c('ID', 'data', 'Janssens', 'J_se','N_HDI_0.68_lower', 'N_HDI_0.68_upper')) %>%
+  mutate(variable = ifelse(variable == 'N_mean', 'Mean', 'Mode'))
+
+# plot it
+color <- c('Mean' = "#E1AF00", 'Mode' = "#F21A00")
+ggplot(N_sum, aes(value, Janssens, color = variable)) + 
+  geom_rect(aes(xmin = N_HDI_0.68_lower, xmax = N_HDI_0.68_upper, ymin = Janssens - J_se, ymax = Janssens + J_se), fill = '#3B9AB2', color = 'black', alpha = 0.1, size = 0.1) + 
+  geom_point(size = 1) + geom_abline(slope = 1, intercept = 0, linetype = 'dashed') +
+  xlab('$N_GC^est (Ours)') + ylab('N_GC (J24)')  + coord_fixed() + labs(color = 'Estimator') +
+  theme(panel.grid.major = element_blank(), panel.background = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "gray"),
+        strip.background = element_blank()) +   
+  scale_color_manual(values = color) +
+  facet_wrap(.~data)
+```
+
+Note that Table 3 in the paper are not generated through code, although the numerical results are all contained in `summary_dat` and `summary_dat_J`.

@@ -6,12 +6,21 @@ navbar:
   - text: Home
     href: index.html
   - text: Quick Start
-    icon: fa-gear
     menu: 
       - text: Probabilistic GC Catalog
         href: GC_prob.html
       - text: MATHPOP Tutorial
         href: vignette.html
+  - text: MATHPOP Paper Code
+    menu: 
+      - text: DOLPHOT and SExtractor Data
+        href: data_process.html
+      - text: Posterior Results Analysis
+        href: posterior.html
+      - text: Methods Comparison
+      - text: GCLFs of R27 and W88
+      - text: Simulation Analysis
+      - text: Appendix Analysis
   - text: About
     href: about.html
   - text: License

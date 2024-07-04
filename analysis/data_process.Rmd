@@ -1,0 +1,216 @@
+---
+title: "Obtaining Probabilistic GC Catalogs"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+This vignette illustrate the methods used to obtain the probabilistic catalogs obtained using point sources from DOLPHOT and SExtractor. It also reproduces Figure 1 and Figure 8 in the original paper of Li et al. (2024)
+
+### Read in and Pre-Process Point Source Data
+
+Read in the point source data obtained by DOLPHOT and SExtractor:
+
+```{r data, echo = TRUE, message=F}
+# Load packages
+library(tidyverse)
+library(tikzDevice)
+library(mixtools)
+library(Rcpp)
+
+sourceCpp('code/cpp_help_func.cpp')
+source('code/help_functions.R')
+
+# Read in DOLPHOT point source data
+fnames <- list.files('data/point_source_data/')
+ps_harris_fnames <- fnames[!grepl('Jans', fnames)]
+dat_harris <- data.frame()
+for (i in ps_harris_fnames) {
+  df <- read_csv(paste0('data/point_source_data/',i))
+  df <- bind_cols(df, field = rep(i, nrow(df)))
+  dat_harris <- bind_rows(dat_harris, df)
+}
+
+# Read in SExtractor point source data
+ps_Jans_fnames <- fnames[grepl('Jans', fnames)]
+dat_Jans <- read_csv(paste0('data/point_source_data/', ps_Jans_fnames))
+
+```
+
+We then carry out pre-processing of the point source data. For the DOLPHOT data, we remove point sources with color $\mathrm{F475W} - \mathrm{F814W} < 0.0~\mathrm{mag}$ and $\mathrm{F814W} < 22.0~\mathrm{mag}$. Pre-processing of SExtractor data is not needed as the method to obtain the probabilistic GC catalog under SExtractor point source is different.
+
+```{r data_proc, echo = T}
+CMD_harris <- mutate(dat_harris, C = F475W - F814W, M = F814W) %>%
+  dplyr::select(x, y, RA, DEC, C, M, F814W, F475W, field) %>%
+  filter(M > 22 & C > 0)
+```
+
+## Obtaining the Probability of a Source being GC
+
+### DOLPHOT
+
+For the DOLPHOT point source, the finite-mixture method to obtain the probabilistic GC catalog is illustrated [here](GC_prob.html). We have carried out this method 500 times where each time the color and magnitude are jittered with their measurement uncertainties. As it is impossible to run and save such a big computational task remotely, we have saved the locally-run results in the file `DOL_GC_prob_mvnpEM_500_iter.RDS` under the `data/GC_prob/` folder of the Github repo. Read in this data and process it:
+
+```{r dolprob, echo=T}
+# read in results from 500 iteration of the finite-mixture method
+GC_prob_ls_Harris <- readRDS('data/GC_prob/DOL_GC_prob_mvnpEM_500_iter.RDS')
+
+# extract the probability a source is a GC
+GC_probability_Harris <- do.call(cbind,lapply(GC_prob_ls_Harris, function(x) x$posterior[, which.max(x$lambdahat)]))
+
+# name the column
+colnames(GC_probability_Harris) <- c(paste0('p', 1:500))
+
+# add it to the previous point source data.frame
+CMD_harris <- bind_cols(CMD_harris, GC_probability_Harris)
+
+# obtain summary statistics of the probability from the 500 iterations
+CMD_harris$p <- rowMeans(GC_probability_Harris)
+CMD_harris$p_sd <- apply(GC_probability_Harris, 1, sd)
+```
+
+After obtaining the point source data with all 500 probabilities, we save them into individual files based on their imaging field ID for later inference.
+
+```{r save_DOL, eval=FALSE}
+# Only run once
+for (i in ps_harris_fnames) {
+  write_csv(filter(CMD_harris, field == i), paste0('data/prob_GC_data/',unlist(strsplit(i, split = '.', fixed = T))[1],'_pGC.csv'))
+}
+```
+
+
+### SExtractor
+
+For the SExtractor data, a different parametric finite-mixture model was used. For a detailed explanation of the method, see Appendix B.2 of the original Li et al. (2024) paper. We have written a function called `mix_func()` in the `code/help_functions.R` to fit the parametric finite-mixture model.
+
+Similar to DOLPHOT data, we apply our proposed parametric finite-mixture model to the measurement uncertainty jittered color-magnitude data for 500 times, this is carried out by the function `meas_uncertain_mix_func()`:
+
+```{r jans_prob, echo = T, delete_cache = TRUE}
+# This may take a while, but still much faster than the previous non-parametric finite mixture model used for DOLPHOT
+Jans_res <- meas_uncertain_mix_func(dat = dat_Jans, n_iter = 500)
+```
+
+Get the results from the previous run, and attach it to the SExtractor point source `data.frame`.
+
+```{r, message=F}
+# get the probabilities
+p_mat <- Jans_res$prob
+
+# summary statistics for the probability a point source is a GC
+dat_Jans$p <- rowMeans(Jans_res$prob)
+dat_Jans$p_sd <- apply(Jans_res$prob, 1, sd)
+
+# restructure the data frame for later inference
+dat_Jans_save <- dat_Jans %>%
+  dplyr::select(x, y, RA, DEC, C, F814W, field) %>%
+  mutate(M = F814W) %>%
+  dplyr::select(x, y, RA, DEC, C, M, field)
+
+colnames(Jans_res$prob) <- c(paste0('p', 1:500))
+Jans_res$prob <- data.frame(Jans_res$prob)
+
+dat_Jans_save <- bind_cols(dat_Jans_save, p_mat)
+```
+
+Again, we save the probabilistic GC catalog from SExtractor into individual files based on their imaging field ID for later inference.
+
+```{r save_Jans, eval = F}
+# save the probabilistic GC catalog into individual files (only run once)
+for (i in unique(dat_Jans_save$field)) {
+  write_csv(filter(dat_Jans_save, field == i), paste0('data/prob_GC_data/', i,'_pGC_Jans.csv'))
+}
+```
+
+### Probabilities of Sources being GCs
+
+Now we can plot the obtained data and regenerate Figure 1 in the original Li et al. (2024) paper. Note that due to Latex memory constraints, not all point sources can be plotted in the figure, so we only plotted half of the sources.
+
+```{r gc_prob, echo = T}
+# combine the two point source data in one data frame
+frac_CMD_harris <- CMD_harris %>%
+  dplyr::select(C, M, p, p_sd) %>%
+  mutate(data = 'DOLPHOT')
+
+frac_CMD_Jans <- dat_Jans %>%
+  dplyr::select(C, F814W, p, p_sd) %>%
+  mutate(data = 'SExtractor (J24)', M = F814W) %>%
+  dplyr::select(C, M, p, p_sd, data)
+
+# select half of the sources to be plotted
+set.seed(123456)
+frac_CMD <- bind_rows(frac_CMD_harris[sample(1:nrow(frac_CMD_harris), 0.5*nrow(frac_CMD_harris), replace = F),],
+                      frac_CMD_Jans[sample(1:nrow(frac_CMD_Jans), 0.5*nrow(frac_CMD_Jans), replace = F),])
+
+ggplot(frac_CMD, aes(C, M, color = p)) + geom_point(aes(size = p_sd*2.5)) +
+  scale_size_identity() +
+  scale_y_reverse() + theme_minimal() +
+  xlab('F475W - F814W') + ylab('F814W') +
+  scale_colour_viridis_c(name = 'p(GC)') + 
+  geom_segment(data = data.frame(xmin = c(0.8, 0.8, 2.4, 0.8), 
+                                               xmax = c(2.4, 0.8, 2.4, 2.4), 
+                                               ymin = c(26.3, 22, 22, 22), 
+                                               ymax = c(26.3, 26.3, 26.3, 22),
+                                 data = 'SExtractor (J24)'), 
+           aes(x = xmin, xend = xmax, y = ymin, yend = ymax), colour = 'red') +
+  geom_segment(data = data.frame(xmin = c(1, 1, 2.4, 1), 
+                                 xmax = c(2.4, 1, 2.4, 2.4), 
+                                 ymin = c(26.5, 22, 22, 22), 
+                                 ymax = c(26.5, 26.5, 26.5, 22),
+                                 data = 'DOLPHOT'), 
+               aes(x = xmin, xend = xmax, y = ymin, yend = ymax), colour = 'red') +
+  facet_wrap(.~data)
+```
+
+## Fitted Results of Parametric Finite-Mixture Model for SExtractor Data
+
+We can now also plot the results for the fitted parametric finite-mixture model for SExtractor point source data. These are effectively Figure 8(a) and 8(b) in the paper. First, get the estimated parameters from the fitted results:
+
+```{r par_est, echo = T}
+# average of the fitted mixture model model parameters
+w <- mean(Jans_res$par[,1])
+wr <- mean(Jans_res$par[,2])
+GCLF_TO <- 26.3 # canonical GCLF TO
+GCLF_sig <- mean(Jans_res$par[,3])
+GC_color_mu_r <- mean(Jans_res$par[,4])
+GC_color_sig_r <- mean(Jans_res$par[,5])
+GC_color_mu_b <- mean(Jans_res$par[,6])
+GC_color_sig_b <- mean(Jans_res$par[,7])
+mu <- mean(Jans_res$par[,8])
+sigma <- mean(Jans_res$par[,9])
+Phi <- Phi_f_cpp(26.69, GCLF_TO, GCLF_sig, a = 6.56)
+```
+
+Generate Figure 8a in the original paper of Li et al. (2024):
+
+```{r figure8a, echo = T}
+ggplot(Jans_res$sim, aes(F814W)) + geom_histogram(aes(y = after_stat(count)/sum(count)/.05253/2),breaks = seq(22, 27.2, length = 50), alpha = 0.5) +
+  geom_function(fun = function(x) w*dnorm(x, GCLF_TO, GCLF_sig)*f_cpp(x, 26.69, 6.56)/Phi + (1-w)*dnorm(x, mu, sigma)) +
+  geom_function(fun = function(x) w*dnorm(x, GCLF_TO, GCLF_sig)*f_cpp(x, 26.69, 6.56)/Phi, color = "#EBCC2A") +
+  geom_function(fun = function(x) (1-w)*dnorm(x, mu, sigma), color = 'purple') + ylab('Density') + theme_minimal() 
+```
+
+Generate Figure 8b in the original paper of Li et al. (2024):
+
+```{r figure8b, echo = T}
+ggplot(Jans_res$sim, aes(C)) + geom_histogram(aes(y = after_stat(count)/sum(count)/0.032),breaks = seq(0.8, 2.4, length = 50), alpha = 0.5) +
+  geom_function(fun = function(x) w*(wr*dnorm(x, GC_color_mu_r, GC_color_sig_r) + (1-wr)*dnorm(x, GC_color_mu_b, GC_color_sig_b)) + (1-w)*dunif(x, 0.8, 2.4)) +
+  geom_function(fun = function(x) w*(wr*dnorm(x, GC_color_mu_r, GC_color_sig_r) + (1-wr)*dnorm(x, GC_color_mu_b, GC_color_sig_b)), color = "#EBCC2A") +
+  geom_function(fun = function(x) w*wr*dnorm(x, GC_color_mu_r, GC_color_sig_r), color = '#3B9AB2') +
+  geom_function(fun = function(x) w*(1-wr)*dnorm(x, GC_color_mu_b, GC_color_sig_b), color = "#FF0000") +
+  geom_function(fun = function(x) (1-w)*dunif(x, 0.8, 2.4), color = 'purple') + ylab('Density') + theme_minimal() + xlab('F475W - F814W')
+```
+
+
+
+
+
+
+
+
+
+
