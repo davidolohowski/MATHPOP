@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Posterior Results Analysis</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MATHPOP</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Quick Start
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="GC_prob.html">Probabilistic GC Catalog</a>
+    </li>
+    <li>
+      <a href="vignette.html">MATHPOP Tutorial</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MATHPOP Paper Code
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_process.html">DOLPHOT and SExtractor Data</a>
+    </li>
+    <li>
+      <a href="posterior.html">Posterior Results Analysis</a>
+    </li>
+    <li class="dropdown-header">Methods Comparison</li>
+    <li class="dropdown-header">GCLFs of R27 and W88</li>
+    <li class="dropdown-header">Simulation Analysis</li>
+    <li class="dropdown-header">Appendix Analysis</li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/davidolohowski/MATHPOP">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Posterior Results Analysis</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-07-04
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>MATHPOP/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240702code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240702)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240702code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240702)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree98834e5d8e5d832f31d4345e35433eacc9a2f0ectargetblank98834e5a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/98834e5d8e5d832f31d4345e35433eacc9a2f0ec" target="_blank">98834e5</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree98834e5d8e5d832f31d4345e35433eacc9a2f0ectargetblank98834e5a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/davidolohowski/MATHPOP/tree/98834e5d8e5d832f31d4345e35433eacc9a2f0ec" target="_blank">98834e5</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    analysis/.DS_Store
+    Ignored:    analysis/GC_prob_cache/
+    Ignored:    data/.DS_Store
+    Ignored:    data/GC_prob/.DS_Store
+    Ignored:    data/point_source_data/.DS_Store
+    Ignored:    data/prob_GC_data/.DS_Store
+    Ignored:    data/sim/.DS_Store
+    Ignored:    data/v10acs/.DS_Store
+    Ignored:    data/v10wfc3/.DS_Store
+    Ignored:    data/v11acs/.DS_Store
+    Ignored:    data/v11wfc3/.DS_Store
+    Ignored:    data/v12acs/.DS_Store
+    Ignored:    data/v12wfc3/.DS_Store
+    Ignored:    data/v13acs/.DS_Store
+    Ignored:    data/v13wfc3/.DS_Store
+    Ignored:    data/v14acs/.DS_Store
+    Ignored:    data/v14wfc3/.DS_Store
+    Ignored:    data/v15acs/.DS_Store
+    Ignored:    data/v15wfc3/.DS_Store
+    Ignored:    data/v6acs/.DS_Store
+    Ignored:    data/v6wfc3/.DS_Store
+    Ignored:    data/v7acs/.DS_Store
+    Ignored:    data/v8acs/.DS_Store
+    Ignored:    data/v9acs/.DS_Store
+    Ignored:    data/v9wfc3/.DS_Store
+
+Unstaged changes:
+    Modified:   code/help_functions.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/posterior.Rmd</code>) and HTML
+(<code>docs/posterior.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/98834e5d8e5d832f31d4345e35433eacc9a2f0ec/analysis/posterior.Rmd" target="_blank">98834e5</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-04
+</td>
+<td>
+wflow_publish(c("analysis/_site.yml", "analysis/posterior.Rmd",
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette provides the code for the analysis of the posterior
+results of MATHPOP model fitted to the 40 Perseus LSBGs considered in
+the original Li et al. (2024) paper. It also reproduces Figure 4 and
+provides the data contained in Table 3 of the paper. To fit the MATHPOP
+model, see <a href="vignette.html">here</a>.</p>
+</div>
+<div id="post-inference-results" class="section level2">
+<h2>Post Inference Results</h2>
+<p>Due to the computational time to fit the MATHPOP model and the size
+of the MCMC results, we will not be fitting the model in any of the
+vignettes in this Github repo. We instead have post-processed and saved
+three individual runs of the MCMC runs of the MATHPOP model for each
+individual image we considered. These are contained in the
+<code>data/v####</code> folders, where <code>v###</code> is the imaging
+field ID. For example, <code>data/v11acs/res_prob_v11acs.RDS</code>
+contains the MCMC results for the MATHPOP model fitted to the DOLPHOT GC
+data.</p>
+<p>We first load all required packages and read in the MCMC results for
+MATHPOP models fitted to probabilistic GC catalog from DOLPHOT:</p>
+<pre class="r"><code>library(tidyverse)
+library(ggpubr)
+library(ggridges)
+library(tikzDevice)
+library(posterior)
+library(xtable)
+library(wesanderson)
+library(ggnewscale)
+library(modeest)
+library(reshape2)
+library(HDInterval)
+
+# read in file paths
+fnames &lt;- list.files(&#39;data/&#39;)
+fnames &lt;- fnames[grepl(&#39;v&#39;, fnames)]
+file_paths &lt;- paste0(&#39;data/&#39;,fnames,&#39;/&#39;)
+
+# construct data frames for each model parameter of the GC system of a UDG
+summary_NGC &lt;- data.frame()
+summary_RGC &lt;- data.frame()
+summary_muGC &lt;- data.frame()
+
+# generate a data frame containing all summary statistics of the model parameters
+set.seed(123456)
+# loop through each image
+for(i in 1:length(fnames)){
+  res_i_name &lt;- paste0(file_paths[i], &#39;res_prob_&#39;, fnames[i], &#39;.RDS&#39;)
+  file_read &lt;- readRDS(res_i_name)
+  
+  # GC count summary
+  N_GC &lt;- as.data.frame(apply(file_read[, grepl( &quot;N_&quot; , names(file_read)) &amp; !grepl( &quot;gal&quot; , names(file_read))], 2, 
+                     function(x) rpois(nrow(file_read), x)))
+  
+  # Half-number radius summary
+  R_GC &lt;- as.data.frame(file_read[, grepl( &quot;R_&quot; , names(file_read)) &amp; !grepl( &quot;gal&quot; , names(file_read))])
+  
+  # GCLF TO summary
+  mu_GC &lt;- as.data.frame(file_read[, grepl( &quot;mu_&quot; , names(file_read)) &amp; !grepl( &quot;gal&quot; , names(file_read)) &amp; !grepl( &quot;_0&quot; , names(file_read))])
+  UDG_ID &lt;- gsub(&#39;N_&#39;, &#39;&#39;, colnames(N_GC))
+  colnames(N_GC) &lt;- UDG_ID
+  colnames(R_GC) &lt;- UDG_ID
+  colnames(mu_GC) &lt;- UDG_ID
+  
+  # obtain summary statistics for GC counts
+  N_GC &lt;- melt(N_GC)
+  summary_N &lt;- N_GC %&gt;%
+    rename(ID = variable) %&gt;%
+    group_by(ID) %&gt;%
+    summarise_all(list(N_mode = mlv, N_median = median, N_mean = mean,
+                       N_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       N_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       `P(N_GC = 0)` = function(x) mean(x == 0))) 
+  
+  # obtain summary statistics for half-number radius
+  R_GC &lt;- melt(R_GC)
+  summary_R &lt;- R_GC %&gt;%
+    rename(ID = variable) %&gt;%
+    group_by(ID) %&gt;%
+    summarise_all(list(R_mode = mlv, R_median = median, R_mean = mean,
+                       R_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       R_HDI_0.68_upper = function(x) hdi(x, 0.68)[2])) 
+  
+  # obtain summary statistics for GCLF TO
+  mu_GC &lt;- melt(mu_GC)
+  summary_mu &lt;- mu_GC %&gt;%
+    rename(ID = variable) %&gt;%
+    group_by(ID) %&gt;%
+    summarise_all(list(mu_mode = mlv, mu_median = median, mu_mean = mean,
+                       mu_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       mu_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       mu_HDI_0.95_lower = function(x) hdi(x, 0.95)[1],
+                       mu_HDI_0.95_upper = function(x) hdi(x, 0.95)[2])) 
+  
+  summary_NGC &lt;- bind_rows(summary_NGC, summary_N)
+  summary_RGC &lt;- bind_rows(summary_RGC, summary_R)
+  summary_muGC &lt;- bind_rows(summary_muGC, summary_mu)
+}
+
+summary_NGC$ID &lt;- as.character(summary_NGC$ID)
+summary_RGC$ID &lt;- as.character(summary_RGC$ID)
+summary_muGC$ID &lt;- as.character(summary_muGC$ID)
+# W7 is observed in both V12-ACS and V14-ACS
+summary_NGC$ID[13] &lt;- summary_RGC$ID[13] &lt;- summary_muGC$ID[13] &lt;- &#39;W7 (V12ACS)&#39;
+summary_NGC$ID[22] &lt;- summary_RGC$ID[22] &lt;- summary_muGC$ID[22] &lt;- &#39;W7 (V14ACS)&#39;
+
+# post-processing
+summary_muGC &lt;- summary_muGC %&gt;%
+  mutate(minus_mu = mu_mean - mu_HDI_0.68_lower, plus_mu = mu_HDI_0.68_upper - mu_mean)
+
+summary_RGC &lt;- summary_RGC %&gt;%
+  mutate(minus_R = R_mode - R_HDI_0.68_lower, plus_R = R_HDI_0.68_upper - R_mode)
+
+summary_NGC &lt;- summary_NGC %&gt;%
+  mutate_at(2:7, as.numeric) %&gt;%
+  arrange(`P(N_GC = 0)`) 
+
+# GC count summary from Janssens et al. 2024
+Jans_NGC &lt;- data.frame(ID = summary_NGC$ID) %&gt;%
+  mutate(Janssens = c(36, 52, 43, 20, 24, 23, 13, 20, 4, 9, 6, 13, 2, -2, 0, 8, 1, 9, 7, 9, 0, -2, 3,
+                      0, 7, -2, 0, 1, -4, -1, 1, -4, 4, 2, 6, 4, -1, -5, -2, -1, -1), 
+         J_se = c(8, 8, 6, 6, 13, 7, 6, 14, 8, 9, 8, 5, 7, 8, 10, 10, 7, 6, 6, 7, 10, 8, 12, 7, 
+                  8, 10, 9, 10, 9, 7, 8, 9, 8, 9, 7, 6, 5, 6, 7, 7, 7), 
+         Re = c(2.16, 2.23, 1.99, 1.42, 5.44, 4.57, 2.72, 1.83, 1.15, 1.5, 2.22, 2.31, 1.59, 2.11,
+                1.17, 1.8, 1.31, 2.58, 1.92, 1.99, 1.17, 1.72, 1.67, 1.82, 1.5, 0.83, 0.97, 3.7, 
+                3.13, 1.5, 0.91, 1.5, 0.96, 0.63, 1, 1.31, 1.54, 1.84, 1.31, 0.64, 0.81))
+
+summary_NGC &lt;- merge(summary_NGC, Jans_NGC)
+  
+summary_dat &lt;- merge(merge(summary_NGC, summary_muGC, by = &#39;ID&#39;), summary_RGC, by = &#39;ID&#39;) %&gt;%
+  arrange(desc(N_mode)) %&gt;% 
+  mutate(data = &#39;DOLPHOT&#39;)</code></pre>
+<p>We will do the same for results obtained using SExtractor (J24)
+probabilistic GC catalog, and combine the summary table with the one
+from DOLPHOT:</p>
+<pre class="r"><code># everything here is the same as above, only changing the object names to identify it is based on J24.
+summary_NGC_J &lt;- data.frame()
+summary_RGC_J &lt;- data.frame()
+summary_muGC_J &lt;- data.frame()
+
+set.seed(123456)
+
+for(i in 1:length(fnames)){
+  res_i_name &lt;- paste0(file_paths[i], &#39;res_prob_&#39;, fnames[i], &#39;_Jans.RDS&#39;)
+  file_read &lt;- readRDS(res_i_name)
+  N_GC &lt;- as.data.frame(apply(file_read[, grepl( &quot;N_&quot; , names(file_read)) &amp; !grepl( &quot;gal&quot; , names(file_read))], 2, 
+                              function(x) rpois(nrow(file_read), x)))
+  R_GC &lt;- as.data.frame(file_read[, grepl( &quot;R_&quot; , names(file_read)) &amp; !grepl( &quot;gal&quot; , names(file_read))])
+  mu_GC &lt;- as.data.frame(file_read[, grepl( &quot;mu_&quot; , names(file_read)) &amp; !grepl( &quot;gal&quot; , names(file_read)) &amp; !grepl( &quot;_0&quot; , names(file_read))])
+  UDG_ID &lt;- gsub(&#39;N_&#39;, &#39;&#39;, colnames(N_GC))
+  colnames(N_GC) &lt;- UDG_ID
+  colnames(R_GC) &lt;- UDG_ID
+  colnames(mu_GC) &lt;- UDG_ID
+  
+  N_GC &lt;- melt(N_GC)
+  summary_N &lt;- N_GC %&gt;%
+    rename(ID = variable) %&gt;%
+    group_by(ID) %&gt;%
+    summarise_all(list(N_mode = mlv, N_median = median, N_mean = mean,
+                       N_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       N_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       `P(N_GC = 0)` = function(x) mean(x == 0))) 
+  
+  R_GC &lt;- melt(R_GC)
+  summary_R &lt;- R_GC %&gt;%
+    rename(ID = variable) %&gt;%
+    group_by(ID) %&gt;%
+    summarise_all(list(R_mode = mlv, R_median = median, R_mean = mean,
+                       R_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       R_HDI_0.68_upper = function(x) hdi(x, 0.68)[2])) 
+  
+  mu_GC &lt;- melt(mu_GC)
+  summary_mu &lt;- mu_GC %&gt;%
+    rename(ID = variable) %&gt;%
+    group_by(ID) %&gt;%
+    summarise_all(list(mu_mode = mlv, mu_median = median, mu_mean = mean,
+                       mu_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       mu_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       mu_HDI_0.95_lower = function(x) hdi(x, 0.95)[1],
+                       mu_HDI_0.95_upper = function(x) hdi(x, 0.95)[2])) 
+  
+  summary_NGC_J &lt;- bind_rows(summary_NGC_J, summary_N)
+  summary_RGC_J &lt;- bind_rows(summary_RGC_J, summary_R)
+  summary_muGC_J &lt;- bind_rows(summary_muGC_J, summary_mu)
+}
+
+summary_NGC_J$ID &lt;- as.character(summary_NGC_J$ID)
+summary_RGC_J$ID &lt;- as.character(summary_RGC_J$ID)
+summary_muGC_J$ID &lt;- as.character(summary_muGC_J$ID)
+summary_NGC_J$ID[13] &lt;- summary_RGC_J$ID[13] &lt;- summary_muGC_J$ID[13] &lt;- &#39;W7 (V12ACS)&#39;
+summary_NGC_J$ID[22] &lt;- summary_RGC_J$ID[22] &lt;- summary_muGC_J$ID[22] &lt;- &#39;W7 (V14ACS)&#39;
+
+summary_NGC_J &lt;- summary_NGC_J %&gt;%
+  mutate_at(2:7, as.numeric) %&gt;%
+  arrange(`P(N_GC = 0)`)
+
+summary_NGC_J &lt;- merge(summary_NGC_J, Jans_NGC)
+
+summary_dat_J &lt;- merge(merge(summary_NGC_J, summary_muGC_J, by = &#39;ID&#39;), summary_RGC_J, by = &#39;ID&#39;) %&gt;%
+  arrange(desc(N_mode)) %&gt;%
+  mutate(data = &#39;SExtractor (J24)&#39;)</code></pre>
+</div>
+<div id="results-comparison" class="section level2">
+<h2>Results Comparison</h2>
+<p>Now we can plot the GC count comparison results using the two summary
+data sets:</p>
+<pre class="r"><code># grabbing the summary statistics of GC counts from the two summary datasets
+N_sum &lt;- bind_rows(summary_dat, summary_dat_J) %&gt;%
+  dplyr::select(ID, N_mean, N_mode, N_HDI_0.68_lower, N_HDI_0.68_upper, Janssens, J_se, data) %&gt;%
+  melt(., id = c(&#39;ID&#39;, &#39;data&#39;, &#39;Janssens&#39;, &#39;J_se&#39;,&#39;N_HDI_0.68_lower&#39;, &#39;N_HDI_0.68_upper&#39;)) %&gt;%
+  mutate(variable = ifelse(variable == &#39;N_mean&#39;, &#39;Mean&#39;, &#39;Mode&#39;))
+
+# plot it
+color &lt;- c(&#39;Mean&#39; = &quot;#E1AF00&quot;, &#39;Mode&#39; = &quot;#F21A00&quot;)
+ggplot(N_sum, aes(value, Janssens, color = variable)) + 
+  geom_rect(aes(xmin = N_HDI_0.68_lower, xmax = N_HDI_0.68_upper, ymin = Janssens - J_se, ymax = Janssens + J_se), fill = &#39;#3B9AB2&#39;, color = &#39;black&#39;, alpha = 0.1, size = 0.1) + 
+  geom_point(size = 1) + geom_abline(slope = 1, intercept = 0, linetype = &#39;dashed&#39;) +
+  xlab(&#39;$N_GC^est (Ours)&#39;) + ylab(&#39;N_GC (J24)&#39;)  + coord_fixed() + labs(color = &#39;Estimator&#39;) +
+  theme(panel.grid.major = element_blank(), panel.background = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = &quot;gray&quot;),
+        strip.background = element_blank()) +   
+  scale_color_manual(values = color) +
+  facet_wrap(.~data)</code></pre>
+<p><img src="figure/posterior.Rmd/GC_comp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Note that Table 3 in the paper are not generated through code,
+although the numerical results are all contained in
+<code>summary_dat</code> and <code>summary_dat_J</code>.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.3.2 (2023-10-31)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Sonoma 14.1.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Toronto
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] HDInterval_0.2.4  reshape2_1.4.4    modeest_2.4.0     ggnewscale_0.4.10
+ [5] wesanderson_0.3.7 xtable_1.8-4      posterior_1.5.0   tikzDevice_0.12.5
+ [9] ggridges_0.5.6    ggpubr_0.6.0      lubridate_1.9.3   forcats_1.0.0    
+[13] stringr_1.5.1     dplyr_1.1.4       purrr_1.0.2       readr_2.1.4      
+[17] tidyr_1.3.0       tibble_3.2.1      ggplot2_3.4.4     tidyverse_2.0.0  
+[21] workflowr_1.7.1  
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.2.0     filehash_2.4-5       timeDate_4022.108   
+ [4] farver_2.1.1         fastmap_1.1.1        tensorA_0.36.2      
+ [7] promises_1.2.1       digest_0.6.33        rpart_4.1.21        
+[10] timechange_0.2.0     lifecycle_1.0.4      cluster_2.1.4       
+[13] processx_3.8.2       magrittr_2.0.3       compiler_4.3.2      
+[16] rlang_1.1.2          sass_0.4.7           tools_4.3.2         
+[19] utf8_1.2.4           yaml_2.3.7           knitr_1.45          
+[22] ggsignif_0.6.4       labeling_0.4.3       statip_0.2.3        
+[25] plyr_1.8.9           abind_1.4-5          withr_2.5.2         
+[28] timeSeries_4031.107  fBasics_4032.96      grid_4.3.2          
+[31] fansi_1.0.6          git2r_0.33.0         stabledist_0.7-1    
+[34] colorspace_2.1-0     scales_1.3.0         cli_3.6.1           
+[37] rmarkdown_2.25       generics_0.1.3       rstudioapi_0.15.0   
+[40] httr_1.4.7           tzdb_0.4.0           cachem_1.0.8        
+[43] stable_1.1.6         vctrs_0.6.5          jsonlite_1.8.7      
+[46] carData_3.0-5        car_3.1-2            callr_3.7.3         
+[49] hms_1.1.3            rmutil_1.1.10        rstatix_0.7.2       
+[52] clue_0.3-65          jquerylib_0.1.4      spatial_7.3-17      
+[55] glue_1.6.2           ps_1.7.5             distributional_0.3.2
+[58] stringi_1.8.1        gtable_0.3.4         later_1.3.1         
+[61] munsell_0.5.0        pillar_1.9.0         htmltools_0.5.7     
+[64] R6_2.5.1             rprojroot_2.0.4      evaluate_0.23       
+[67] highr_0.10           backports_1.4.1      broom_1.0.5         
+[70] httpuv_1.6.12        bslib_0.5.1          Rcpp_1.0.11         
+[73] checkmate_2.3.1      whisker_0.4.1        xfun_0.41           
+[76] fs_1.6.3             getPass_0.2-4        pkgconfig_2.0.3     </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
