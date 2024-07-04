@@ -335,8 +335,6 @@ div.tocify {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <span class="fa fa-gear"></span>
-     
     Quick Start
      
     <span class="caret"></span>
@@ -348,6 +346,25 @@ div.tocify {
     <li>
       <a href="vignette.html">MATHPOP Tutorial</a>
     </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MATHPOP Paper Code
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_process.html">Getting Data</a>
+    </li>
+    <li>
+      <a href="posterior.html">Posterior Results Analysis</a>
+    </li>
+    <li class="dropdown-header">Methods Comparison</li>
+    <li class="dropdown-header">GCLFs of R27 and W88</li>
+    <li class="dropdown-header">Simulation Analysis</li>
+    <li class="dropdown-header">Appendix Analysis</li>
   </ul>
 </li>
 <li>
@@ -382,7 +399,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -393,8 +410,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -403,13 +420,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-03
+<strong>Last updated:</strong> 2024-07-04
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MATHPOP/</code> <span
@@ -503,24 +520,16 @@ versions is critical for reproducibility.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
 </p>
 </div>
-<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div id="strongCachestrongnone" class="panel-collapse collapse">
 <div class="panel-body">
-The following chunks had caches available:
-<ul>
-<li>
-fmm
-</li>
-</ul>
-<p>To ensure reproducibility of the results, delete the cache directory
-<code>GC_prob_cache</code> and re-run the analysis. To have workflowr
-automatically delete the cache directory prior to building the file, set
-<code>delete_cache = TRUE</code> when running <code>wflow_build()</code>
-or <code>wflow_publish()</code>.</p>
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
 </div>
 </div>
 </div>
@@ -542,15 +551,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreebbef050767ecd1e71d9a8b819ca40113be619273targetblankbbef050a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree5c28f22576213d81450b58a153680a7c380d7343targetblank5c28f22a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/bbef050767ecd1e71d9a8b819ca40113be619273" target="_blank">bbef050</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/5c28f22576213d81450b58a153680a7c380d7343" target="_blank">5c28f22</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreebbef050767ecd1e71d9a8b819ca40113be619273targetblankbbef050a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree5c28f22576213d81450b58a153680a7c380d7343targetblank5c28f22a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +569,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/bbef050767ecd1e71d9a8b819ca40113be619273" target="_blank">bbef050</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/5c28f22576213d81450b58a153680a7c380d7343" target="_blank">5c28f22</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -577,10 +586,35 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    analysis/.DS_Store
-    Ignored:    analysis/GC_prob_cache/
     Ignored:    data/.DS_Store
+    Ignored:    data/GC_prob/.DS_Store
     Ignored:    data/point_source_data/.DS_Store
     Ignored:    data/prob_GC_data/.DS_Store
+    Ignored:    data/sim/.DS_Store
+    Ignored:    data/v10acs/.DS_Store
+    Ignored:    data/v10wfc3/.DS_Store
+    Ignored:    data/v11acs/.DS_Store
+    Ignored:    data/v11wfc3/.DS_Store
+    Ignored:    data/v12acs/.DS_Store
+    Ignored:    data/v12wfc3/.DS_Store
+    Ignored:    data/v13acs/.DS_Store
+    Ignored:    data/v13wfc3/.DS_Store
+    Ignored:    data/v14acs/.DS_Store
+    Ignored:    data/v14wfc3/.DS_Store
+    Ignored:    data/v15acs/.DS_Store
+    Ignored:    data/v15wfc3/.DS_Store
+    Ignored:    data/v6acs/.DS_Store
+    Ignored:    data/v6wfc3/.DS_Store
+    Ignored:    data/v7acs/.DS_Store
+    Ignored:    data/v8acs/.DS_Store
+    Ignored:    data/v9acs/.DS_Store
+    Ignored:    data/v9wfc3/.DS_Store
+
+Untracked files:
+    Untracked:  posterior-tikzDictionary
+
+Unstaged changes:
+    Modified:   analysis/posterior.Rmd
 
 </code></pre>
 <p>
@@ -626,6 +660,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/5c28f22576213d81450b58a153680a7c380d7343/analysis/GC_prob.Rmd" target="_blank">5c28f22</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-04
+</td>
+<td>
+wflow_publish(c("analysis/GC_prob.Rmd"))
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/0b819e1152a389ec0a8e75ffc0de0541b537d87c/docs/GC_prob.html" target="_blank">0b819e1</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -735,7 +803,9 @@ used here are obtained by running DOLPHOT for the science images on the
 <a
 href="https://iopscience.iop.org/article/10.3847/1538-4357/ab6992">PIPER
 survey</a>.</p>
-<pre class="r"><code>fnames &lt;- list.files(&#39;data/point_source_data/&#39;) # extract all point source data file names for each imaging visit in the PIPER survey.
+<pre class="r"><code>fnames &lt;- list.files(&#39;data/point_source_data/&#39;)
+fnames &lt;- fnames[!grepl(&#39;Jans&#39;, fnames)]
+# extract all point source data file names for each imaging visit in the PIPER survey.
 
 # read in all the point source data into one single data.frame
 dat_DOL &lt;- data.frame()
