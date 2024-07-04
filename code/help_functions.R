@@ -197,65 +197,65 @@ log_post_MATHPOP <- function(S, grid, b0, c, N, R_eff, e, n, theta, mu, sigma, Y
   }
 }
 
-# log_lik_mod_cp <- function(S, grid, b0, c, N, R_eff, e, n, theta, mu, sigma, Y_obs, p, Lim){
-#   if(b0 <= 0){
-#     return(-Inf)
-#   }
-#   else{
-#     A <- sf::st_area(sf::st_as_sf(S))
-#     K <- nrow(c)
-#     Theta <- list()
-#     for (i in 1:K) {
-#       Theta[[i]] <- list(c = c[i,], N = N[i], R_eff = R_eff[i], e = e[i], n = n[i], theta = theta[i])
-#     }
-#     peM <- p_eM_cpp(Lim, mu, sigma)
-#     p_f <- psi_f(Y_obs$M, mu, sigma, Lim)
-#     norm_const <- sum(unlist(lapply(Theta, function(x){integrate_Sersic(grid, x$c, x$N, x$R_eff, x$e, x$n, x$theta)*p})))*peM
-#     L <- - norm_const - b0*A*p*peM
-#     loc <- b0*p*p_f
-#     loc <- loc + vapply(data.table::transpose(lapply(Theta, function(x){Sersic_ints(Y_obs[,c('x','y')], x$c, x$N, x$R_eff, x$e, x$n, x$theta)*p})), sum, 0)*p_f
-#     L <- L + sum(log(loc))
-#     return(L)
-#   }
-# }
-# 
-# log_post_mod_cp <- function(S, grid, b0, c, N, R_eff, e, n, theta, mu, sigma, Y_obs, p, Lim, prior){
-#   lp <- log_lik_mod_cp(S, grid, b0, c, N, R_eff, e, n, theta, mu, sigma, Y_obs, p, Lim) +
-#     dlnorm(b0, prior$b0[1], prior$b0[2], log = T) +
-#     dunif(mu, prior$mu[,1] + 1e-6, prior$mu[,2] - 1e-6, log = T) +
-#     dunif(sigma, prior$sigma[,1] + 1e-6, prior$sigma[,2] - 1e-6, log = T) +
-#     sum(dunif(N, prior$N[,1] + 1e-6, prior$N[,2] - 1e-6, log = T)) + sum(log(prior$N[,2] - prior$N[,1]) - log(N - prior$N[,1]) - log(prior$N[,2] - N)) +
-#     sum(dunif(R_eff, prior$R_eff[,1], prior$R_eff[,2], log = T)) +
-#     sum(dlnorm(n, prior$n[,1], prior$n[,2], log = T)) - sum(log(n))
-#   return(lp)
-# }
-# 
-# log_post_mod_cp_gal <- function(S, grid, b0, c, N, R_eff, e, n, theta, mu, sigma, Y_obs, p, Lim, prior, Ng){
-#   K <- nrow(c)
-#   lp <- log_lik_mod_cp(S, grid, b0, c, N, R_eff, e, n, theta, mu, sigma, Y_obs, p, Lim) +
-#     dlnorm(b0, prior$b0[1], prior$b0[2], log = T) +
-#     dunif(mu, prior$mu[,1] + 1e-6, prior$mu[,2] - 1e-6, log = T) +
-#     dunif(sigma, prior$sigma[,1] + 1e-6, prior$sigma[,2] - 1e-6, log = T) + 
-#     sum(dlnorm(N[1:Ng], prior$N[1:Ng,1], prior$N[1:Ng,2], log = T)) - sum(log(N[1:Ng])) +
-#     sum(dunif(N[(Ng+1):K], prior$N[(Ng+1):K,1] + 1e-6, prior$N[(Ng+1):K,2] - 1e-6, log = T)) + sum(log(prior$N[(Ng+1):K,2] - prior$N[(Ng+1):K,1]) - log(N[(Ng+1):K] - prior$N[(Ng+1):K,1]) - log(prior$N[(Ng+1):K,2] - N[(Ng+1):K])) +
-#     sum(dlnorm(R_eff[1:Ng], prior$R_eff[1:Ng, 1], prior$R_eff[1:Ng, 2], log = T)) +
-#     sum(dunif(R_eff[(Ng+1):K], prior$R_eff[(Ng+1):K, 1], prior$R_eff[(Ng+1):K, 2], log = T)) +
-#     sum(dlnorm(n, prior$n[,1], prior$n[,2], log = T)) - sum(log(n))
-#   return(lp)
-# }
+mix_func <- function(par, dat){
+  w <- par[1]
+  wr <- par[2]
+  GCLF_TO <- 26.3
+  GCLF_sig <- par[3]
+  GC_color_mu_r <- par[4]
+  GC_color_sig_r <- par[5]
+  GC_color_mu_b <- par[6]
+  GC_color_sig_b <- par[7]
+  mu <- par[8]
+  sigma <- par[9]
+  
+  M <- dat$F814W
+  C <- dat$C
+  
+  nll <- -sum(log(w*dnorm(M, GCLF_TO, GCLF_sig)*f_cpp(M, 26.69, 6.56)/Phi_f_cpp(26.69, GCLF_TO, GCLF_sig, a = 6.56)*(wr*dnorm(C, GC_color_mu_r, GC_color_sig_r) + (1-wr)*dnorm(C, GC_color_mu_b, GC_color_sig_b)) + 
+                    (1-w)*dnorm(M, mu, sigma)*dunif(C, 0.8, 2.4)))
+  
+  return(nll)
+}
 
-# test_lik <- function(theta, Lim, M){
-#     mu <- theta[1]
-#     sigma <- theta[2]
-#     return(prod(truncnorm::dtruncnorm(M, a = -Inf, b = Lim, mu, sigma))) 
-# }
-# 
-# M <- rnorm(20, 27.6, 1.15)
-# M <- M[M < Inf]
-# 
-# dat <- expand.grid(seq(25, 33, by = 0.02), seq(0.2, 2.5, by = 0.02))
-# ll <- apply(dat, 1, function(x) test_lik(x, Inf, M))
-# 
-# df <- data.frame(dat, ll)
-# 
-# ggplot(df, aes(Var1, Var2)) + geom_point(aes(color = ll), size = 0.8) +scale_color_viridis_c()
+
+meas_uncertain_mix_func <- function(dat, n_iter, seed = 12345){
+  set.seed(seed)
+  p_mat <- matrix(0, ncol = n_iter, nrow = nrow(dat))
+  par_mat <- matrix(0, ncol = 9, nrow = n_iter)
+  sim_dat <- data.frame()
+  for(i in 1:n_iter){
+    sim_CM <- as.data.frame(t(apply(dat_Jans[,c('C', 'F814W', 'M_err', 'C_err')], 1, 
+                                    function(x){MASS::mvrnorm(n = 1, x[c(1,2)], Sigma = matrix(c(x[4]^2, x[3]^2, x[3]^2, x[3]^2), 2))})))
+    
+    dat <- filter(sim_CM, C > 0.8 & C < 2.4)[,c('C', 'F814W')]
+    sim_dat <- bind_rows(sim_dat, dat)
+    M <- dat$F814W
+    C <- dat$C
+    idx <- which(sim_CM$C > 0.8 & sim_CM$C < 2.4)
+    res <- optim(c(0.6, 0.5, 1.2, 1.5, 0.16, 1.6, 0.1, 26.3, 0.3), mix_func, dat = dat, 
+                 method = "L-BFGS-B", lower = c(0, 0, 0.9, 1.25, 0.1, 1.5, 0.1, 26, 0.1), upper = c(1, 1, 1.5, 1.5, 0.5, 1.8, 0.5, 27, 0.6))$par
+    
+    par_mat[i,] <- res
+    
+    w <- res[1]
+    wr <- res[2]
+    GCLF_TO <- 26.3
+    GCLF_sig <- res[3]
+    GC_color_mu_r <- res[4]
+    GC_color_sig_r <- res[5]
+    GC_color_mu_b <- res[6]
+    GC_color_sig_b <- res[7]
+    mu <- res[8]
+    sigma <- res[9]
+    
+    GCLF_comp <- w*dnorm(M, GCLF_TO, GCLF_sig)*f_cpp(M, 26.69, 6.56)/Phi_f_cpp(26.69, GCLF_TO, GCLF_sig, a = 6.56)*
+      (wr*dnorm(C, GC_color_mu_r, GC_color_sig_r) + (1-wr)*dnorm(C, GC_color_mu_b, GC_color_sig_b))
+    cont_comp <- (1-w)*dnorm(M, mu, sigma)*dunif(C, 0.8, 2.4)
+    
+    prob <- GCLF_comp/(GCLF_comp + cont_comp)
+    
+    p_mat[idx,i] <- prob
+  }
+  return(list(prob = p_mat, par = par_mat, sim = sim_dat))
+}
