@@ -13,7 +13,7 @@ navbar:
         href: vignette.html
   - text: MATHPOP Paper Code
     menu: 
-      - text: DOLPHOT and SExtractor Data
+      - text: Getting Data
         href: data_process.html
       - text: Posterior Results Analysis
         href: posterior.html
