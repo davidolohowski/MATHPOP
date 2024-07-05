@@ -32,7 +32,7 @@ The MATHPOP method also proposes to use a probabilistic GC catalog, see this [tu
 
 ## MATHPOP Paper Code
 
-This repo also contains some of the main analysis done in the Li et al. (2024) paper, and they are all reproducible and accessible in this repo.
+This repo also contains various vignettes for the main analysis done in different sections of the Li et al. (2024) paper, and they are all reproducible and accessible in this repo.
 
 
 
