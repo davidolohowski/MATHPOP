@@ -1,0 +1,286 @@
+---
+title: "Methods Comparison"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{css, echo = F}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  height: 50vh !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r, echo = F}
+pdf2png <- function(path) {
+  # only do the conversion for non-LaTeX output
+  if (knitr::is_latex_output())
+    return(path)
+  path2 <- xfun::with_ext(path, "png")
+  img <- magick::image_read_pdf(path)
+  magick::image_write(img, path2, format = "png")
+  path2
+}
+```
+
+## Introduction
+
+This vignettes contains the analysis and code that compares the results obtained from MATHPOP and those from the standard method, specifically for the UDGs --- R27 and R84, as these two UDGs have the largest discrepancy between the two methods. We also reproduces Figure 5 in the original Li et al. (2024) paper.
+
+### Data For R27 and R84
+
+R27 is in the field V10-WFC3 and R84 is in the field V7-ACS. We first read in the GC data for R27 from both DOLPHOT and SExtractor in below:
+
+```{r, echo = T, message=F}
+library(tidyverse)
+library(sf)
+library(sp)
+library(raster)
+library(parallel)
+library(Rcpp)
+library(RcppArmadillo)
+library(posterior)
+library(coda)
+library(loo)
+library(xtable)
+library(priorsense)
+library(ggpubr)
+library(wesanderson)
+library(reshape2)
+library(tikzDevice)
+
+sourceCpp('code/cpp_help_func.cpp')
+source('code/fit_mod_MCMC.R')
+
+# DOLPHOT V10WFC3
+V10WFC <- read_csv('data/prob_GC_data/v10wfc3_pGC.csv')
+# SExtractor V10WFC3
+V10WFC_J <- read_csv('data/prob_GC_data/V10WFC3_pGC_Jans.csv')
+
+# transform pixel coordinates to pyhsical
+V10WFC <- as.data.frame(V10WFC)
+V10WFC[,c('x','y')] <- 62*V10WFC[,c('x','y')]/4400
+V10WFC_J <- as.data.frame(V10WFC_J)
+V10WFC_J[,c('x','y')] <- 62*V10WFC_J[,c('x','y')]/4400
+
+# locations of UDGs in V10WFC3
+c <- 62*rbind(c(808, 744), c(1930, 2653), c(2695, 2132))/4400
+```
+
+Next, generate cutout data for R27:
+
+```{r}
+# cutout GC data (within 7.5 kpc radius) for R27 from DOLPHOT 
+R27_dat_harris <- filter(V10WFC, (x - c[1, 1])^2 + (y - c[1,2])^2 < 7.5^2)
+R27_dat_harris$p <- rowMeans(R27_dat_harris[,8:507])
+R27_dat_harris <- R27_dat_harris %>%
+  filter(p > 0.05) %>%
+  dplyr::select(x, y, M, C, p) %>%
+  mutate(DATA = 'L24 ($p(\\mathrm{GC}) > 0.05$)')
+
+# cutout probabilistic GC data (within 7.5 kpc radius) for R27 from SExtractor
+R27_dat_Jans <- filter(V10WFC_J, (x - c[1, 1])^2 + (y - c[1,2])^2 < 7.5^2)
+R27_dat_Jans$p <- rowMeans(R27_dat_Jans[,8:507])
+R27_dat_Jans <- R27_dat_Jans %>%
+  filter(p > 0.05) %>%
+  dplyr::select(x, y, M, C, p) %>%
+  mutate(DATA = 'Prob J24 ($p(\\mathrm{GC}) > 0.05$)')
+
+# cutout binary GC data (within 7.5 kpc radius) for R27 from SExtractor (J24)
+R27_dat_Jans_bin <- filter(V10WFC_J, (x - c[1, 1])^2 + (y - c[1,2])^2 < 7.5^2)
+R27_dat_Jans_bin$p <- 1
+R27_dat_Jans_bin <- R27_dat_Jans_bin %>%
+  filter(p > 0 & M < 26.3 & C > 0.8 & C < 2.4) %>%
+  dplyr::select(x, y, M, C, p) %>%
+  mutate(DATA = 'Binary J24')
+
+# combine all data sources
+R27_dat <- bind_rows(R27_dat_harris, R27_dat_Jans, R27_dat_Jans_bin)
+
+# construct annotation text in the figure
+ann_text_R27 <- data.frame(x = c(9, 9, 16.5, 9, 9, 16, 8.5, 16.5), y = c(17, 16, 5.5, 17, 16, 5.5, 16.5, 5.5), 
+                           lab = c("$N_{\\mathrm{GC}}: 26_{-9}^{+11}$ (Ours)",
+                                   '$\\mu_{\\mathrm{TO}}: 25.35_{-0.28}^{+0.38}$ mag (Ours)',
+                                   '$N_{\\mathrm{cand}} = 26.3$',
+                                   "$N_{\\mathrm{GC}}: 37_{-13}^{+10}$ (Ours)",
+                                   '$\\mu_{\\mathrm{TO}}: 25.75_{-0.25}^{+0.32}$ mag (Ours)',
+                                   '$N_{\\mathrm{cand}} = 27.6$',
+                                   '$N_{\\mathrm{GC}}: 52\\pm 8$ (J24)',
+                                   '$N_{\\mathrm{cand}} = 37$'),
+                           DATA = c(rep(c('Prob J24 ($p(\\mathrm{GC}) > 0.05$)', 'L24 ($p(\\mathrm{GC}) > 0.05$)'), each = 3), rep('Binary J24', 2)))
+
+R27_dat$DATA <- factor(R27_dat$DATA, levels = c("L24 ($p(\\mathrm{GC}) > 0.05$)", "Binary J24", "Prob J24 ($p(\\mathrm{GC}) > 0.05$)"))
+ann_text_R27$DATA <-  factor(ann_text_R27$DATA, levels = c("L24 ($p(\\mathrm{GC}) > 0.05$)", "Binary J24", "Prob J24 ($p(\\mathrm{GC}) > 0.05$)"))
+ann_text_R27$ID <- 'R27'
+
+R27_dat$ID <- 'R27'
+```
+
+Now do the same thing for R84:
+
+```{r, echo = T, message=F}
+# grab V7ACS GC data
+V7ACS <- read_csv('data/prob_GC_data/v7acs_pGC.csv')
+V7ACS_J <- read_csv('data/prob_GC_data/V7ACS_pGC_Jans.csv')
+
+V7ACS <- as.data.frame(V7ACS)
+V7ACS[,c('x','y')] <- 76*V7ACS[,c('x','y')]/4300
+V7ACS_J <- as.data.frame(V7ACS_J)
+V7ACS_J[,c('x','y')] <- 76*V7ACS_J[,c('x','y')]/4300
+
+# UDG locations in V7ACS
+c <- 76*rbind(c(661, 2987), c(1756, 752))/4300
+
+# DOLPHOT GC data
+R84_dat_harris <- filter(V7ACS, (x - c[1, 1])^2 + (y - c[1,2])^2 < 7.5^2)
+R84_dat_harris$p <- rowMeans(R84_dat_harris[,8:507])
+R84_dat_harris <- R84_dat_harris %>%
+  filter(p > 0.05) %>%
+  dplyr::select(x, y, M, C, p) %>%
+  mutate(DATA = 'L24 ($p(\\mathrm{GC}) > 0.05$)')
+
+# SExtractor probabilistic GC data
+R84_dat_Jans <- filter(V7ACS_J, (x - c[1, 1])^2 + (y - c[1,2])^2 < 7.5^2)
+R84_dat_Jans$p <- rowMeans(R84_dat_Jans[,8:507])
+R84_dat_Jans <- R84_dat_Jans %>%
+  filter(p > 0.05) %>%
+  dplyr::select(x, y, M, C, p) %>%
+  mutate(DATA = 'Prob J24 ($p(\\mathrm{GC}) > 0.05$)')
+
+# SExtractor binary GC data
+R84_dat_Jans_bin <- filter(V7ACS_J, (x - c[1, 1])^2 + (y - c[1,2])^2 < 7.5^2)
+R84_dat_Jans_bin$p <- 1
+R84_dat_Jans_bin <- R84_dat_Jans_bin %>%
+  filter(p > 0 & M < 26.3 & C > 0.8 & C < 2.4) %>%
+  dplyr::select(x, y, M, C, p) %>%
+  mutate(DATA = 'Binary J24')
+
+#combine all data
+R84_dat <- bind_rows(R84_dat_harris, R84_dat_Jans, R84_dat_Jans_bin) %>%
+  filter(C > 0.8)
+
+# construct annotation text
+ann_text_R84 <- data.frame(x = c(14.7, 14.7, 7.5, 14.4, 14.4, 7.5, 15.5, 7.5), y = c(59.5, 58.7, 47.5, 59.5, 58.7, 47.5, 59.1, 47.5), 
+                       lab = c("$N_{\\mathrm{GC}}: 19\\pm 9$ (Ours)",
+                               '$\\mu_{\\mathrm{TO}}: 25.96_{-0.46}^{+0.43}$ mag (Ours)',
+                               '$N_{\\mathrm{cand}} = 18.0$',
+                               "$N_{\\mathrm{GC}}: 32\\pm 13$ (Ours)",
+                               '$\\mu_{\\mathrm{TO}}: 26.12_{-0.39}^{+0.43}$ mag (Ours)',
+                               '$N_{\\mathrm{cand}} = 17.4$',
+                               '$N_{\\mathrm{GC}}: 43\\pm 6$ (J24)',
+                               '$N_{\\mathrm{cand}} = 26$'),
+                       DATA = c(rep(c('Prob J24 ($p(\\mathrm{GC}) > 0.05$)', 'L24 ($p(\\mathrm{GC}) > 0.05$)'), each = 3), rep('Binary J24',2)))
+
+R84_dat$DATA <- factor(R84_dat$DATA, levels = c("L24 ($p(\\mathrm{GC}) > 0.05$)", "Binary J24", "Prob J24 ($p(\\mathrm{GC}) > 0.05$)"))
+ann_text_R84$DATA <-  factor(ann_text_R84$DATA, levels = c("L24 ($p(\\mathrm{GC}) > 0.05$)", "Binary J24", "Prob J24 ($p(\\mathrm{GC}) > 0.05$)"))
+ann_text_R84$ID <- 'R84'
+
+ann_text <- bind_rows(ann_text_R27, ann_text_R84)
+
+R84_dat$ID <- 'R84'
+
+# combine all things together
+LSBG_dat <- bind_rows(R27_dat, R84_dat)
+```
+
+Now we can plot the cutouts of GC candidates from different catalogs:
+
+```{r fig5, echo = T, warning = F, message=F, dev ='tikz', fig.process = pdf2png, fig.align='center', fig.cap = 'GC catalogs comparison for R27 and R84. (See Figure 5 in the original Li et al. (2024) paper for more details)'}
+ggplot(LSBG_dat, aes(x, y)) + geom_point(aes(color = M, size = p*1.5)) + facet_grid(ID~DATA, scales = 'free', switch = 'y') +
+  scale_alpha_identity() + scale_size_identity() +
+  geom_text(aes(x = x, y = y, label = lab), data = ann_text, size = 2) +
+  scale_color_viridis_c(direction = -1, name = 'F814W') + 
+  theme_bw() + 
+  theme(axis.title=element_blank(), 
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        strip.background = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        legend.justification = "left",
+        legend.box.margin = margin(l = 0.1, unit = "cm"),
+        aspect.ratio = 1) +
+  guides(fill = guide_legend(title.position = "top", title.hjust = 0.5))
+```
+
+## Posterior Probability that a GC belongs to R27
+
+We here show the analysis done to obtain the posterior probability that a GC candidate indeed belongs to R27. Note that the figure produced here was not included in the original paper.
+
+```{r GC_mem_prob, echo = T, warning = F, message=F, dev ='tikz', fig.process = pdf2png, fig.align='center', fig.cap = 'Probabilities that a GC candidates belong to R27.'}
+# read in the MCMC results for V10WFC3
+res_V10WFC <- readRDS('data/v10wfc3/res_prob_v10wfc3.RDS')
+
+# thin the chain for easier computation
+res_V10WFC_thinned <- as.data.frame(res_V10WFC[seq(1, nrow(res_V10WFC), by = 405),])
+
+# locations of UDGs in V10WFC3
+c <- 62*rbind(c(808, 744), c(1930, 2653), c(2695, 2132))/4400
+# fixed parameters
+e <- c(0.88, 1.35, 0.75)
+theta <- c(0, -pi/12, 0)
+
+# spatial grid for computing posterior GC membership probabilities
+loc <- as.matrix(expand.grid(x = seq(11.38545 - 7.5, 11.38545 + 7.5, by = 0.24), y = seq(10.48364 - 7.5, 10.48364 + 7.5, by = 0.24)))
+
+# function to compute the R27 membership probability for regions around R27
+compute_mem_prob <- function(loc, res_prob, e, theta){
+  prob <- numeric(nrow(loc))
+  loc <- matrix(loc, ncol = 2)
+  for (i in 1:nrow(res_prob)) {
+    tot <- Sersic_ints(loc, c[1, ], res_prob[i, 'N_R27'], res_prob[i, 'R_R27'],
+                       e[1], res_prob[i, 'n_R27'], theta[1]) + 
+           Sersic_ints(loc, c[2, ], res_prob[i, 'N_W84'], res_prob[i, 'R_W84'],
+                       e[2], res_prob[i, 'n_W84'], theta[2]) +
+           Sersic_ints(loc, c[3, ], res_prob[i, 'N_W83'], res_prob[i, 'R_W83'],
+                       e[3], res_prob[i, 'n_W83'], theta[3]) + res_prob[i, 'b0']
+    
+    prob <- prob + Sersic_ints(loc, c[1, ], res_prob[i, 'N_R27'], res_prob[i, 'R_R27'],
+                        e[1], res_prob[i, 'n_R27'], theta[1])/tot 
+  }
+  prob <- prob/nrow(res_prob)
+  loc <- data.frame(x = loc[,1], y = loc[,2]) %>%
+         mutate(p = prob)
+  return(loc)
+}
+
+# compute the probability
+R27_dat_loc <- compute_mem_prob(loc, res_V10WFC_thinned, e, theta)
+
+# plot it
+ggplot(R27_dat_loc, aes(x,y)) + geom_contour_filled(aes(z = p)) +
+  scale_fill_manual(values = wes_palette("Zissou1", n = 18, type = "continuous")[seq(1,18, by = 2)], 
+                    name = '$\\hat{\\pi}_{\\mathrm{R27}}(s_i)$') +
+  geom_point(data = R27_dat_harris, aes(x, y), size = 0.25) + coord_fixed() + 
+  theme_minimal() + 
+  theme(axis.title=element_blank(), 
+        axis.text=element_blank(), 
+        axis.ticks=element_blank(),
+        strip.background = element_blank(),
+        legend.justification = "left",
+        legend.box.margin = margin(l = 0.1, unit = "cm")) +
+  guides(fill = guide_legend(title.position = "top", title.hjust = 0.5, reverse = TRUE))
+```
+
+From the above figure, we see that the posterior probabilities for GC candidates in the outer region of R27 are only around $50\%$. This means that the membership of these GC candidates are highly uncertain, which is one factor that contributes to the big difference between the estimates from MATHPOP and the standard method.
+
+
+
+
+
+
+
+
+
+

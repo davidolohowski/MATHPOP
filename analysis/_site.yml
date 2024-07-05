@@ -18,6 +18,7 @@ navbar:
       - text: Posterior Results Analysis
         href: posterior.html
       - text: Methods Comparison
+        href: method_compare.html
       - text: GCLFs of R27 and W88
       - text: Simulation Analysis
       - text: Appendix Analysis
