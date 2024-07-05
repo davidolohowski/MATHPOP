@@ -16,6 +16,10 @@ Welcome to MATHPOP, a `R` software for inferring globular cluster (GC) counts in
 
 If you have not used `R` before, `R` is a powerful open source language designed for statistical computing and data analysis. Download `R` at [The Comprehensive R Archive Network (CRAN)](https://cloud.r-project.org/) and [`RStudio`](https://posit.co/download/rstudio-desktop/). `R` is the base language environment that executes all programs and code. `RStudio` is an integrated user interface wrapper that makes the base `R` easy to use (similar to `Jupyter Notebook` for `Python`). 
 
+### How to use R
+
+If you are an absolute beginner of `R`, there are too many resources and tutorials teaching how to use `R`. The best (in my opinion) resource is the book 'R for Data Science' by Hadley Wickham, and [here](https://r4ds.hadley.nz/) is a free online version of the book.
+
 ## Download the Repo
 
 To use the code for your own data, go to the MATHPOP [Github repo](https://github.com/davidolohowski/MATHPOP) and download the repository. The `R` code to fit the MATHPOP model is contained in the `code/` directory. The `data/` directory contains the GC data analyzed in the original paper.
@@ -25,6 +29,10 @@ To use the code for your own data, go to the MATHPOP [Github repo](https://githu
 For a quick example of how to use MATHPOP, see this [vignette](vignette.html).
 
 The MATHPOP method also proposes to use a probabilistic GC catalog, see this [tutorial](GC_prob.html) on how to obtain a probabilistic GC catalog from point sources.
+
+## MATHPOP Paper Code
+
+This repo also contains some of the main analysis done in the Li et al. (2024) paper, and they are all reproducible and accessible in this repo.
 
 
 

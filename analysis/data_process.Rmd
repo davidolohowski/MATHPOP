@@ -8,6 +8,32 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{css, echo = F}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r, echo = F}
+pdf2png <- function(path) {
+  # only do the conversion for non-LaTeX output
+  if (knitr::is_latex_output())
+    return(path)
+  path2 <- xfun::with_ext(path, "png")
+  img <- magick::image_read_pdf(path)
+  magick::image_write(img, path2, format = "png")
+  path2
+}
+```
+
 ## Introduction
 
 This vignette illustrate the methods used to obtain the probabilistic catalogs obtained using point sources from DOLPHOT and SExtractor. It also reproduces Figure 1 and Figure 8 in the original paper of Li et al. (2024)
@@ -187,7 +213,7 @@ Phi <- Phi_f_cpp(26.69, GCLF_TO, GCLF_sig, a = 6.56)
 
 Generate Figure 8a in the original paper of Li et al. (2024):
 
-```{r figure8a, echo = T}
+```{r figure8a, echo = T, dev ='tikz', fig.process = pdf2png, fig.align='center'}
 ggplot(Jans_res$sim, aes(F814W)) + geom_histogram(aes(y = after_stat(count)/sum(count)/.05253/2),breaks = seq(22, 27.2, length = 50), alpha = 0.5) +
   geom_function(fun = function(x) w*dnorm(x, GCLF_TO, GCLF_sig)*f_cpp(x, 26.69, 6.56)/Phi + (1-w)*dnorm(x, mu, sigma)) +
   geom_function(fun = function(x) w*dnorm(x, GCLF_TO, GCLF_sig)*f_cpp(x, 26.69, 6.56)/Phi, color = "#EBCC2A") +
@@ -196,7 +222,7 @@ ggplot(Jans_res$sim, aes(F814W)) + geom_histogram(aes(y = after_stat(count)/sum(
 
 Generate Figure 8b in the original paper of Li et al. (2024):
 
-```{r figure8b, echo = T}
+```{r figure8b, echo = T, dev ='tikz', fig.process = pdf2png, fig.align='center'}
 ggplot(Jans_res$sim, aes(C)) + geom_histogram(aes(y = after_stat(count)/sum(count)/0.032),breaks = seq(0.8, 2.4, length = 50), alpha = 0.5) +
   geom_function(fun = function(x) w*(wr*dnorm(x, GC_color_mu_r, GC_color_sig_r) + (1-wr)*dnorm(x, GC_color_mu_b, GC_color_sig_b)) + (1-w)*dunif(x, 0.8, 2.4)) +
   geom_function(fun = function(x) w*(wr*dnorm(x, GC_color_mu_r, GC_color_sig_r) + (1-wr)*dnorm(x, GC_color_mu_b, GC_color_sig_b)), color = "#EBCC2A") +

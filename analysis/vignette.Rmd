@@ -8,6 +8,32 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{css, echo = F}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r, echo = F}
+pdf2png <- function(path) {
+  # only do the conversion for non-LaTeX output
+  if (knitr::is_latex_output())
+    return(path)
+  path2 <- xfun::with_ext(path, "png")
+  img <- magick::image_read_pdf(path)
+  magick::image_write(img, path2, format = "png")
+  path2
+}
+```
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -76,7 +102,7 @@ Afterwards, we only need the physical coordinates `x`, `y`, and the magnitude `M
 
 Plot the locations of point sources:
 
-```{r plot_ps, echo = TRUE}
+```{r plot_ps, echo = TRUE, dev ='tikz', fig.process = pdf2png, fig.align='center'}
 ggplot(Y_obs, aes(x,y)) + geom_point(aes(alpha = rowMeans(subset(Y_obs, select = -c(x,y,M)))), size = 0.1) + coord_fixed() + theme_minimal() + ggtitle('Location of Point Sources') + scale_alpha_identity(name = 'Probability')
 ```
 

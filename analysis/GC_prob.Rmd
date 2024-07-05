@@ -8,6 +8,32 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{css, echo = F}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r, echo = F}
+pdf2png <- function(path) {
+  # only do the conversion for non-LaTeX output
+  if (knitr::is_latex_output())
+    return(path)
+  path2 <- xfun::with_ext(path, "png")
+  img <- magick::image_read_pdf(path)
+  magick::image_write(img, path2, format = "png")
+  path2
+}
+```
+
 ```{r, echo=F}
 knitr::opts_chunk$set(autodep = TRUE)
 ```
@@ -46,7 +72,7 @@ for (i in fnames) {
 
 Plot the Color-Magnitude Diagram (CMD) of the point sources (red box is a typical selection region of GC candidates under a binary selection criteria) :
 
-```{r CMD_plot, echo = T, message=F}
+```{r CMD_plot, echo = T, message=F, dev = 'tikz', fig.process=pdf2png, fig.align='center', fig.cap = 'CMD of DOLPHOT sources.'}
 ggplot(dat_DOL, aes(F475W - F814W, F814W)) + geom_point(size = 0.05) + scale_y_reverse() +
   annotate('segment', x = 1.0, xend = 2.4, y = 26.5, yend = 26.5, colour = 'red') +
   annotate('segment', x = 1.0, xend = 1.0, y = 22, yend = 26.5, colour = 'red') +
@@ -73,7 +99,7 @@ CMD <- mutate(dat_DOL, C = F475W - F814W, M = F814W) %>%
 
 Plot the processed data again:
 
-```{r CMD_plot_2, echo = T, message = F}
+```{r CMD_plot_2, echo = T, message = F, dev = 'tikz', fig.process=pdf2png, fig.align='center',}
 ggplot(CMD, aes(F475W - F814W, F814W)) + geom_point(size = 0.05) + scale_y_reverse() +
   annotate('segment', x = 1.0, xend = 2.4, y = 26.5, yend = 26.5, colour = 'red') +
   annotate('segment', x = 1.0, xend = 1.0, y = 22, yend = 26.5, colour = 'red') +
@@ -97,7 +123,7 @@ class_res <- mixtools::mvnpEM(data.frame(C = rnorm(nrow(CMD), CMD$C, CMD$err_col
 
 Get the probability that a source is a GC and plot it:
 
-```{r}
+```{r, dev = 'tikz', fig.process=pdf2png, fig.align='center', fig.cap = 'Probability a source is a GC for DOLPHOT sources.'}
 prob <- class_res$posterior[, which.max(class_res$lambdahat)] # lambdahat is a vector containing the proportion of the sources in each of the three cluster. In this dataset, the GC cluser has the highest proportion. If using other dataset, this has to be changed accordingly.
 
 CMD$p <- prob # make a new column called 'p' for the CMD data to represent the probability
@@ -107,7 +133,7 @@ ggplot(CMD, aes(C, M, color = p)) + geom_point(size = 0.1) +
   scale_size_identity() +
   scale_y_reverse() + theme_minimal() +
   xlab('F475W - F814W') + ylab('F814W') +
-  scale_colour_viridis_c(name = 'p(GC)', limits = c(0,1)) +
+  scale_colour_viridis_c(name = '$p(\\mathrm{GC})$', limits = c(0,1)) +
   annotate('segment', x = 1.0, xend = 2.4, y = 26.5, yend = 26.5, colour = 'red') +
   annotate('segment', x = 1.0, xend = 1.0, y = 22, yend = 26.5, colour = 'red') +
   annotate('segment', x = 2.4, xend = 2.4, y = 22, yend = 26.5, colour = 'red') +

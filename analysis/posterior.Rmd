@@ -7,6 +7,33 @@ output:
 editor_options:
   chunk_output_type: console
 ---
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{css, echo = F}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  height: 50vh !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r, echo = F}
+pdf2png <- function(path) {
+  # only do the conversion for non-LaTeX output
+  if (knitr::is_latex_output())
+    return(path)
+  path2 <- xfun::with_ext(path, "png")
+  img <- magick::image_read_pdf(path)
+  magick::image_write(img, path2, format = "png")
+  path2
+}
+```
+
 
 ## Introduction
 
@@ -207,7 +234,7 @@ summary_dat_J <- merge(merge(summary_NGC_J, summary_muGC_J, by = 'ID'), summary_
 
 Now we can plot the GC count comparison results using the two summary data sets:
 
-```{r GC_comp, echo = T, warning = F, message=F}
+```{r GC_comp, echo = T, warning = F, message=F, dev ='tikz', fig.process = pdf2png, fig.align='center', fig.cap = 'GC count estimates comparison. (See Figure 4 in the original Li et al. (2024) paper for more details)'}
 # grabbing the summary statistics of GC counts from the two summary datasets
 N_sum <- bind_rows(summary_dat, summary_dat_J) %>%
   dplyr::select(ID, N_mean, N_mode, N_HDI_0.68_lower, N_HDI_0.68_upper, Janssens, J_se, data) %>%
@@ -219,7 +246,7 @@ color <- c('Mean' = "#E1AF00", 'Mode' = "#F21A00")
 ggplot(N_sum, aes(value, Janssens, color = variable)) + 
   geom_rect(aes(xmin = N_HDI_0.68_lower, xmax = N_HDI_0.68_upper, ymin = Janssens - J_se, ymax = Janssens + J_se), fill = '#3B9AB2', color = 'black', alpha = 0.1, size = 0.1) + 
   geom_point(size = 1) + geom_abline(slope = 1, intercept = 0, linetype = 'dashed') +
-  xlab('$N_GC^est (Ours)') + ylab('N_GC (J24)')  + coord_fixed() + labs(color = 'Estimator') +
+  xlab('$N_{\\mathrm{GC}}^{\\mathrm{est}}$ (Ours)') + ylab('$N_{\\mathrm{GC}}$ (J24)')  + coord_fixed() + labs(color = 'Estimator') +
   theme(panel.grid.major = element_blank(), panel.background = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "gray"),
         strip.background = element_blank()) +   
