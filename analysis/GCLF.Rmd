@@ -36,7 +36,229 @@ pdf2png <- function(path) {
 
 ## Introduction
 
-```{r}
+This vignette provides the procedure and code that analyze the GCLFs of R27 and W88, the two UDGs with unusually bright GCLFs. 
 
+As always, we first load the packages and read in the data. R27 is within the image V10WFC3, while W88 is in V11ACS.
+
+```{r, echo = T, message=F}
+library(tidyverse)
+library(sf)
+library(sp)
+library(raster)
+library(parallel)
+library(Rcpp)
+library(RcppArmadillo)
+library(posterior)
+library(coda)
+library(loo)
+library(xtable)
+library(priorsense)
+library(ggpubr)
+library(wesanderson)
+library(reshape2)
+library(modeest)
+
+sourceCpp('code/cpp_help_func.cpp')
 ```
+
+## R27 GCLF
+
+Next we grab the GC magnitudes of GC candidates within $6$~kpc of R27, as well as the posterior mode estimates of the GCLF parameters inferred by MATHPOP:
+
+```{r, echo = T, message=F, warning=F}
+# read in V10WFC3 data
+V10WFC <- read_csv('data/prob_GC_data/v10wfc3_pGC.csv')
+
+# transform pixel coordinates to physical
+V10WFC <- as.data.frame(V10WFC)
+V10WFC[,c('x','y')] <- 62*V10WFC[,c('x','y')]/4400
+
+# UDG locations in V10WFC3
+c <- 62*rbind(c(808, 744), c(1930, 2653), c(2695, 2132))/4400
+
+# grab GC candiaates that are within 6 kpc of R27
+R27_harris_mag <- filter(V10WFC, (x - c[1, 1])^2 + (y - c[1,2])^2 < 6^2)
+R27_harris_mag$p <- rowMeans(R27_harris_mag[,8:507])
+R27_harris_mag <- R27_harris_mag %>%
+  dplyr::select(x, y, M, C, p)
+
+# read in MCMC results fitted for V10WFC3
+res_v10wf3 <- readRDS('data/v10wfc3/res_prob_v10wfc3.RDS')
+# get the posterior point estimates of the GCLF parameter for R27 from MATHPOP
+mu_R27_post <- mlv(res_v10wf3$mu_R27)
+sigma_R27_post <- mlv(res_v10wf3$sigma_R27)
+```
+
+Next, we conduct a Maximum-likelihood estimation (MLE) using the GC magnitudes of GC candidates within $6$~kpc of R27. Note that for simplicity, we do not consider the measurement uncertainty of magnitudes when conducting MLE. Since the GC catalog we are using are probabilistic, we first sample the GC magnitudes based on the probability that a source is a GC, we then obtain the MLE using the the sample magnitude. We repeat this procedure for $1000$ times and take the average results:
+
+```{r, echo = T, message=F, warning=F}
+# likelihood function of the GC magnitude distribution for R27
+log_lik_mag_R27 <- function(par, M_dat) {
+  mu <- par[1]
+  sig <- par[2]
+
+  log_lik <- -sum(dnorm(M_dat, mu, sig, log = T) + log(f_cpp(M_dat, 26.52, a = 1.57)) - log(Phi_f_cpp(26.52, mu, sig, a = 1.57)))
+  
+  return(log_lik)
+}
+
+# allocate objects for 1000 iterations of the MLE
+res_lik_R27_sim <- matrix(0, nrow = 1000, ncol = 2)
+mu_sd_R27 <- numeric(1000)
+p_val_R27 <- numeric(1000)
+M_R27 <- c()
+
+# Fit the MLE for 1000 times
+set.seed(123456)
+for(i in 1:1000){
+  M_dat <- R27_harris_mag$M[rbernoulli(nrow(R27_harris_mag), p = R27_harris_mag$p)]
+  M_dat <- M_dat[-sample(1:length(M_dat), 2)]
+  M_R27 <- c(M_R27, M_dat)
+  res_i <- optim(c(25, 1), log_lik_mag_R27, M_dat = M_dat, 
+                 method = "L-BFGS-B", lower = c(24, 0.5), upper = c(26.7, 1.9), hessian = T)
+  res_lik_R27_sim[i,] <- res_i$par
+  mu_sd_R27[i] <- sqrt(solve(res_i$hessian)[1,1])
+  p_val_R27[i] <- pnorm((26.3 - res_i$par[1])/mu_sd_R27[i], 0, 1, lower.tail = F)
+}
+
+# Get the average MLE results of the GCLF parameters
+mu_R27_lik <- mean(res_lik_R27_sim[,1])
+sigma_R27_lik <- mean(res_lik_R27_sim[,2])
+
+# s.e. of the MLE estimates
+mean(mu_sd_R27)
+# p_value under the null hypothesis that the GCLF TO of R27 is the same as the canonical value
+exp(mean(log(p_val_R27)))
+
+
+# construct data frame for plotting the GCLF of R27
+rep_M_R27 <- data.frame(M = M_R27, ID = 'R27')
+
+M_seq <- seq(22, 28, by = 0.01)
+# observed GCLF under MATHPOP
+post_GCLF_R27 <- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, mu_R27_post, sigma_R27_post, m0 = 26, b0 = 0.0977, b1 = 0.613)*
+                              f_cpp(M_seq, 26.52, a = 1.57)/p_eM_cpp(26.52, mu_R27_post, sigma_R27_post, m0 = 26, b0 = 0.0977, b1 = 0.613, a = 1.57),
+                            type = 'MATHPOP')
+# observed GCLF under MLE
+lik_GCLF_R27 <- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, mu_R27_lik, sigma_R27_lik, m0 = 26, b0 = 0.0977, b1 = 0.613)*
+                             f_cpp(M_seq, 26.52, a = 1.57)/p_eM_cpp(26.52, mu_R27_lik, sigma_R27_lik, m0 = 26, b0 = 0.0977, b1 = 0.613, a = 1.57),
+                           type = 'MLE')
+# observed GCLF under canonical GCLF assumption
+can_GCLF_R27 <- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, 26.3, 1.2, m0 = 26, b0 = 0.0977, b1 = 0.613)*
+                             f_cpp(M_seq, 26.52, a = 1.57)/p_eM_cpp(26.52, 26.3, 1.2, m0 = 26, b0 = 0.0977, b1 = 0.613, a = 1.57),
+                           type = 'Canonical')
+
+# combined GCLF data frame for plotting
+GCLF_dat_R27 <- bind_rows(post_GCLF_R27, lik_GCLF_R27, can_GCLF_R27) %>%
+  mutate(ID = 'R27')
+```
+
+## W88 GCLF
+
+We now do the same thing for W88, just copy the code from above but change the corresponding V11ACS data
+
+```{r, echo = T, message=F, warning=F}
+# read in V11ACS data
+V11ACS <- read_csv('data/prob_GC_data/v11acs_pGC.csv')
+
+# transform pixel coordinates to physical
+V11ACS <- as.data.frame(V11ACS)
+V11ACS[,c('x','y')] <- 76*V11ACS[,c('x','y')]/4300
+
+# UDG locations in V11ACS
+c <- rbind(c(2628, 1532), c(2517, 3289))/4300*76
+
+# grab GC candiaates that are within 6 kpc of W88
+W88_harris_mag <- filter(V11ACS, (x - c[1, 1])^2 + (y - c[1,2])^2 < 6^2)
+W88_harris_mag$p <- rowMeans(W88_harris_mag[,8:507])
+W88_harris_mag <- W88_harris_mag %>%
+  dplyr::select(x, y, M, C, p)
+
+# read in MCMC results fitted for V11ACS
+res_v11acs <- readRDS('data/v11acs/res_prob_v11acs.RDS')
+# get the posterior point estimates of the GCLF parameter for W88 from MATHPOP
+mu_W88_post <- mlv(res_v11acs$mu_W88)
+sigma_W88_post <- mlv(res_v11acs$sigma_W88)
+```
+
+Conduct MLE for W88 the same way as for R27:
+
+```{r}
+# likelihood function of the GC magnitude distribution for W88. Note that ACS and WFC3 have different completeness fraction.
+log_lik_mag_W88 <- function(par, M_dat) {
+  mu <- par[1]
+  sig <- par[2]
+  
+  log_lik <- -sum(dnorm(M_dat, mu, sig, log = T) + log(f_cpp(M_dat, 25.75, a = 1.5)) - log(Phi_f_cpp(25.75, mu, sig)))
+  
+  return(log_lik)
+}
+
+# allocate objects for 1000 iterations of the MLE
+res_lik_W88_sim <- matrix(0, nrow = 1000, ncol = 2)
+mu_sd_W88 <- numeric(1000)
+p_val_W88 <- numeric(1000)
+M_W88 <- c()
+
+# Fit the MLE for 1000 times
+set.seed(123456)
+for(i in 1:1000){
+  M_dat <- W88_harris_mag$M[rbernoulli(nrow(W88_harris_mag), p = W88_harris_mag$p)]
+  M_dat <- M_dat[-sample(1:length(M_dat), 4)]
+  M_W88 <- c(M_W88, M_dat)
+  res_i <- optim(c(25, 1), log_lik_mag_W88, M_dat = M_dat, 
+                 method = "L-BFGS-B", lower = c(24, 0.5), upper = c(26.7, 1.9), hessian = T)
+  res_lik_W88_sim[i,] <- res_i$par
+  mu_sd_W88[i] <- sqrt(solve(res_i$hessian)[1,1])
+  p_val_W88[i] <- pnorm((26.3 - res_i$par[1])/mu_sd_W88[i], 0, 1, lower.tail = F)
+}
+
+# Get the average MLE results of the GCLF parameters
+mu_W88_lik <- mean(res_lik_W88_sim[,1])
+sigma_W88_lik <- mean(res_lik_W88_sim[,2])
+
+# s.e. of the MLE estimates
+mean(mu_sd_W88)
+# p_value under the null hypothesis that the GCLF TO of W88 is the same as the canonical value
+exp(mean(log(p_val_W88)))
+
+# construct data frame for plotting the GCLF of W88
+rep_M_W88 <- data.frame(M = M_W88, ID = 'W88')
+
+M_seq <- seq(22, 28, by = 0.01)
+# observed GCLF under MATHPOP
+post_GCLF_W88 <- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, mu_W88_post, sigma_W88_post, m0 = 25.5, b0 = 0.0884, b1 = 0.645)*
+                              f_cpp(M_seq, 25.75, a = 1.5)/p_eM_cpp(25.75, mu_W88_post, sigma_W88_post, m0 = 25.5, b0 = 0.0884, b1 = 0.645, a = 1.5),
+                            type = 'MATHPOP')
+# observed GCLF under MLE
+lik_GCLF_W88 <- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, mu_W88_lik, sigma_W88_lik, m0 = 25.5, b0 = 0.0884, b1 = 0.645)*
+                             f_cpp(M_seq, 25.75, a = 1.5)/p_eM_cpp(25.75, mu_W88_lik, sigma_W88_lik, m0 = 25.5, b0 = 0.0884, b1 = 0.645, a = 1.5),
+                           type = 'MLE')
+# observed GCLF under canonical GCLF assumption
+can_GCLF_W88 <- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, 26.3, 1.2, m0 = 25.5, b0 = 0.0884, b1 = 0.645)*
+                             f_cpp(M_seq, 25.75, a = 1.5)/p_eM_cpp(25.75, 26.3, 1.2, m0 = 25.5, b0 = 0.0884, b1 = 0.645, a = 1.5),
+                           type = 'Canonical')
+
+# combined GCLF data frame for plotting
+GCLF_dat_W88 <- bind_rows(post_GCLF_W88, lik_GCLF_W88, can_GCLF_W88) %>%
+  mutate(ID = 'W88')
+
+rep_M <- bind_rows(rep_M_R27, rep_M_W88)
+
+# combine GCLF data for plotting both R27 and W88
+GCLF_dat <- bind_rows(GCLF_dat_R27, GCLF_dat_W88)
+```
+
+## Observed GCLFs of R27 and W88
+
+Now we can plot the distribution of the observed GC magnitudes of R27 and W88 and the fitted observed GCLFs under different methods and assumptions:
+```{r,  dev ='tikz', fig.process = pdf2png, fig.align='center'}
+ggplot(rep_M, aes(M, after_stat(density))) + 
+  geom_histogram(data = filter(rep_M, ID == 'R27'), binwidth = 0.69, alpha = 0.5) +
+  geom_histogram(data = filter(rep_M, ID == 'W88'), binwidth = 0.6, alpha = 0.5) +
+  geom_line(data = GCLF_dat, aes(M, dNdM, color = type)) + facet_grid(.~ ID) +
+  theme_minimal() + scale_color_manual(values = wes_palette('Zissou1', 5, 'discrete')[c(1,3,5)], name = NULL) +
+  xlab('F814W (mag)') + ylab('$dN/dM$') + scale_x_reverse()
+```
+
 

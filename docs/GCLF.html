@@ -407,7 +407,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -418,8 +418,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -432,9 +432,9 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MATHPOP/</code> <span
@@ -457,18 +457,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -559,15 +562,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreea38fbed41f644ea072a9bb2c0f0b50a3ae3f3ceftargetblanka38fbeda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreedc09c08ceb5b80f6b88b0f454e22fb70d1d7ba64targetblankdc09c08a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/a38fbed41f644ea072a9bb2c0f0b50a3ae3f3cef" target="_blank">a38fbed</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/dc09c08ceb5b80f6b88b0f454e22fb70d1d7ba64" target="_blank">dc09c08</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreea38fbed41f644ea072a9bb2c0f0b50a3ae3f3ceftargetblanka38fbeda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreedc09c08ceb5b80f6b88b0f454e22fb70d1d7ba64targetblankdc09c08a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -577,7 +580,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/a38fbed41f644ea072a9bb2c0f0b50a3ae3f3cef" target="_blank">a38fbed</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/dc09c08ceb5b80f6b88b0f454e22fb70d1d7ba64" target="_blank">dc09c08</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -618,7 +621,12 @@ Ignored files:
     Ignored:    data/v9acs/.DS_Store
     Ignored:    data/v9wfc3/.DS_Store
 
+Untracked files:
+    Untracked:  GCLF-tikzDictionary
+    Untracked:  analysis/GCLF-tikzDictionary
+
 Unstaged changes:
+    Modified:   analysis/GCLF.Rmd
     Modified:   analysis/_site.yml
 
 </code></pre>
@@ -664,6 +672,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/dc09c08ceb5b80f6b88b0f454e22fb70d1d7ba64/docs/GCLF.html" target="_blank">dc09c08</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -737,6 +762,227 @@ pre code, pre, code {
 </style>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
+<p>This vignette provides the procedure and code that analyze the GCLFs
+of R27 and W88, the two UDGs with unusually bright GCLFs.</p>
+<p>As always, we first load the packages and read in the data. R27 is
+within the image V10WFC3, while W88 is in V11ACS.</p>
+<pre class="r"><code>library(tidyverse)
+library(sf)
+library(sp)
+library(raster)
+library(parallel)
+library(Rcpp)
+library(RcppArmadillo)
+library(posterior)
+library(coda)
+library(loo)
+library(xtable)
+library(priorsense)
+library(ggpubr)
+library(wesanderson)
+library(reshape2)
+library(modeest)
+
+sourceCpp(&#39;code/cpp_help_func.cpp&#39;)</code></pre>
+</div>
+<div id="r27-gclf" class="section level2">
+<h2>R27 GCLF</h2>
+<p>Next we grab the GC magnitudes of GC candidates within <span
+class="math inline">\(6\)</span>~kpc of R27, as well as the posterior
+mode estimates of the GCLF parameters inferred by MATHPOP:</p>
+<pre class="r"><code># read in V10WFC3 data
+V10WFC &lt;- read_csv(&#39;data/prob_GC_data/v10wfc3_pGC.csv&#39;)
+
+# transform pixel coordinates to physical
+V10WFC &lt;- as.data.frame(V10WFC)
+V10WFC[,c(&#39;x&#39;,&#39;y&#39;)] &lt;- 62*V10WFC[,c(&#39;x&#39;,&#39;y&#39;)]/4400
+
+# UDG locations in V10WFC3
+c &lt;- 62*rbind(c(808, 744), c(1930, 2653), c(2695, 2132))/4400
+
+# grab GC candiaates that are within 6 kpc of R27
+R27_harris_mag &lt;- filter(V10WFC, (x - c[1, 1])^2 + (y - c[1,2])^2 &lt; 6^2)
+R27_harris_mag$p &lt;- rowMeans(R27_harris_mag[,8:507])
+R27_harris_mag &lt;- R27_harris_mag %&gt;%
+  dplyr::select(x, y, M, C, p)
+
+# read in MCMC results fitted for V10WFC3
+res_v10wf3 &lt;- readRDS(&#39;data/v10wfc3/res_prob_v10wfc3.RDS&#39;)
+# get the posterior point estimates of the GCLF parameter for R27 from MATHPOP
+mu_R27_post &lt;- mlv(res_v10wf3$mu_R27)
+sigma_R27_post &lt;- mlv(res_v10wf3$sigma_R27)</code></pre>
+<p>Next, we conduct a Maximum-likelihood estimation (MLE) using the GC
+magnitudes of GC candidates within <span
+class="math inline">\(6\)</span>~kpc of R27. Note that for simplicity,
+we do not consider the measurement uncertainty of magnitudes when
+conducting MLE. Since the GC catalog we are using are probabilistic, we
+first sample the GC magnitudes based on the probability that a source is
+a GC, we then obtain the MLE using the the sample magnitude. We repeat
+this procedure for <span class="math inline">\(1000\)</span> times and
+take the average results:</p>
+<pre class="r"><code># likelihood function of the GC magnitude distribution for R27
+log_lik_mag_R27 &lt;- function(par, M_dat) {
+  mu &lt;- par[1]
+  sig &lt;- par[2]
+
+  log_lik &lt;- -sum(dnorm(M_dat, mu, sig, log = T) + log(f_cpp(M_dat, 26.52, a = 1.57)) - log(Phi_f_cpp(26.52, mu, sig, a = 1.57)))
+  
+  return(log_lik)
+}
+
+# allocate objects for 1000 iterations of the MLE
+res_lik_R27_sim &lt;- matrix(0, nrow = 1000, ncol = 2)
+mu_sd_R27 &lt;- numeric(1000)
+p_val_R27 &lt;- numeric(1000)
+M_R27 &lt;- c()
+
+# Fit the MLE for 1000 times
+set.seed(123456)
+for(i in 1:1000){
+  M_dat &lt;- R27_harris_mag$M[rbernoulli(nrow(R27_harris_mag), p = R27_harris_mag$p)]
+  M_dat &lt;- M_dat[-sample(1:length(M_dat), 2)]
+  M_R27 &lt;- c(M_R27, M_dat)
+  res_i &lt;- optim(c(25, 1), log_lik_mag_R27, M_dat = M_dat, 
+                 method = &quot;L-BFGS-B&quot;, lower = c(24, 0.5), upper = c(26.7, 1.9), hessian = T)
+  res_lik_R27_sim[i,] &lt;- res_i$par
+  mu_sd_R27[i] &lt;- sqrt(solve(res_i$hessian)[1,1])
+  p_val_R27[i] &lt;- pnorm((26.3 - res_i$par[1])/mu_sd_R27[i], 0, 1, lower.tail = F)
+}
+
+# Get the average MLE results of the GCLF parameters
+mu_R27_lik &lt;- mean(res_lik_R27_sim[,1])
+sigma_R27_lik &lt;- mean(res_lik_R27_sim[,2])
+
+# s.e. of the MLE estimates
+mean(mu_sd_R27)</code></pre>
+<pre><code>[1] 0.1698864</code></pre>
+<pre class="r"><code># p_value under the null hypothesis that the GCLF TO of R27 is the same as the canonical value
+exp(mean(log(p_val_R27)))</code></pre>
+<pre><code>[1] 4.080364e-08</code></pre>
+<pre class="r"><code># construct data frame for plotting the GCLF of R27
+rep_M_R27 &lt;- data.frame(M = M_R27, ID = &#39;R27&#39;)
+
+M_seq &lt;- seq(22, 28, by = 0.01)
+# observed GCLF under MATHPOP
+post_GCLF_R27 &lt;- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, mu_R27_post, sigma_R27_post, m0 = 26, b0 = 0.0977, b1 = 0.613)*
+                              f_cpp(M_seq, 26.52, a = 1.57)/p_eM_cpp(26.52, mu_R27_post, sigma_R27_post, m0 = 26, b0 = 0.0977, b1 = 0.613, a = 1.57),
+                            type = &#39;MATHPOP&#39;)
+# observed GCLF under MLE
+lik_GCLF_R27 &lt;- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, mu_R27_lik, sigma_R27_lik, m0 = 26, b0 = 0.0977, b1 = 0.613)*
+                             f_cpp(M_seq, 26.52, a = 1.57)/p_eM_cpp(26.52, mu_R27_lik, sigma_R27_lik, m0 = 26, b0 = 0.0977, b1 = 0.613, a = 1.57),
+                           type = &#39;MLE&#39;)
+# observed GCLF under canonical GCLF assumption
+can_GCLF_R27 &lt;- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, 26.3, 1.2, m0 = 26, b0 = 0.0977, b1 = 0.613)*
+                             f_cpp(M_seq, 26.52, a = 1.57)/p_eM_cpp(26.52, 26.3, 1.2, m0 = 26, b0 = 0.0977, b1 = 0.613, a = 1.57),
+                           type = &#39;Canonical&#39;)
+
+# combined GCLF data frame for plotting
+GCLF_dat_R27 &lt;- bind_rows(post_GCLF_R27, lik_GCLF_R27, can_GCLF_R27) %&gt;%
+  mutate(ID = &#39;R27&#39;)</code></pre>
+</div>
+<div id="w88-gclf" class="section level2">
+<h2>W88 GCLF</h2>
+<p>We now do the same thing for W88, just copy the code from above but
+change the corresponding V11ACS data</p>
+<pre class="r"><code># read in V11ACS data
+V11ACS &lt;- read_csv(&#39;data/prob_GC_data/v11acs_pGC.csv&#39;)
+
+# transform pixel coordinates to physical
+V11ACS &lt;- as.data.frame(V11ACS)
+V11ACS[,c(&#39;x&#39;,&#39;y&#39;)] &lt;- 76*V11ACS[,c(&#39;x&#39;,&#39;y&#39;)]/4300
+
+# UDG locations in V11ACS
+c &lt;- rbind(c(2628, 1532), c(2517, 3289))/4300*76
+
+# grab GC candiaates that are within 6 kpc of W88
+W88_harris_mag &lt;- filter(V11ACS, (x - c[1, 1])^2 + (y - c[1,2])^2 &lt; 6^2)
+W88_harris_mag$p &lt;- rowMeans(W88_harris_mag[,8:507])
+W88_harris_mag &lt;- W88_harris_mag %&gt;%
+  dplyr::select(x, y, M, C, p)
+
+# read in MCMC results fitted for V11ACS
+res_v11acs &lt;- readRDS(&#39;data/v11acs/res_prob_v11acs.RDS&#39;)
+# get the posterior point estimates of the GCLF parameter for W88 from MATHPOP
+mu_W88_post &lt;- mlv(res_v11acs$mu_W88)
+sigma_W88_post &lt;- mlv(res_v11acs$sigma_W88)</code></pre>
+<p>Conduct MLE for W88 the same way as for R27:</p>
+<pre class="r"><code># likelihood function of the GC magnitude distribution for W88. Note that ACS and WFC3 have different completeness fraction.
+log_lik_mag_W88 &lt;- function(par, M_dat) {
+  mu &lt;- par[1]
+  sig &lt;- par[2]
+  
+  log_lik &lt;- -sum(dnorm(M_dat, mu, sig, log = T) + log(f_cpp(M_dat, 25.75, a = 1.5)) - log(Phi_f_cpp(25.75, mu, sig)))
+  
+  return(log_lik)
+}
+
+# allocate objects for 1000 iterations of the MLE
+res_lik_W88_sim &lt;- matrix(0, nrow = 1000, ncol = 2)
+mu_sd_W88 &lt;- numeric(1000)
+p_val_W88 &lt;- numeric(1000)
+M_W88 &lt;- c()
+
+# Fit the MLE for 1000 times
+set.seed(123456)
+for(i in 1:1000){
+  M_dat &lt;- W88_harris_mag$M[rbernoulli(nrow(W88_harris_mag), p = W88_harris_mag$p)]
+  M_dat &lt;- M_dat[-sample(1:length(M_dat), 4)]
+  M_W88 &lt;- c(M_W88, M_dat)
+  res_i &lt;- optim(c(25, 1), log_lik_mag_W88, M_dat = M_dat, 
+                 method = &quot;L-BFGS-B&quot;, lower = c(24, 0.5), upper = c(26.7, 1.9), hessian = T)
+  res_lik_W88_sim[i,] &lt;- res_i$par
+  mu_sd_W88[i] &lt;- sqrt(solve(res_i$hessian)[1,1])
+  p_val_W88[i] &lt;- pnorm((26.3 - res_i$par[1])/mu_sd_W88[i], 0, 1, lower.tail = F)
+}
+
+# Get the average MLE results of the GCLF parameters
+mu_W88_lik &lt;- mean(res_lik_W88_sim[,1])
+sigma_W88_lik &lt;- mean(res_lik_W88_sim[,2])
+
+# s.e. of the MLE estimates
+mean(mu_sd_W88)</code></pre>
+<pre><code>[1] 0.3133458</code></pre>
+<pre class="r"><code># p_value under the null hypothesis that the GCLF TO of W88 is the same as the canonical value
+exp(mean(log(p_val_W88)))</code></pre>
+<pre><code>[1] 2.255848e-05</code></pre>
+<pre class="r"><code># construct data frame for plotting the GCLF of W88
+rep_M_W88 &lt;- data.frame(M = M_W88, ID = &#39;W88&#39;)
+
+M_seq &lt;- seq(22, 28, by = 0.01)
+# observed GCLF under MATHPOP
+post_GCLF_W88 &lt;- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, mu_W88_post, sigma_W88_post, m0 = 25.5, b0 = 0.0884, b1 = 0.645)*
+                              f_cpp(M_seq, 25.75, a = 1.5)/p_eM_cpp(25.75, mu_W88_post, sigma_W88_post, m0 = 25.5, b0 = 0.0884, b1 = 0.645, a = 1.5),
+                            type = &#39;MATHPOP&#39;)
+# observed GCLF under MLE
+lik_GCLF_W88 &lt;- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, mu_W88_lik, sigma_W88_lik, m0 = 25.5, b0 = 0.0884, b1 = 0.645)*
+                             f_cpp(M_seq, 25.75, a = 1.5)/p_eM_cpp(25.75, mu_W88_lik, sigma_W88_lik, m0 = 25.5, b0 = 0.0884, b1 = 0.645, a = 1.5),
+                           type = &#39;MLE&#39;)
+# observed GCLF under canonical GCLF assumption
+can_GCLF_W88 &lt;- data.frame(M = M_seq, dNdM = phi_eM_cpp(M_seq, 26.3, 1.2, m0 = 25.5, b0 = 0.0884, b1 = 0.645)*
+                             f_cpp(M_seq, 25.75, a = 1.5)/p_eM_cpp(25.75, 26.3, 1.2, m0 = 25.5, b0 = 0.0884, b1 = 0.645, a = 1.5),
+                           type = &#39;Canonical&#39;)
+
+# combined GCLF data frame for plotting
+GCLF_dat_W88 &lt;- bind_rows(post_GCLF_W88, lik_GCLF_W88, can_GCLF_W88) %&gt;%
+  mutate(ID = &#39;W88&#39;)
+
+rep_M &lt;- bind_rows(rep_M_R27, rep_M_W88)
+
+# combine GCLF data for plotting both R27 and W88
+GCLF_dat &lt;- bind_rows(GCLF_dat_R27, GCLF_dat_W88)</code></pre>
+</div>
+<div id="observed-gclfs-of-r27-and-w88" class="section level2">
+<h2>Observed GCLFs of R27 and W88</h2>
+<p>Now we can plot the distribution of the observed GC magnitudes of R27
+and W88 and the fitted observed GCLFs under different methods and
+assumptions:</p>
+<pre class="r"><code>ggplot(rep_M, aes(M, after_stat(density))) + 
+  geom_histogram(data = filter(rep_M, ID == &#39;R27&#39;), binwidth = 0.69, alpha = 0.5) +
+  geom_histogram(data = filter(rep_M, ID == &#39;W88&#39;), binwidth = 0.6, alpha = 0.5) +
+  geom_line(data = GCLF_dat, aes(M, dNdM, color = type)) + facet_grid(.~ ID) +
+  theme_minimal() + scale_color_manual(values = wes_palette(&#39;Zissou1&#39;, 5, &#39;discrete&#39;)[c(1,3,5)], name = NULL) +
+  xlab(&#39;F814W (mag)&#39;) + ylab(&#39;$dN/dM$&#39;) + scale_x_reverse()</code></pre>
+<p><img src="figure/GCLF.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -761,24 +1007,52 @@ time zone: America/Toronto
 tzcode source: internal
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
-[1] workflowr_1.7.1
+ [1] modeest_2.4.0            reshape2_1.4.4           wesanderson_0.3.7       
+ [4] ggpubr_0.6.0             priorsense_0.0.0.9000    xtable_1.8-4            
+ [7] loo_2.6.0                coda_0.19-4              posterior_1.5.0         
+[10] RcppArmadillo_0.12.6.6.0 Rcpp_1.0.11              raster_3.6-26           
+[13] sp_2.1-1                 sf_1.0-14                lubridate_1.9.3         
+[16] forcats_1.0.0            stringr_1.5.1            dplyr_1.1.4             
+[19] purrr_1.0.2              readr_2.1.4              tidyr_1.3.0             
+[22] tibble_3.2.1             ggplot2_3.4.4            tidyverse_2.0.0         
 
 loaded via a namespace (and not attached):
- [1] jsonlite_1.8.7    compiler_4.3.2    promises_1.2.1    Rcpp_1.0.11      
- [5] stringr_1.5.1     git2r_0.33.0      assertthat_0.2.1  callr_3.7.3      
- [9] later_1.3.1       jquerylib_0.1.4   yaml_2.3.7        fastmap_1.2.0    
-[13] R6_2.5.1          knitr_1.45        tibble_3.2.1      rprojroot_2.0.4  
-[17] bslib_0.5.1       pillar_1.9.0      rlang_1.1.4       utf8_1.2.4       
-[21] cachem_1.0.8      stringi_1.8.4     httpuv_1.6.12     xfun_0.41        
-[25] getPass_0.2-4     fs_1.6.3          sass_0.4.7        cli_3.6.1        
-[29] magrittr_2.0.3    ps_1.7.5          digest_0.6.36     processx_3.8.2   
-[33] rstudioapi_0.15.0 lifecycle_1.0.4   vctrs_0.6.5       evaluate_0.23    
-[37] glue_1.6.2        whisker_0.4.1     klippy_0.0.0.9500 fansi_1.0.6      
-[41] rmarkdown_2.25    httr_1.4.7        tools_4.3.2       pkgconfig_2.0.3  
-[45] htmltools_0.5.8.1</code></pre>
+ [1] DBI_1.1.3            rlang_1.1.4          magrittr_2.0.3      
+ [4] clue_0.3-65          git2r_0.33.0         matrixStats_1.1.0   
+ [7] e1071_1.7-13         compiler_4.3.2       vctrs_0.6.5         
+[10] rmutil_1.1.10        crayon_1.5.2         pkgconfig_2.0.3     
+[13] fastmap_1.2.0        magick_2.8.3         backports_1.4.1     
+[16] labeling_0.4.3       utf8_1.2.4           promises_1.2.1      
+[19] rmarkdown_2.25       tzdb_0.4.0           tinytex_0.48        
+[22] bit_4.0.5            xfun_0.41            cachem_1.0.8        
+[25] jsonlite_1.8.7       highr_0.10           later_1.3.1         
+[28] terra_1.7-55         cluster_2.1.4        broom_1.0.5         
+[31] R6_2.5.1             bslib_0.5.1          stringi_1.8.4       
+[34] rpart_4.1.21         car_3.1-2            jquerylib_0.1.4     
+[37] assertthat_0.2.1     knitr_1.45           filehash_2.4-5      
+[40] klippy_0.0.0.9500    httpuv_1.6.12        timechange_0.2.0    
+[43] tidyselect_1.2.0     rstudioapi_0.15.0    abind_1.4-5         
+[46] yaml_2.3.7           timeDate_4022.108    codetools_0.2-19    
+[49] qpdf_1.3.3           lattice_0.22-5       plyr_1.8.9          
+[52] withr_2.5.2          askpass_1.2.0        evaluate_0.23       
+[55] stable_1.1.6         units_0.8-4          proxy_0.4-27        
+[58] pillar_1.9.0         carData_3.0-5        tensorA_0.36.2      
+[61] whisker_0.4.1        KernSmooth_2.23-22   checkmate_2.3.1     
+[64] distributional_0.3.2 generics_0.1.3       vroom_1.6.4         
+[67] rprojroot_2.0.4      hms_1.1.3            munsell_0.5.0       
+[70] scales_1.3.0         timeSeries_4031.107  class_7.3-22        
+[73] glue_1.6.2           tikzDevice_0.12.5    statip_0.2.3        
+[76] tools_4.3.2          spatial_7.3-17       fBasics_4032.96     
+[79] ggsignif_0.6.4       pdftools_3.4.0       fs_1.6.3            
+[82] grid_4.3.2           colorspace_2.1-0     cli_3.6.1           
+[85] workflowr_1.7.1      fansi_1.0.6          gtable_0.3.4        
+[88] rstatix_0.7.2        stabledist_0.7-1     sass_0.4.7          
+[91] digest_0.6.36        classInt_0.4-10      farver_2.1.1        
+[94] htmltools_0.5.8.1    lifecycle_1.0.4      bit64_4.0.5         </code></pre>
 </div>
 </div>
 
