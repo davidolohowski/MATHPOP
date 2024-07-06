@@ -1,0 +1,42 @@
+---
+title: "GCLFs of R27 and W88"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{css, echo = F}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r, echo = F}
+pdf2png <- function(path) {
+  # only do the conversion for non-LaTeX output
+  if (knitr::is_latex_output())
+    return(path)
+  path2 <- xfun::with_ext(path, "png")
+  img <- magick::image_read_pdf(path)
+  magick::image_write(img, path2, format = "png")
+  path2
+}
+```
+
+## Introduction
+
+```{r}
+
+```
+
