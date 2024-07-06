@@ -7,11 +7,29 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r, echo = F}
+pdf2png <- function(path) {
+  # only do the conversion for non-LaTeX output
+  if (knitr::is_latex_output())
+    return(path)
+  path2 <- xfun::with_ext(path, "png")
+  img <- magick::image_read_pdf(path)
+  magick::image_write(img, path2, format = "png")
+  path2
+}
+```
+
+
 ## Introduction
 
 This page gives a brief introduction of the assumptions and construction of the MATHPOP methodology to infer globular cluster (GCs) counts in LSBGs/UDGs. For more details, see the original paper by Li et al. (2024).
 
-MATHPOP uses a marked point process model to jointly model the spatial location (point process) of observed GCs and their magnitudes (mark). It is assumed that the observed GC locations and their magnitudes in 
+MATHPOP uses a marked point process model to jointly model the spatial location $\mathbf{X}$ (point process) of observed GCs and their magnitudes $\mathbf{M}$ (mark). It is assumed that the GC locations in galaxies, either bright, normal galaxies or UDGs, arise from a Sersic profile, while the GC magnitude distribution is described by a Gaussian distribution, which is the GCLF. Moreover, the background GC population, i.e., GCs in the intergalatic medium (IGM), are uniformly distributed (a homogeneous Poisson process). Note that we assume that the GCLF of each GC sub-population (normal galaxy, UDG, or IGM) have their own GCLF, and we infer them using the data.
+
+Below is a graphical model that illustrates the MATHPOP model framework:
+
+![](assets/graph_mod.png)
+
 
 
 

@@ -325,7 +325,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -336,8 +336,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -346,13 +346,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-05
+<strong>Last updated:</strong> 2024-07-06
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MATHPOP/</code> <span
@@ -375,33 +375,120 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreeed3d0fdd8a7ff654796f07317d5fb8c098e9a184targetblanked3d0fda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240702code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240702)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240702code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240702)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree0a9d403f8316436e98b2dbbd4d3ed52e746527b7targetblank0a9d403a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/ed3d0fdd8a7ff654796f07317d5fb8c098e9a184" target="_blank">ed3d0fd</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/0a9d403f8316436e98b2dbbd4d3ed52e746527b7" target="_blank">0a9d403</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreeed3d0fdd8a7ff654796f07317d5fb8c098e9a184targetblanked3d0fda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree0a9d403f8316436e98b2dbbd4d3ed52e746527b7targetblank0a9d403a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -411,7 +498,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/ed3d0fdd8a7ff654796f07317d5fb8c098e9a184" target="_blank">ed3d0fd</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/0a9d403f8316436e98b2dbbd4d3ed52e746527b7" target="_blank">0a9d403</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -454,6 +541,7 @@ Ignored files:
 
 Untracked files:
     Untracked:  GC_prob-tikzDictionary
+    Untracked:  analysis/GCLF.Rmd
     Untracked:  analysis/GC_prob-tikzDictionary
     Untracked:  analysis/data_process-tikzDictionary
     Untracked:  analysis/method_compare-tikzDictionary
@@ -463,6 +551,10 @@ Untracked files:
     Untracked:  method_compare-tikzDictionary
     Untracked:  posterior-tikzDictionary
     Untracked:  vignette-tikzDictionary
+
+Unstaged changes:
+    Modified:   analysis/about.Rmd
+    Modified:   analysis/data_process.Rmd
 
 </code></pre>
 <p>
@@ -507,6 +599,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/0a9d403f8316436e98b2dbbd4d3ed52e746527b7/docs/about.html" target="_blank">0a9d403</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -708,9 +817,57 @@ construction of the MATHPOP methodology to infer globular cluster (GCs)
 counts in LSBGs/UDGs. For more details, see the original paper by Li et
 al. (2024).</p>
 <p>MATHPOP uses a marked point process model to jointly model the
-spatial location (point process) of observed GCs and their magnitudes
-(mark). It is assumed that the observed GC locations and their
-magnitudes in</p>
+spatial location <span class="math inline">\(\mathbf{X}\)</span> (point
+process) of observed GCs and their magnitudes <span
+class="math inline">\(\mathbf{M}\)</span> (mark). It is assumed that the
+GC locations in galaxies, either bright, normal galaxies or UDGs, arise
+from a Sersic profile, while the GC magnitude distribution is described
+by a Gaussian distribution, which is the GCLF. Moreover, the background
+GC population, i.e., GCs in the intergalatic medium (IGM), are uniformly
+distributed (a homogeneous Poisson process). Note that we assume that
+the GCLF of each GC sub-population (normal galaxy, UDG, or IGM) have
+their own GCLF, and we infer them using the data.</p>
+<p>Below is a graphical model that illustrates the MATHPOP model
+framework:</p>
+<p><img src="assets/graph_mod.png" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.3.2 (2023-10-31)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Sonoma 14.1.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Toronto
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] vctrs_0.6.5       cli_3.6.1         knitr_1.45        rlang_1.1.4      
+ [5] xfun_0.41         stringi_1.8.4     promises_1.2.1    jsonlite_1.8.7   
+ [9] workflowr_1.7.1   glue_1.6.2        rprojroot_2.0.4   git2r_0.33.0     
+[13] htmltools_0.5.8.1 httpuv_1.6.12     sass_0.4.7        fansi_1.0.6      
+[17] rmarkdown_2.25    jquerylib_0.1.4   evaluate_0.23     tibble_3.2.1     
+[21] fastmap_1.2.0     yaml_2.3.7        lifecycle_1.0.4   whisker_0.4.1    
+[25] stringr_1.5.1     compiler_4.3.2    fs_1.6.3          Rcpp_1.0.11      
+[29] pkgconfig_2.0.3   rstudioapi_0.15.0 later_1.3.1       digest_0.6.36    
+[33] R6_2.5.1          utf8_1.2.4        pillar_1.9.0      magrittr_2.0.3   
+[37] bslib_0.5.1       tools_4.3.2       cachem_1.0.8     </code></pre>
+</div>
 </div>
 
 

@@ -36,7 +36,7 @@ pdf2png <- function(path) {
 
 ## Introduction
 
-This vignette illustrate the methods used to obtain the probabilistic catalogs obtained using point sources from DOLPHOT and SExtractor. It also reproduces Figure 1 and Figure 8 in the original paper of Li et al. (2024)
+This vignette illustrates the methods used to obtain the probabilistic catalogs obtained using point sources from DOLPHOT and SExtractor. It also reproduces Figure 1 and Figure 8 in the original paper of Li et al. (2024)
 
 ### Read in and Pre-Process Point Source Data
 
