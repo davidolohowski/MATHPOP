@@ -20,6 +20,7 @@ navbar:
       - text: Methods Comparison
         href: method_compare.html
       - text: GCLFs of R27 and W88
+        href: GCLF.Rmd
       - text: Simulation Analysis
       - text: Appendix Analysis
   - text: About
