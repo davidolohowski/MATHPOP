@@ -24,11 +24,27 @@ pdf2png <- function(path) {
 
 This page gives a brief introduction of the assumptions and construction of the MATHPOP methodology to infer globular cluster (GCs) counts in LSBGs/UDGs. For more details, see the original paper by Li et al. (2024).
 
-MATHPOP uses a marked point process model to jointly model the spatial location $\mathbf{X}$ (point process) of observed GCs and their magnitudes $\mathbf{M}$ (mark). It is assumed that the GC locations in galaxies, either bright, normal galaxies or UDGs, arise from a Sersic profile, while the GC magnitude distribution is described by a Gaussian distribution, which is the GCLF. Moreover, the background GC population, i.e., GCs in the intergalatic medium (IGM), are uniformly distributed (a homogeneous Poisson process). Note that we assume that the GCLF of each GC sub-population (normal galaxy, UDG, or IGM) have their own GCLF, and we infer them using the data.
+MATHPOP uses a marked point process model to jointly model the spatial location $\mathbf{X}$ (point process) of observed GCs and their magnitudes $\mathbf{M}$ (mark). It is assumed that the GC distribution in galaxies, either bright, normal galaxies or UDGs, are described by a Sersic profile, while the GC magnitude distribution is described by a Gaussian distribution, which is the GCLF. Moreover, the background GC population, i.e., GCs in the intergalatic medium (IGM), are uniformly distributed (a homogeneous Poisson process). Note that we assume that the GCLF of each GC sub-population (normal galaxy, UDG, or IGM) have their own GCLF, and we infer them using the data.
 
 Below is a graphical model that illustrates the MATHPOP model framework:
 
 ![](assets/graph_mod.png)
+
+In the above figure, the data generating process under the MATHPOP framework assumes that we have GC sub-populations from the IGM, normal, bright galaxies (ETGs), and UDGs. The observed GCs (the data) are assumed to be independent superposition of the GCs from these three sub-populations. The Sersic profiles ($\lambda, R_h, n$) generate the GC spatial distributions in galaxies while a homogeneous process ($\beta$) generates GCs from the IGM. The GCLFs ($\mu_{\text{TO}}, \sigma$) of each GC sub-populations then generate the true magnitude distribution. The true magnitudes are then convolved with the measurement uncertainties ($\sigma_M$) to give rise to the noisy GC magnitudes. Lastly, the completeness fraction $f(M)$ is applied to remove faint GCs that are unobservable, which give rise to the observed data ($\mathbf{x}, \mathbf{M}$).
+
+The summarized assumptions of the current implementation of MATHPOP are the following:
+
+* GCs from each sub-populations are independent, i.e., generating process of GCs in one galaxy are independent from GCs in any other environment.
+* GC spatial distributions in galaxies (either normal galaxies or UDGs) are described by a Sersic profile.
+* GC spatial distribution in IGM is uniform (a homogenous Poisson process).
+* GCLFs of GCs in different sub-population are different, and directly inferred using data.
+* The true GCLF is described by a Gaussian density.
+* There are no crowding effect in an image.
+* The measurement uncertainty of the GC magnitudes are normally-distributed.
+* The completeness fraction is the same across different regions of an image.
+
+
+
 
 
 
