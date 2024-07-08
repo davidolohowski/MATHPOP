@@ -241,7 +241,7 @@ The `fit_MATHPOP` function has the following arguments:
 * `spat_dom` List. A list object containing a list of `vertices` and a list of the number of integration grid `n_grid`.
 * `fixed_Theta` List. A list that specifies the known parameters of GC system, which contains two list objects `gal` and `UDG` that specify the respective known parameters of normal galaxies and UDGs. If there are no normal galaxies in the data, `gal` does not need to be specified.
 * `prior` List. A list that specifies the parameter values of the prior distributions of the model parameters. See above Section on prior.
-* `p = 1` Numeric. Crowding effect. A numerical value between $(0,1)$. In the current implementation, it is assumed that it is $1$ (no crowding). 
+* `p = 1` Numeric. Crowding effect. Either a numeric value between $(0,1)$, or a numeric vector whose entries are all in $(0,1)$ and length equal to `n_grid` in `spat_dom` with each numeric element being the crowding effect at the location of the spatial grid. In the current implementation, it is assumed that it is $1$ (no crowding). 
 * `cf_error` List. List of parameters for completeness fraction and measurement uncertainties. See above Section.
 * `M` Integer. Total number of iteration to run the MCMC algorithm.
 * `Theta = NULL` List. Starting values of the MCMC chain. Specified internally.
