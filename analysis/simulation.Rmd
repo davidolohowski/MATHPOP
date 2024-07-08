@@ -1,0 +1,310 @@
+---
+title: "Simulation Analysis"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{css, echo = F}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  max-height: 50vh !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r, echo = F}
+pdf2png <- function(path) {
+  # only do the conversion for non-LaTeX output
+  if (knitr::is_latex_output())
+    return(path)
+  path2 <- xfun::with_ext(path, "png")
+  img <- magick::image_read_pdf(path)
+  magick::image_write(img, path2, format = "png")
+  path2
+}
+```
+
+## Introduction
+
+This vignette contains code to run the simulation study conducted in the MATHPOP paper, as well as code to analyze the simulation results. 
+
+## Simulating GC Locations and Magnitudes
+
+We first illustrate our approach for generating simulated data. First, load the required packages and help functions:
+
+```{r, echo = T, message=F}
+library(tidyverse)
+library(posterior)
+library(HDInterval)
+library(modeest)
+library(ggstar)
+library(tikzDevice)
+library(sf)
+library(sp)
+library(raster)
+library(Rcpp)
+library(RcppArmadillo)
+library(spatstat)
+library(VGAM)
+library(reshape2)
+library(wesanderson)
+
+# load required functions
+sourceCpp('code/cpp_help_func.cpp')
+source('code/fit_mod_MCMC.R')
+```
+
+Since we are running thousands of simulations with different parameter configuration, we needed to run the `R` source file on a remote HPC server operated under Unix. Thus, the original source code for conducting the simulations was written to handle HPC server file read-in. The two lines of code below are passed to the HPC server to generate different simulations based on the `sim_id` argument. If you only run the simulation a few times on a local machine, you do not need this.
+
+```{r, eval = F}
+args <- commandArgs(TRUE)
+sim_id <- as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
+```
+
+Next, construct the spatial domain in which the GC locations reside. Here we assume that the spatial domain is the same as the ACS images from the PIPER survey, i.e, a square with $76$~kpc a side:
+
+```{r spat_dom}
+# specify the simulation counter (this will be automatically read in on a HPC server; Setting sim_id to 900 here is only for demonstrative purposes)
+sim_id <- 900
+
+# vertices of the spatial domain
+X <- c(0, 76, 76, 0)
+Y <- c(0, 0, 76, 76)
+
+# construct the spatial domain S
+S <- Polygon(cbind(X,Y))
+S <- SpatialPolygons(list(Polygons(list(S),'region')))
+S <- SpatialPolygonsDataFrame(S, data.frame(id = S@polygons[[1]]@ID, row.names = S@polygons[[1]]@ID))
+```
+
+We then specify the parameters used to simulate the GC data. We assume that there is one simulated UDG GC system present in the field, and is simulated using a Sersic profile. All other GCs are from the IGM, and simulated from a homogeneous Poisson process. For simulating the GCLF, the completeness fraction and measurement uncertainty are the same as that of PIPER ACS images obtained by DOLPHOT. 
+
+The only varying parameters are the GC counts of the UDG and its GCLF TO point. We have set these to $N_{\text{GC}} = \{0, 5, 10, 20, 40, 80\}$ and $\mu_{\text{TO}} = \{25.3, 25.8, 26.3\}$~mag with $26.3$~mag being the canonical GCLF TO point. We simulate $50$ datasets for each of the parameter configuration from above, which results in a total of $6\times3\times150 = 2700$ sets of simulated data.
+
+```{r}
+# 50% completeness limit
+Lim <- 25.75
+
+# simulation id: every parameter configuration is simulated 150 times to account for randomness
+# NOTE: some HPC server does not allow this many different simulations to be done at the same time (many have a maximum 1000 files run at a time), so you will have to break these simulations into smaller chunks
+par_id <- ceiling(sim_id/150)
+iter <- (sim_id %% 150)*(sim_id %% 150 != 0) + 150*(sim_id %% 150 == 0)
+
+# possible parameter configuration for GC counts (N) and GCLF TO (mu_U)
+par <- expand.grid(N = c(0, 5, 10, 20, 40, 80),
+                   mu_U = c(25.3, 25.8, 26.3))
+
+# sim_id is set to 300, which corresponds to N = 80 and mu_U = 25.3 mag
+
+# other model parameters
+set.seed(sim_id)
+b0 <- 0.037 # IGM GC intensity
+c <- matrix(runif(2, 8, 68), ncol = 2) # location of the simulated UDG (within the box [8,68]X[8,68])
+N <- par$N[par_id] # GC count in UDG
+R_eff <- 2 # half-number radius
+e <- 1 # aspect ratio of GC system
+n <- 2 # Sersic index
+theta <- 0 # orientation angle
+mu <- c(26.3, par$mu_U[par_id]) # GCLF TO (IGM GC and UDG GC)
+sigma <- c(1.2, 1) # GCLF dispersion
+UDG_ID <- 'sim_U'
+```
+
+We then simulate the observed GC point pattern and the magnitudes, and plot it. The red point and the cluster of GC at the lower-mid region is the simulated GC system.
+
+```{r, warning=F}
+# generate data with measurement uncertainty using the provided parameters. Note that the measurement uncertainty specification is set to the ACS images from DOLPHOT as default
+Y <- simulate_Y_noisy(S, b0, c, N, R_eff, e, n, theta, mu, sigma)
+# remove faint GCs according to the completeness fraction
+Y_obs_n <- simulate_Yf_noise(Y, Lim)
+
+ggplot(Y_obs_n, aes(x,y)) + geom_point(size = 0.1) + coord_fixed() +
+  theme_minimal() + geom_point(data = data.frame(x = c[,1], y = c[,2]), color = 'red', size = 0.5)
+```
+
+## Fitting the MATHPOP Model to the Simulated Data
+
+After the data is simulated, it can now be passed to the `fit_MATHPOP` function to conduct inference. See [here](vignette.html) on how to do this. Note that the data we have simulated here does not consider the data uncertainty, i.e., every source is a true GC without any contamination from other sources. In such cases, set the argument `prob_model = FALSE` in the `fit_MATHPOP` function to fit the model.
+
+The prior distribution of the model parameters under simulations are as below (see [here](vignette.html) on how to construct the prior distribution parameter list):
+
+```{r}
+prior <- list(IGM = list(b0 = c(log(0.03), 0.4), # IGM GC prior
+                         mu = data.frame(a = 26.3, b = 0.5),
+                         sigma = data.frame(a = log(1.3), b = 0.25)), 
+              
+              UDG = list(N = data.frame(a = rep(0, 1), b = rep(50, 1)), # UDG GC prior
+                        R_eff = data.frame(a = log(2), b = 0.5),
+                        n = data.frame(a = log(1), b = 0.75),
+                        mu = data.frame(a = 26.3, b = 0.5),
+                        sigma = data.frame(a = log(1.3), b = 0.25)))
+```
+
+
+## Analyzing the Simulation Results
+
+Now we conduct the analysis for simulation results obtained using MATHPOP and compare them to those from the standard method. Note that due to the large number of simulations conducted, the raw inference results (MCMC samples for 2700 simulated data) are not uploaded to the Github repo. We have summarized and stored these results in a much smaller data object at `data/sim/simulation_results.RDS` that is sufficient to draw conclusions presented in the MATHPOP paper. Read in the summarized data of the 
+simulation results:
+
+```{r}
+sim_res <- readRDS('data/sim/simulation_results.RDS')
+```
+
+We then conduct inference for the same simulation scenarios using the standard method (see J24 paper for a detailed description on how this is done):
+
+```{r}
+# average 50% completeness limit under SExtractor quoted from J24 
+Lim <- 26.69
+
+# parameter configuration
+par <- expand.grid(N = c(0, 5, 10, 20, 40, 80),
+                   mu_U = c(25.3, 25.8, 26.3))
+
+# allocate object for inference results using the standard method
+sim_res_std <- expand.grid(N = c(0, 5, 10, 20, 40, 80), mu = c(25.3, 25.8, 26.3)) %>%
+  slice(rep(1:n(), each = 150)) %>%
+  mutate(N_mean = 0)
+
+# obtain GC counts estimates using the standard method
+for (sim_id in 1:2700) {
+  # get simulation id
+  par_id <- ceiling(sim_id/150)
+  iter <- (sim_id %% 150)*(sim_id %% 150 != 0) + 150*(sim_id %% 150 == 0)
+  
+  set.seed(sim_id)
+  b0 <- 0.037
+  c <- matrix(runif(2, 8, 68), ncol = 2)
+  N <- par$N[par_id]
+  R_eff <- 1
+  e <- 1
+  n <- 2
+  theta <- 0
+  mu <- c(26.3, par$mu_U[par_id])
+  sigma <- c(1.2, 1)
+  UDG_ID <- 'sim_U'
+  
+  # simulate the GC data with measurement uncertainty in GC magnitudes using the measurement uncertainty specification from J24
+  Y <- simulate_Y_noisy(S, b0, c, N, R_eff, e, n, theta, mu, sigma, a = 0.07477, b = 0.75094)
+  # remove faint GCs according to completeness fraction
+  Yf_n <- simulate_Yf_noise(Y, Lim, alpha = 6.56)
+  # remove sources fainter than the canonical limit (as done in J24)
+  Y_obs_n <- filter(Yf_n, M < 26.3)
+  
+  # count the number of sourcse within a 7.5 kpc radius aperture of the UDG
+  N <- nrow(filter(Y_obs_n, (x - c[1,1])^2 + (y - c[1,2])^2 < 7.5^2))
+  
+  # estimate the background GC count
+  N_IGM <- nrow(filter(Y_obs_n, (x - c[1,1])^2 + (y - c[1,2])^2 > 7.5^2))/(76^2 - pi*7.5^2)*pi*7.5^2
+  
+  # get GC count estimates by correcting for GCLF (divide by 0.5) and GCs outside of the counting radius (divide by 0.9)
+  sim_res_std$N_mean[sim_id] <- (N-N_IGM)/0.5/0.9
+}
+
+sim_res$Method <- 'Ours'
+sim_res_std$Method <- 'Standard'
+
+```
+
+Now we do some analysis with the inference results. First, we check the estimation performance on the GC counts (see Figure 7(a) in the paper for more details):
+
+```{r, dev ='tikz', fig.process = pdf2png, fig.align='center', message=F}
+# grab the summary statistics of the GC count estimates from MATHPOP and the standard method
+N_sim_res <- sim_res %>%
+  dplyr::select(N, mu, N_mean, N_mode, Method) %>%
+  bind_rows(., sim_res_std) %>%
+  melt(., id = c('N', 'mu', 'Method')) %>%
+  mutate(variable = ifelse(variable == 'N_mean', 'Mean', 'Mode'))
+
+# process the data and plot it
+N_sim_res %>%
+  group_by(N, Method, variable) %>%
+  mutate(N_avg = mean(value, na.rm = T),
+         N_l = quantile(value, 0.16, na.rm = T), N_u = quantile(value, 0.84, na.rm = T)) %>%
+  dplyr::select(N_avg, N_l, N_u) %>%
+  unique() %>%
+  drop_na() %>%
+  mutate(Estimator = paste0(Method, ' (', variable, ')')) %>%
+ggplot(aes(N, N_avg - N)) + geom_line(aes(color = Estimator),  position = position_dodge(3)) +
+  geom_hline(yintercept = 0) + theme_minimal() +
+  geom_pointrange(aes(x = N, ymin = N_l - N, ymax = N_u - N, color = Estimator),
+                  size = 0.1, position = position_dodge(3)) + 
+  scale_color_manual(values = wes_palette("Darjeeling1", 5, 'discrete')[c(1,2,5)]) +
+  xlab('$N_{\\mathrm{GC}}^{\\mathrm{true}}$') +
+  ylab('$N_{\\mathrm{GC}}^{\\mathrm{est}}$ - $N_{\\mathrm{GC}}^{\\mathrm{true}}$') + 
+  coord_fixed(ylim = c(-15, 65)) + theme(legend.position = 'bottom', 
+                                         legend.text=element_text(size=7), 
+                                         legend.title = element_text(size = 7),
+                                         axis.title = element_text(size = 7),
+                                         axis.text = element_text(size = 7))
+```
+
+Clearly, the standard method performs a lot worse than MATPOP. Next, we plot the performance results of the standard method against different true values of $\mu_{\text{TO}}$:
+
+```{r, dev ='tikz', fig.process = pdf2png, fig.align='center', message=F, warning=F}
+sim_res_std %>%
+  group_by(N, mu) %>%
+  mutate(N_mode_avg = mean(N_mean), 
+         N_mode_l = quantile(N_mean, 0.16), N_mode_u = quantile(N_mean, 0.84)) %>%
+  dplyr::select(N_mode_avg, N_mode_l, N_mode_u) %>%
+  unique() %>%
+  ggplot(aes(N, N_mode_avg - N, color = as.character(mu))) + 
+  geom_line(aes(color = as.character(mu)),  position = position_dodge(3)) +
+  geom_point(size = 1, position = position_dodge(width = 3)) +
+  geom_hline(yintercept = 0) + theme_minimal() +
+  geom_errorbar(aes(ymin = N_mode_l - N, ymax = N_mode_u - N), size = 0.5, width = 0.75, position = position_dodge(width = 3)) +
+  scale_color_manual(values = wes_palette('Zissou1', n = 5, type = 'discrete')[c(1,3,5)], name = '$\\mu_{\\mathrm{TO}}^{\\mathrm{true}}$ (mag)') + 
+  xlab('$N_{\\mathrm{GC}}^{\\mathrm{true}}$') +
+  ylab('$N_{\\mathrm{GC}}^{\\mathrm{est}}$ - $N_{\\mathrm{GC}}^{\\mathrm{true}}$')+
+  coord_fixed(ylim = c(-15, 65))+ theme(legend.position = 'bottom', 
+                                        legend.text=element_text(size=7), 
+                                        legend.title = element_text(size = 7),
+                                        axis.title = element_text(size = 7),
+                                        axis.text = element_text(size = 7))
+```
+
+We see that the standard method is only relatively accurate when the true $\mu_{\text{TO}}$ is the canonical value since the standard method is assuming that the GCLF of GCs from all sub-population is the same as the canonical one.
+
+Lastly, we plot the relationship between the posterior modes of $N_{\text{GC}}$ and $\mu_{\text{TO}}$ (see Figure 7(c) for more details):
+
+```{r, dev ='tikz', fig.process = pdf2png, fig.align='center', message=F}
+summary_all_dat <- readRDS('data/summary_results.RDS')
+
+sim_res %>%
+  group_by(N, mu) %>%
+  mutate(N_mode_avg = mean(N_mode), mu_mode_avg = mean(mu_mode),
+         N_mode_l = quantile(N_mode, 0.25), N_mode_u = quantile(N_mode, 0.75),
+         mu_mode_l_0.68 = quantile(mu_mode, 0.16), mu_mode_u_0.68 = quantile(mu_mode, 0.84),
+         mu_mode_l_0.95 = quantile(mu_mode, 0.025), mu_mode_u_0.95 = quantile(mu_mode, 0.975),
+         mu_mode_l_0.99 = quantile(mu_mode, 0.005), mu_mode_u_0.99 = quantile(mu_mode, 0.995)) %>%
+  dplyr::select(N_mode_avg, mu_mode_avg, N_mode_l, N_mode_u, mu_mode_l_0.68, mu_mode_u_0.68, mu_mode_l_0.95, mu_mode_u_0.95, mu_mode_l_0.99, mu_mode_u_0.99) %>%
+  unique() %>%
+  ggplot(aes(N_mode_avg, mu_mode_avg, color = as.factor(mu)))  + theme_minimal() + facet_grid(~ mu) +
+  geom_ribbon(aes(ymin = mu_mode_l_0.68, ymax = mu_mode_u_0.68, fill = as.factor(mu)), color = NA, alpha = 0.4, size = 0.25) +
+  geom_ribbon(aes(ymin = mu_mode_l_0.95, ymax = mu_mode_u_0.95, fill = as.factor(mu)), color = NA, alpha = 0.2, size = 0.25) +
+  geom_ribbon(aes(ymin = mu_mode_l_0.99, ymax = mu_mode_u_0.99, fill = as.factor(mu)), color = NA, alpha = 0.1, size = 0.25) +
+  geom_point(data = summary_all_dat, aes(x = N_mode.x, y = mu_mode.x), size = 0.25, color = 'black', alpha = 0.5) +
+  geom_point(size = 0.75) +  geom_line() + geom_hline(aes(yintercept = (mu), color = as.factor(mu))) +
+  scale_color_manual(values = wes_palette('Zissou1', n = 12, type = 'continuous')[c(1,9,12)], name = '$\\mu_{\\mathrm{TO}}^{{\\mathrm{true}}}$ (mag)') + 
+  scale_fill_manual(values = wes_palette('Zissou1', n = 12, type = 'continuous')[c(1,9,12)], name = '$\\mu_{\\mathrm{TO}}^{{\\mathrm{true}}}$ (mag)') + 
+  scale_y_reverse() +
+  xlab('$\\bar{N}_{\\mathrm{GC}}^{\\mathrm{mode}}$') +
+  ylab('$\\mu_{\\mathrm{TO}}^{\\mathrm{mode}}$ (mag)') +
+  geom_star(data = data.frame(N_mode_avg = 26, mu_mode_avg = 25.82434), fill = 'black', size = 1, starshape = 24, color = 'black') + 
+  geom_star(data = data.frame(N_mode_avg = 37, mu_mode_avg = 25.75116), fill = 'black', size = 1, starshape = 24, color = 'black') +
+  annotate(geom = 'text', x = 18.5, y = 25.82, label = 'W88', size = 3) + 
+  annotate(geom = 'text', x = 37, y = 25.65, label = 'R27', size = 3) +
+  theme(strip.text = element_blank(), legend.position = 'bottom')
+```
+
+
