@@ -36,7 +36,7 @@ pdf2png <- function(path) {
 
 ## Introduction
 
-This vignettes contains the analysis and code that compares the results obtained from MATHPOP and those from the standard method, specifically for the UDGs --- R27 and R84, as these two UDGs have the largest discrepancy between the two methods. We also reproduces Figure 5 in the original Li et al. (2024) paper.
+This vignette contains the analysis and code that compares the results obtained from MATHPOP and those from the standard method, specifically for the UDGs --- R27 and R84, as these two UDGs have the largest discrepancy between the two methods. We also reproduces Figure 5 in the original Li et al. (2024) paper.
 
 ### Data For R27 and R84
 
