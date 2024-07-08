@@ -23,7 +23,6 @@ navbar:
         href: GCLF.html
       - text: Simulation Analysis
         href: simulation.html
-      - text: Appendix Analysis
   - text: About
     href: about.html
   - text: License

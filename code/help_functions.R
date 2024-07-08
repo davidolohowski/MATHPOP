@@ -148,7 +148,7 @@ log_lik_MATHPOP <- function(S, grid, b0, c, N, R_eff, e, n, theta, mu, sigma, Y_
     }
 
     norm_const <- sum(unlist(lapply(Theta, function(x){integrate_Sersic(grid, x$c, x$N, x$R_eff, x$e, x$n, x$theta)*p*p_eM_cpp(Lim = m50, x$mu, x$sigma, m0 = m1, b0 = beta0, b1 = beta1, a = alpha)})))
-    L <- - norm_const - b0*A*p*p_eM_cpp(Lim = m50, mu[1], sigma[1], m0 = m1, b0 = beta0, b1 = beta1, a = alpha)
+    L <- - norm_const - b0*A*sum(p)*p_eM_cpp(Lim = m50, mu[1], sigma[1], m0 = m1, b0 = beta0, b1 = beta1, a = alpha)
     loc <- b0*p*psi_f(Y_obs$M, mu[1], sigma[1], Lim = m50, m0 = m1, b0 = beta0, b1 = beta1, a = alpha)
     loc <- loc + vapply(data.table::transpose(lapply(Theta, function(x){Sersic_ints(Y_obs[,c('x','y')], x$c, x$N, x$R_eff, x$e, x$n, x$theta)*p*psi_f(Y_obs$M, x$mu, x$sigma, Lim = m50, m0 = m1, b0 = beta0, b1 = beta1, a = alpha)})), sum, 0)
     L <- L + sum(log(loc)) 
