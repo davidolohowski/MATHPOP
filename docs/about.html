@@ -480,15 +480,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreec8ce15730e667bdb9a24868b5809e9a7ce75474etargetblankc8ce157a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree02c5eb3c2e5c24d13c216bc139b103a88520c65atargetblank02c5eb3a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/c8ce15730e667bdb9a24868b5809e9a7ce75474e" target="_blank">c8ce157</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/02c5eb3c2e5c24d13c216bc139b103a88520c65a" target="_blank">02c5eb3</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreec8ce15730e667bdb9a24868b5809e9a7ce75474etargetblankc8ce157a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree02c5eb3c2e5c24d13c216bc139b103a88520c65atargetblank02c5eb3a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -498,7 +498,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/c8ce15730e667bdb9a24868b5809e9a7ce75474e" target="_blank">c8ce157</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/02c5eb3c2e5c24d13c216bc139b103a88520c65a" target="_blank">02c5eb3</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -541,11 +541,8 @@ Ignored files:
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
 
-Untracked files:
-    Untracked:  analysis/appendix.Rmd
-
 Unstaged changes:
-    Modified:   analysis/_site.yml
+    Modified:   analysis/posterior.Rmd
 
 </code></pre>
 <p>
@@ -590,6 +587,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/02c5eb3c2e5c24d13c216bc139b103a88520c65a/analysis/about.Rmd" target="_blank">02c5eb3</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-08
+</td>
+<td>
+wflow_publish("analysis/about.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/e75065516500fbb07febcac1c5da5a250c0731f5/docs/about.html" target="_blank">e750655</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -913,16 +944,51 @@ al. (2024).</p>
 spatial location <span class="math inline">\(\mathbf{X}\)</span> (point
 process) of observed GCs and their magnitudes <span
 class="math inline">\(\mathbf{M}\)</span> (mark). It is assumed that the
-GC locations in galaxies, either bright, normal galaxies or UDGs, arise
-from a Sersic profile, while the GC magnitude distribution is described
-by a Gaussian distribution, which is the GCLF. Moreover, the background
-GC population, i.e., GCs in the intergalatic medium (IGM), are uniformly
-distributed (a homogeneous Poisson process). Note that we assume that
-the GCLF of each GC sub-population (normal galaxy, UDG, or IGM) have
-their own GCLF, and we infer them using the data.</p>
+GC distribution in galaxies, either bright, normal galaxies or UDGs, are
+described by a Sersic profile, while the GC magnitude distribution is
+described by a Gaussian distribution, which is the GCLF. Moreover, the
+background GC population, i.e., GCs in the intergalatic medium (IGM),
+are uniformly distributed (a homogeneous Poisson process). Note that we
+assume that the GCLF of each GC sub-population (normal galaxy, UDG, or
+IGM) have their own GCLF, and we infer them using the data.</p>
 <p>Below is a graphical model that illustrates the MATHPOP model
 framework:</p>
 <p><img src="assets/graph_mod.png" /></p>
+<p>In the above figure, the data generating process under the MATHPOP
+framework assumes that we have GC sub-populations from the IGM, normal,
+bright galaxies (ETGs), and UDGs. The observed GCs (the data) are
+assumed to be independent superposition of the GCs from these three
+sub-populations. The Sersic profiles (<span
+class="math inline">\(\lambda, R_h, n\)</span>) generate the GC spatial
+distributions in galaxies while a homogeneous process (<span
+class="math inline">\(\beta\)</span>) generates GCs from the IGM. The
+GCLFs (<span class="math inline">\(\mu_{\text{TO}}, \sigma\)</span>) of
+each GC sub-populations then generate the true magnitude distribution.
+The true magnitudes are then convolved with the measurement
+uncertainties (<span class="math inline">\(\sigma_M\)</span>) to give
+rise to the noisy GC magnitudes. Lastly, the completeness fraction <span
+class="math inline">\(f(M)\)</span> is applied to remove faint GCs that
+are unobservable, which give rise to the observed data (<span
+class="math inline">\(\mathbf{x}, \mathbf{M}\)</span>).</p>
+<p>The summarized assumptions of the current implementation of MATHPOP
+are the following:</p>
+<ul>
+<li>GCs from each sub-populations are independent, i.e., generating
+process of GCs in one galaxy are independent from GCs in any other
+environment.</li>
+<li>GC spatial distributions in galaxies (either normal galaxies or
+UDGs) are described by a Sersic profile.</li>
+<li>GC spatial distribution in IGM is uniform (a homogenous Poisson
+process).</li>
+<li>GCLFs of GCs in different sub-population are different, and directly
+inferred using data.</li>
+<li>The true GCLF is described by a Gaussian density.</li>
+<li>There are no crowding effect in an image.</li>
+<li>The measurement uncertainty of the GC magnitudes are
+normally-distributed.</li>
+<li>The completeness fraction is the same across different regions of an
+image.</li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
