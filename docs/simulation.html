@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Simulation Analysis</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MATHPOP</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Quick Start
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="GC_prob.html">Probabilistic GC Catalog</a>
+    </li>
+    <li>
+      <a href="vignette.html">MATHPOP Tutorial</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MATHPOP Paper Code
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_process.html">Getting Data</a>
+    </li>
+    <li>
+      <a href="posterior.html">Posterior Results Analysis</a>
+    </li>
+    <li>
+      <a href="method_compare.html">Methods Comparison</a>
+    </li>
+    <li>
+      <a href="GCLF.html">GCLFs of R27 and W88</a>
+    </li>
+    <li>
+      <a href="simulation.html">Simulation Analysis</a>
+    </li>
+    <li class="dropdown-header">Appendix Analysis</li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/davidolohowski/MATHPOP">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Simulation Analysis</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-07-07
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>MATHPOP/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240702code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240702)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240702code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240702)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreee5a8c278ea613e7bbd348dd25412826ef176f71btargetblanke5a8c27a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/e5a8c278ea613e7bbd348dd25412826ef176f71b" target="_blank">e5a8c27</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreee5a8c278ea613e7bbd348dd25412826ef176f71btargetblanke5a8c27a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/davidolohowski/MATHPOP/tree/e5a8c278ea613e7bbd348dd25412826ef176f71b" target="_blank">e5a8c27</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    analysis/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/GC_prob/.DS_Store
+    Ignored:    data/point_source_data/.DS_Store
+    Ignored:    data/prob_GC_data/.DS_Store
+    Ignored:    data/sim/.DS_Store
+    Ignored:    data/v10acs/.DS_Store
+    Ignored:    data/v10wfc3/.DS_Store
+    Ignored:    data/v11acs/.DS_Store
+    Ignored:    data/v11wfc3/.DS_Store
+    Ignored:    data/v12acs/.DS_Store
+    Ignored:    data/v12wfc3/.DS_Store
+    Ignored:    data/v13acs/.DS_Store
+    Ignored:    data/v13wfc3/.DS_Store
+    Ignored:    data/v14acs/.DS_Store
+    Ignored:    data/v14wfc3/.DS_Store
+    Ignored:    data/v15acs/.DS_Store
+    Ignored:    data/v15wfc3/.DS_Store
+    Ignored:    data/v6acs/.DS_Store
+    Ignored:    data/v6wfc3/.DS_Store
+    Ignored:    data/v7acs/.DS_Store
+    Ignored:    data/v8acs/.DS_Store
+    Ignored:    data/v9acs/.DS_Store
+    Ignored:    data/v9wfc3/.DS_Store
+
+Untracked files:
+    Untracked:  GCLF-tikzDictionary
+    Untracked:  analysis/GCLF-tikzDictionary
+    Untracked:  analysis/simulation-tikzDictionary
+    Untracked:  data/summary_results.RDS
+    Untracked:  simulation-tikzDictionary
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/simulation.Rmd</code>) and HTML
+(<code>docs/simulation.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/e5a8c278ea613e7bbd348dd25412826ef176f71b/analysis/simulation.Rmd" target="_blank">e5a8c27</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-07
+</td>
+<td>
+wflow_publish("analysis/simulation.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('left', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<style type="text/css">
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  max-height: 50vh !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette contains code to run the simulation study conducted in
+the MATHPOP paper, as well as code to analyze the simulation
+results.</p>
+</div>
+<div id="simulating-gc-locations-and-magnitudes" class="section level2">
+<h2>Simulating GC Locations and Magnitudes</h2>
+<p>We first illustrate our approach for generating simulated data.
+First, load the required packages and help functions:</p>
+<pre class="r"><code>library(tidyverse)
+library(posterior)
+library(HDInterval)
+library(modeest)
+library(ggstar)
+library(tikzDevice)
+library(sf)
+library(sp)
+library(raster)
+library(Rcpp)
+library(RcppArmadillo)
+library(spatstat)
+library(VGAM)
+library(reshape2)
+library(wesanderson)
+
+# load required functions
+sourceCpp(&#39;code/cpp_help_func.cpp&#39;)
+source(&#39;code/fit_mod_MCMC.R&#39;)</code></pre>
+<p>Since we are running thousands of simulations with different
+parameter configuration, we needed to run the <code>R</code> source file
+on a remote HPC server operated under Unix. Thus, the original source
+code for conducting the simulations was written to handle HPC server
+file read-in. The two lines of code below are passed to the HPC server
+to generate different simulations based on the <code>sim_id</code>
+argument. If you only run the simulation a few times on a local machine,
+you do not need this.</p>
+<pre class="r"><code>args &lt;- commandArgs(TRUE)
+sim_id &lt;- as.numeric(Sys.getenv(&#39;SLURM_ARRAY_TASK_ID&#39;))</code></pre>
+<p>Next, construct the spatial domain in which the GC locations reside.
+Here we assume that the spatial domain is the same as the ACS images
+from the PIPER survey, i.e, a square with <span
+class="math inline">\(76\)</span>~kpc a side:</p>
+<pre class="r"><code># specify the simulation counter (this will be automatically read in on a HPC server; Setting sim_id to 900 here is only for demonstrative purposes)
+sim_id &lt;- 900
+
+# vertices of the spatial domain
+X &lt;- c(0, 76, 76, 0)
+Y &lt;- c(0, 0, 76, 76)
+
+# construct the spatial domain S
+S &lt;- Polygon(cbind(X,Y))
+S &lt;- SpatialPolygons(list(Polygons(list(S),&#39;region&#39;)))
+S &lt;- SpatialPolygonsDataFrame(S, data.frame(id = S@polygons[[1]]@ID, row.names = S@polygons[[1]]@ID))</code></pre>
+<p>We then specify the parameters used to simulate the GC data. We
+assume that there is one simulated UDG GC system present in the field,
+and is simulated using a Sersic profile. All other GCs are from the IGM,
+and simulated from a homogeneous Poisson process. For simulating the
+GCLF, the completeness fraction and measurement uncertainty are the same
+as that of PIPER ACS images obtained by DOLPHOT.</p>
+<p>The only varying parameters are the GC counts of the UDG and its GCLF
+TO point. We have set these to <span class="math inline">\(N_{\text{GC}}
+= \{0, 5, 10, 20, 40, 80\}\)</span> and <span
+class="math inline">\(\mu_{\text{TO}} = \{25.3, 25.8,
+26.3\}\)</span>~mag with <span class="math inline">\(26.3\)</span>~mag
+being the canonical GCLF TO point. We simulate <span
+class="math inline">\(50\)</span> datasets for each of the parameter
+configuration from above, which results in a total of <span
+class="math inline">\(6\times3\times150 = 2700\)</span> sets of
+simulated data.</p>
+<pre class="r"><code># 50% completeness limit
+Lim &lt;- 25.75
+
+# simulation id: every parameter configuration is simulated 150 times to account for randomness
+# NOTE: some HPC server does not allow this many different simulations to be done at the same time (many have a maximum 1000 files run at a time), so you will have to break these simulations into smaller chunks
+par_id &lt;- ceiling(sim_id/150)
+iter &lt;- (sim_id %% 150)*(sim_id %% 150 != 0) + 150*(sim_id %% 150 == 0)
+
+# possible parameter configuration for GC counts (N) and GCLF TO (mu_U)
+par &lt;- expand.grid(N = c(0, 5, 10, 20, 40, 80),
+                   mu_U = c(25.3, 25.8, 26.3))
+
+# sim_id is set to 300, which corresponds to N = 80 and mu_U = 25.3 mag
+
+# other model parameters
+set.seed(sim_id)
+b0 &lt;- 0.037 # IGM GC intensity
+c &lt;- matrix(runif(2, 8, 68), ncol = 2) # location of the simulated UDG (within the box [8,68]X[8,68])
+N &lt;- par$N[par_id] # GC count in UDG
+R_eff &lt;- 2 # half-number radius
+e &lt;- 1 # aspect ratio of GC system
+n &lt;- 2 # Sersic index
+theta &lt;- 0 # orientation angle
+mu &lt;- c(26.3, par$mu_U[par_id]) # GCLF TO (IGM GC and UDG GC)
+sigma &lt;- c(1.2, 1) # GCLF dispersion
+UDG_ID &lt;- &#39;sim_U&#39;</code></pre>
+<p>We then simulate the observed GC point pattern and the magnitudes,
+and plot it. The red point and the cluster of GC at the lower-mid region
+is the simulated GC system.</p>
+<pre class="r"><code># generate data with measurement uncertainty using the provided parameters. Note that the measurement uncertainty specification is set to the ACS images from DOLPHOT as default
+Y &lt;- simulate_Y_noisy(S, b0, c, N, R_eff, e, n, theta, mu, sigma)
+# remove faint GCs according to the completeness fraction
+Y_obs_n &lt;- simulate_Yf_noise(Y, Lim)
+
+ggplot(Y_obs_n, aes(x,y)) + geom_point(size = 0.1) + coord_fixed() +
+  theme_minimal() + geom_point(data = data.frame(x = c[,1], y = c[,2]), color = &#39;red&#39;, size = 0.5)</code></pre>
+<p><img src="figure/simulation.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="fitting-the-mathpop-model-to-the-simulated-data"
+class="section level2">
+<h2>Fitting the MATHPOP Model to the Simulated Data</h2>
+<p>After the data is simulated, it can now be passed to the
+<code>fit_MATHPOP</code> function to conduct inference. See <a
+href="vignette.html">here</a> on how to do this. Note that the data we
+have simulated here does not consider the data uncertainty, i.e., every
+source is a true GC without any contamination from other sources. In
+such cases, set the argument <code>prob_model = FALSE</code> in the
+<code>fit_MATHPOP</code> function to fit the model.</p>
+<p>The prior distribution of the model parameters under simulations are
+as below (see <a href="vignette.html">here</a> on how to construct the
+prior distribution parameter list):</p>
+<pre class="r"><code>prior &lt;- list(IGM = list(b0 = c(log(0.03), 0.4), # IGM GC prior
+                         mu = data.frame(a = 26.3, b = 0.5),
+                         sigma = data.frame(a = log(1.3), b = 0.25)), 
+              
+              UDG = list(N = data.frame(a = rep(0, 1), b = rep(50, 1)), # UDG GC prior
+                        R_eff = data.frame(a = log(2), b = 0.5),
+                        n = data.frame(a = log(1), b = 0.75),
+                        mu = data.frame(a = 26.3, b = 0.5),
+                        sigma = data.frame(a = log(1.3), b = 0.25)))</code></pre>
+</div>
+<div id="analyzing-the-simulation-results" class="section level2">
+<h2>Analyzing the Simulation Results</h2>
+<p>Now we conduct the analysis for simulation results obtained using
+MATHPOP and compare them to those from the standard method. Note that
+due to the large number of simulations conducted, the raw inference
+results (MCMC samples for 2700 simulated data) are not uploaded to the
+Github repo. We have summarized and stored these results in a much
+smaller data object at <code>data/sim/simulation_results.RDS</code> that
+is sufficient to draw conclusions presented in the MATHPOP paper. Read
+in the summarized data of the simulation results:</p>
+<pre class="r"><code>sim_res &lt;- readRDS(&#39;data/sim/simulation_results.RDS&#39;)</code></pre>
+<p>We then conduct inference for the same simulation scenarios using the
+standard method (see J24 paper for a detailed description on how this is
+done):</p>
+<pre class="r"><code># average 50% completeness limit under SExtractor quoted from J24 
+Lim &lt;- 26.69
+
+# parameter configuration
+par &lt;- expand.grid(N = c(0, 5, 10, 20, 40, 80),
+                   mu_U = c(25.3, 25.8, 26.3))
+
+# allocate object for inference results using the standard method
+sim_res_std &lt;- expand.grid(N = c(0, 5, 10, 20, 40, 80), mu = c(25.3, 25.8, 26.3)) %&gt;%
+  slice(rep(1:n(), each = 150)) %&gt;%
+  mutate(N_mean = 0)
+
+# obtain GC counts estimates using the standard method
+for (sim_id in 1:2700) {
+  # get simulation id
+  par_id &lt;- ceiling(sim_id/150)
+  iter &lt;- (sim_id %% 150)*(sim_id %% 150 != 0) + 150*(sim_id %% 150 == 0)
+  
+  set.seed(sim_id)
+  b0 &lt;- 0.037
+  c &lt;- matrix(runif(2, 8, 68), ncol = 2)
+  N &lt;- par$N[par_id]
+  R_eff &lt;- 1
+  e &lt;- 1
+  n &lt;- 2
+  theta &lt;- 0
+  mu &lt;- c(26.3, par$mu_U[par_id])
+  sigma &lt;- c(1.2, 1)
+  UDG_ID &lt;- &#39;sim_U&#39;
+  
+  # simulate the GC data with measurement uncertainty in GC magnitudes using the measurement uncertainty specification from J24
+  Y &lt;- simulate_Y_noisy(S, b0, c, N, R_eff, e, n, theta, mu, sigma, a = 0.07477, b = 0.75094)
+  # remove faint GCs according to completeness fraction
+  Yf_n &lt;- simulate_Yf_noise(Y, Lim, alpha = 6.56)
+  # remove sources fainter than the canonical limit (as done in J24)
+  Y_obs_n &lt;- filter(Yf_n, M &lt; 26.3)
+  
+  # count the number of sourcse within a 7.5 kpc radius aperture of the UDG
+  N &lt;- nrow(filter(Y_obs_n, (x - c[1,1])^2 + (y - c[1,2])^2 &lt; 7.5^2))
+  
+  # estimate the background GC count
+  N_IGM &lt;- nrow(filter(Y_obs_n, (x - c[1,1])^2 + (y - c[1,2])^2 &gt; 7.5^2))/(76^2 - pi*7.5^2)*pi*7.5^2
+  
+  # get GC count estimates by correcting for GCLF (divide by 0.5) and GCs outside of the counting radius (divide by 0.9)
+  sim_res_std$N_mean[sim_id] &lt;- (N-N_IGM)/0.5/0.9
+}
+
+sim_res$Method &lt;- &#39;Ours&#39;
+sim_res_std$Method &lt;- &#39;Standard&#39;</code></pre>
+<p>Now we do some analysis with the inference results. First, we check
+the estimation performance on the GC counts (see Figure 7(a) in the
+paper for more details):</p>
+<pre class="r"><code># grab the summary statistics of the GC count estimates from MATHPOP and the standard method
+N_sim_res &lt;- sim_res %&gt;%
+  dplyr::select(N, mu, N_mean, N_mode, Method) %&gt;%
+  bind_rows(., sim_res_std) %&gt;%
+  melt(., id = c(&#39;N&#39;, &#39;mu&#39;, &#39;Method&#39;)) %&gt;%
+  mutate(variable = ifelse(variable == &#39;N_mean&#39;, &#39;Mean&#39;, &#39;Mode&#39;))
+
+# process the data and plot it
+N_sim_res %&gt;%
+  group_by(N, Method, variable) %&gt;%
+  mutate(N_avg = mean(value, na.rm = T),
+         N_l = quantile(value, 0.16, na.rm = T), N_u = quantile(value, 0.84, na.rm = T)) %&gt;%
+  dplyr::select(N_avg, N_l, N_u) %&gt;%
+  unique() %&gt;%
+  drop_na() %&gt;%
+  mutate(Estimator = paste0(Method, &#39; (&#39;, variable, &#39;)&#39;)) %&gt;%
+ggplot(aes(N, N_avg - N)) + geom_line(aes(color = Estimator),  position = position_dodge(3)) +
+  geom_hline(yintercept = 0) + theme_minimal() +
+  geom_pointrange(aes(x = N, ymin = N_l - N, ymax = N_u - N, color = Estimator),
+                  size = 0.1, position = position_dodge(3)) + 
+  scale_color_manual(values = wes_palette(&quot;Darjeeling1&quot;, 5, &#39;discrete&#39;)[c(1,2,5)]) +
+  xlab(&#39;$N_{\\mathrm{GC}}^{\\mathrm{true}}$&#39;) +
+  ylab(&#39;$N_{\\mathrm{GC}}^{\\mathrm{est}}$ - $N_{\\mathrm{GC}}^{\\mathrm{true}}$&#39;) + 
+  coord_fixed(ylim = c(-15, 65)) + theme(legend.position = &#39;bottom&#39;, 
+                                         legend.text=element_text(size=7), 
+                                         legend.title = element_text(size = 7),
+                                         axis.title = element_text(size = 7),
+                                         axis.text = element_text(size = 7))</code></pre>
+<p><img src="figure/simulation.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Clearly, the standard method performs a lot worse than MATPOP. Next,
+we plot the performance results of the standard method against different
+true values of <span class="math inline">\(\mu_{\text{TO}}\)</span>:</p>
+<pre class="r"><code>sim_res_std %&gt;%
+  group_by(N, mu) %&gt;%
+  mutate(N_mode_avg = mean(N_mean), 
+         N_mode_l = quantile(N_mean, 0.16), N_mode_u = quantile(N_mean, 0.84)) %&gt;%
+  dplyr::select(N_mode_avg, N_mode_l, N_mode_u) %&gt;%
+  unique() %&gt;%
+  ggplot(aes(N, N_mode_avg - N, color = as.character(mu))) + 
+  geom_line(aes(color = as.character(mu)),  position = position_dodge(3)) +
+  geom_point(size = 1, position = position_dodge(width = 3)) +
+  geom_hline(yintercept = 0) + theme_minimal() +
+  geom_errorbar(aes(ymin = N_mode_l - N, ymax = N_mode_u - N), size = 0.5, width = 0.75, position = position_dodge(width = 3)) +
+  scale_color_manual(values = wes_palette(&#39;Zissou1&#39;, n = 5, type = &#39;discrete&#39;)[c(1,3,5)], name = &#39;$\\mu_{\\mathrm{TO}}^{\\mathrm{true}}$ (mag)&#39;) + 
+  xlab(&#39;$N_{\\mathrm{GC}}^{\\mathrm{true}}$&#39;) +
+  ylab(&#39;$N_{\\mathrm{GC}}^{\\mathrm{est}}$ - $N_{\\mathrm{GC}}^{\\mathrm{true}}$&#39;)+
+  coord_fixed(ylim = c(-15, 65))+ theme(legend.position = &#39;bottom&#39;, 
+                                        legend.text=element_text(size=7), 
+                                        legend.title = element_text(size = 7),
+                                        axis.title = element_text(size = 7),
+                                        axis.text = element_text(size = 7))</code></pre>
+<p><img src="figure/simulation.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We see that the standard method is only relatively accurate when the
+true <span class="math inline">\(\mu_{\text{TO}}\)</span> is the
+canonical value since the standard method is assuming that the GCLF of
+GCs from all sub-population is the same as the canonical one.</p>
+<p>Lastly, we plot the relationship between the posterior modes of <span
+class="math inline">\(N_{\text{GC}}\)</span> and <span
+class="math inline">\(\mu_{\text{TO}}\)</span> (see Figure 7(c) for more
+details):</p>
+<pre class="r"><code>summary_all_dat &lt;- readRDS(&#39;data/summary_results.RDS&#39;)
+
+sim_res %&gt;%
+  group_by(N, mu) %&gt;%
+  mutate(N_mode_avg = mean(N_mode), mu_mode_avg = mean(mu_mode),
+         N_mode_l = quantile(N_mode, 0.25), N_mode_u = quantile(N_mode, 0.75),
+         mu_mode_l_0.68 = quantile(mu_mode, 0.16), mu_mode_u_0.68 = quantile(mu_mode, 0.84),
+         mu_mode_l_0.95 = quantile(mu_mode, 0.025), mu_mode_u_0.95 = quantile(mu_mode, 0.975),
+         mu_mode_l_0.99 = quantile(mu_mode, 0.005), mu_mode_u_0.99 = quantile(mu_mode, 0.995)) %&gt;%
+  dplyr::select(N_mode_avg, mu_mode_avg, N_mode_l, N_mode_u, mu_mode_l_0.68, mu_mode_u_0.68, mu_mode_l_0.95, mu_mode_u_0.95, mu_mode_l_0.99, mu_mode_u_0.99) %&gt;%
+  unique() %&gt;%
+  ggplot(aes(N_mode_avg, mu_mode_avg, color = as.factor(mu)))  + theme_minimal() + facet_grid(~ mu) +
+  geom_ribbon(aes(ymin = mu_mode_l_0.68, ymax = mu_mode_u_0.68, fill = as.factor(mu)), color = NA, alpha = 0.4, size = 0.25) +
+  geom_ribbon(aes(ymin = mu_mode_l_0.95, ymax = mu_mode_u_0.95, fill = as.factor(mu)), color = NA, alpha = 0.2, size = 0.25) +
+  geom_ribbon(aes(ymin = mu_mode_l_0.99, ymax = mu_mode_u_0.99, fill = as.factor(mu)), color = NA, alpha = 0.1, size = 0.25) +
+  geom_point(data = summary_all_dat, aes(x = N_mode.x, y = mu_mode.x), size = 0.25, color = &#39;black&#39;, alpha = 0.5) +
+  geom_point(size = 0.75) +  geom_line() + geom_hline(aes(yintercept = (mu), color = as.factor(mu))) +
+  scale_color_manual(values = wes_palette(&#39;Zissou1&#39;, n = 12, type = &#39;continuous&#39;)[c(1,9,12)], name = &#39;$\\mu_{\\mathrm{TO}}^{{\\mathrm{true}}}$ (mag)&#39;) + 
+  scale_fill_manual(values = wes_palette(&#39;Zissou1&#39;, n = 12, type = &#39;continuous&#39;)[c(1,9,12)], name = &#39;$\\mu_{\\mathrm{TO}}^{{\\mathrm{true}}}$ (mag)&#39;) + 
+  scale_y_reverse() +
+  xlab(&#39;$\\bar{N}_{\\mathrm{GC}}^{\\mathrm{mode}}$&#39;) +
+  ylab(&#39;$\\mu_{\\mathrm{TO}}^{\\mathrm{mode}}$ (mag)&#39;) +
+  geom_star(data = data.frame(N_mode_avg = 26, mu_mode_avg = 25.82434), fill = &#39;black&#39;, size = 1, starshape = 24, color = &#39;black&#39;) + 
+  geom_star(data = data.frame(N_mode_avg = 37, mu_mode_avg = 25.75116), fill = &#39;black&#39;, size = 1, starshape = 24, color = &#39;black&#39;) +
+  annotate(geom = &#39;text&#39;, x = 18.5, y = 25.82, label = &#39;W88&#39;, size = 3) + 
+  annotate(geom = &#39;text&#39;, x = 37, y = 25.65, label = &#39;R27&#39;, size = 3) +
+  theme(strip.text = element_blank(), legend.position = &#39;bottom&#39;)</code></pre>
+<p><img src="figure/simulation.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.3.2 (2023-10-31)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Sonoma 14.1.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Toronto
+tzcode source: internal
+
+attached base packages:
+[1] splines   stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] progress_1.2.2           wesanderson_0.3.7        reshape2_1.4.4          
+ [4] VGAM_1.1-9               spatstat_3.0-7           spatstat.linnet_3.1-3   
+ [7] spatstat.model_3.2-8     rpart_4.1.21             spatstat.explore_3.2-5  
+[10] nlme_3.1-163             spatstat.random_3.2-1    spatstat.geom_3.2-7     
+[13] spatstat.data_3.0-3      RcppArmadillo_0.12.6.6.0 Rcpp_1.0.11             
+[16] raster_3.6-26            sp_2.1-1                 sf_1.0-14               
+[19] tikzDevice_0.12.5        ggstar_1.0.4             modeest_2.4.0           
+[22] HDInterval_0.2.4         posterior_1.5.0          lubridate_1.9.3         
+[25] forcats_1.0.0            stringr_1.5.1            dplyr_1.1.4             
+[28] purrr_1.0.2              readr_2.1.4              tidyr_1.3.0             
+[31] tibble_3.2.1             ggplot2_3.4.4            tidyverse_2.0.0         
+[34] workflowr_1.7.1         
+
+loaded via a namespace (and not attached):
+  [1] tensorA_0.36.2        rstudioapi_0.15.0     jsonlite_1.8.7       
+  [4] magrittr_2.0.3        magick_2.8.3          spatstat.utils_3.0-4 
+  [7] farver_2.1.1          rmarkdown_2.25        fs_1.6.3             
+ [10] vctrs_0.6.5           askpass_1.2.0         terra_1.7-55         
+ [13] tinytex_0.48          htmltools_0.5.8.1     distributional_0.3.2 
+ [16] sass_0.4.7            KernSmooth_2.23-22    bslib_0.5.1          
+ [19] pdftools_3.4.0        plyr_1.8.9            cachem_1.0.8         
+ [22] whisker_0.4.1         lifecycle_1.0.4       pkgconfig_2.0.3      
+ [25] Matrix_1.6-3          R6_2.5.1              fastmap_1.2.0        
+ [28] clue_0.3-65           digest_0.6.36         colorspace_2.1-0     
+ [31] spatial_7.3-17        ps_1.7.5              rprojroot_2.0.4      
+ [34] tensor_1.5            labeling_0.4.3        fansi_1.0.6          
+ [37] spatstat.sparse_3.0-3 timechange_0.2.0      httr_1.4.7           
+ [40] polyclip_1.10-6       abind_1.4-5           mgcv_1.9-0           
+ [43] compiler_4.3.2        proxy_0.4-27          withr_2.5.2          
+ [46] backports_1.4.1       DBI_1.1.3             highr_0.10           
+ [49] classInt_0.4-10       fBasics_4032.96       zipfR_0.6-70         
+ [52] tools_4.3.2           units_0.8-4           filehash_2.4-5       
+ [55] httpuv_1.6.12         goftest_1.2-3         glue_1.6.2           
+ [58] stabledist_0.7-1      callr_3.7.3           promises_1.2.1       
+ [61] grid_4.3.2            checkmate_2.3.1       getPass_0.2-4        
+ [64] cluster_2.1.4         generics_0.1.3        gtable_0.3.4         
+ [67] tzdb_0.4.0            class_7.3-22          hms_1.1.3            
+ [70] utf8_1.2.4            rmutil_1.1.10         pillar_1.9.0         
+ [73] later_1.3.1           lattice_0.22-5        klippy_0.0.0.9500    
+ [76] deldir_1.0-9          tidyselect_1.2.0      knitr_1.45           
+ [79] git2r_0.33.0          gridExtra_2.3         xfun_0.41            
+ [82] timeDate_4022.108     stringi_1.8.4         qpdf_1.3.3           
+ [85] yaml_2.3.7            evaluate_0.23         codetools_0.2-19     
+ [88] timeSeries_4031.107   cli_3.6.1             munsell_0.5.0        
+ [91] processx_3.8.2        jquerylib_0.1.4       stable_1.1.6         
+ [94] parallel_4.3.2        assertthat_0.2.1      prettyunits_1.2.0    
+ [97] scales_1.3.0          e1071_1.7-13          crayon_1.5.2         
+[100] statip_0.2.3          rlang_1.1.4          </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
