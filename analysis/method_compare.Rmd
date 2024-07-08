@@ -16,7 +16,7 @@ pre code, pre, code {
   white-space: pre !important;
   overflow-x: scroll !important;
   overflow-y: scroll !important;
-  height: 50vh !important;
+  max-height: 50vh !important;
   word-break: keep-all !important;
   word-wrap: initial !important;
 }

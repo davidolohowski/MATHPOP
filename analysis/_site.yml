@@ -22,6 +22,7 @@ navbar:
       - text: GCLFs of R27 and W88
         href: GCLF.html
       - text: Simulation Analysis
+        href: simulation.html
       - text: Appendix Analysis
   - text: About
     href: about.html

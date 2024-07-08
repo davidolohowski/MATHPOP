@@ -16,7 +16,7 @@ pre code, pre, code {
   white-space: pre !important;
   overflow-x: scroll !important;
   overflow-y: scroll !important;
-  height: 50vh !important;
+  max-height: 50vh !important;
   word-break: keep-all !important;
   word-wrap: initial !important;
 }
@@ -228,6 +228,10 @@ summary_NGC_J <- merge(summary_NGC_J, Jans_NGC)
 summary_dat_J <- merge(merge(summary_NGC_J, summary_muGC_J, by = 'ID'), summary_RGC_J, by = 'ID') %>%
   arrange(desc(N_mode)) %>%
   mutate(data = 'SExtractor (J24)')
+
+## save the combined summary results in a data object (only do it once)
+# csummary_all_dat <- merge(summary_dat, summary_dat_J, by = 'ID')
+# saveRDS(summary_all_dat, 'data/summary_results.RDS')
 ```
 
 ## Results Comparison
