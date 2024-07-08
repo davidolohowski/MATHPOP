@@ -277,7 +277,7 @@ We see that the standard method is only relatively accurate when the true $\mu_{
 
 Lastly, we plot the relationship between the posterior modes of $N_{\text{GC}}$ and $\mu_{\text{TO}}$ (see Figure 7(c) for more details):
 
-```{r, dev ='tikz', fig.process = pdf2png, fig.align='center', message=F}
+```{r, dev ='tikz', fig.process = pdf2png, fig.align='center', message=F, fig.width=7, fig.height=3}
 summary_all_dat <- readRDS('data/summary_results.RDS')
 
 sim_res %>%
