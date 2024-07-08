@@ -560,15 +560,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreec8ce15730e667bdb9a24868b5809e9a7ce75474etargetblankc8ce157a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreebd30aeb460e07081932c2a0c76a9c6f3b6ebcb70targetblankbd30aeba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/c8ce15730e667bdb9a24868b5809e9a7ce75474e" target="_blank">c8ce157</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/bd30aeb460e07081932c2a0c76a9c6f3b6ebcb70" target="_blank">bd30aeb</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreec8ce15730e667bdb9a24868b5809e9a7ce75474etargetblankc8ce157a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreebd30aeb460e07081932c2a0c76a9c6f3b6ebcb70targetblankbd30aeba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -578,7 +578,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/c8ce15730e667bdb9a24868b5809e9a7ce75474e" target="_blank">c8ce157</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/bd30aeb460e07081932c2a0c76a9c6f3b6ebcb70" target="_blank">bd30aeb</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -620,12 +620,6 @@ Ignored files:
     Ignored:    data/v9wfc3/.DS_Store
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
-
-Untracked files:
-    Untracked:  analysis/appendix.Rmd
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
 
 </code></pre>
 <p>
@@ -671,6 +665,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/bd30aeb460e07081932c2a0c76a9c6f3b6ebcb70/analysis/vignette.Rmd" target="_blank">bd30aeb</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-08
+</td>
+<td>
+wflow_publish("analysis/vignette.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/e75065516500fbb07febcac1c5da5a250c0731f5/docs/vignette.html" target="_blank">e750655</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1326,9 +1354,12 @@ in the data, <code>gal</code> does not need to be specified.</li>
 <li><code>prior</code> List. A list that specifies the parameter values
 of the prior distributions of the model parameters. See above Section on
 prior.</li>
-<li><code>p = 1</code> Numeric. Crowding effect. A numerical value
-between <span class="math inline">\((0,1)\)</span>. In the current
-implementation, it is assumed that it is <span
+<li><code>p = 1</code> Numeric. Crowding effect. Either a numeric value
+between <span class="math inline">\((0,1)\)</span>, or a numeric vector
+whose entries are all in <span class="math inline">\((0,1)\)</span> and
+length equal to <code>n_grid</code> in <code>spat_dom</code> with each
+numeric element being the crowding effect at the location of the spatial
+grid. In the current implementation, it is assumed that it is <span
 class="math inline">\(1\)</span> (no crowding).</li>
 <li><code>cf_error</code> List. List of parameters for completeness
 fraction and measurement uncertainties. See above Section.</li>
