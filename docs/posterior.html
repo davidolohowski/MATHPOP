@@ -561,15 +561,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree4ed641c259ec0c086648083add5b046be933e84btargetblank4ed641ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree757f3195a02bfe81527a60fc53d8813aa3ed2e7ctargetblank757f319a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/4ed641c259ec0c086648083add5b046be933e84b" target="_blank">4ed641c</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/757f3195a02bfe81527a60fc53d8813aa3ed2e7c" target="_blank">757f319</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree4ed641c259ec0c086648083add5b046be933e84btargetblank4ed641ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree757f3195a02bfe81527a60fc53d8813aa3ed2e7ctargetblank757f319a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -579,7 +579,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/4ed641c259ec0c086648083add5b046be933e84b" target="_blank">4ed641c</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/757f3195a02bfe81527a60fc53d8813aa3ed2e7c" target="_blank">757f319</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -619,13 +619,8 @@ Ignored files:
     Ignored:    data/v8acs/.DS_Store
     Ignored:    data/v9acs/.DS_Store
     Ignored:    data/v9wfc3/.DS_Store
-
-Untracked files:
-    Untracked:  GCLF-tikzDictionary
-    Untracked:  analysis/GCLF-tikzDictionary
-    Untracked:  analysis/simulation-tikzDictionary
-    Untracked:  data/summary_results.RDS
-    Untracked:  simulation-tikzDictionary
+    Ignored:    source/.DS_Store
+    Ignored:    source/v8wfc3/
 
 </code></pre>
 <p>
@@ -671,6 +666,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/757f3195a02bfe81527a60fc53d8813aa3ed2e7c/analysis/posterior.Rmd" target="_blank">757f319</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-07
+</td>
+<td>
+wflow_publish("analysis/posterior.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/8fb288da5723d31d997606f997029d482c170777/docs/posterior.html" target="_blank">8fb288d</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -885,7 +914,17 @@ pre code, pre, code {
 results of MATHPOP model fitted to the 40 Perseus LSBGs considered in
 the original Li et al. (2024) paper. It also reproduces Figure 4 and
 provides the data contained in Table 3 of the paper. To fit the MATHPOP
-model, see <a href="vignette.html">here</a>.</p>
+model, see <a href="vignette.html">here</a>. Note that the MCMC results
+in the MATHPOP paper were obtained using an older version of the code
+contained in the <code>source/</code> folder of this repo. The current
+version of the code, i.e., the main <code>fit_MATHPOP</code> function
+was rewritten so that it is more user-friendly. Due to the update, it is
+unavoidable that the results from <code>fit_MATHPOP</code> do not match
+exactly with the results from the older code. Because of the
+computational constraints, we did not rerun everything using the new
+code, but our testing shows that the new code provides entirely
+consistent results as the old code. If you wish to use the old code,
+please see the files in the <code>source/</code> folder.</p>
 </div>
 <div id="post-inference-results" class="section level2">
 <h2>Post Inference Results</h2>
