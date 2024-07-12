@@ -230,7 +230,7 @@ summary_dat_J <- merge(merge(summary_NGC_J, summary_muGC_J, by = 'ID'), summary_
   mutate(data = 'SExtractor (J24)')
 
 ## save the combined summary results in a data object (only do it once)
-# csummary_all_dat <- merge(summary_dat, summary_dat_J, by = 'ID')
+# summary_all_dat <- merge(summary_dat, summary_dat_J, by = 'ID')
 # saveRDS(summary_all_dat, 'data/summary_results.RDS')
 ```
 
