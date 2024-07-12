@@ -37,7 +37,8 @@ The summarized assumptions of the current implementation of MATHPOP are the foll
 * GCs from each sub-populations are independent, i.e., generating process of GCs in one galaxy are independent from GCs in any other environment.
 * GC spatial distributions in galaxies (either normal galaxies or UDGs) are described by a Sersic profile.
 * GC spatial distribution in IGM is uniform (a homogenous Poisson process).
-* GCLFs of GCs in different sub-population are different, and directly inferred using data.
+* GCLFs of different GC sub-populations are different, and directly inferred using data.
+* GC spatial and magnitude distribution are independent.
 * The true GCLF is described by a Gaussian density.
 * There are no crowding effect in an image.
 * The measurement uncertainty of the GC magnitudes are normally-distributed.
