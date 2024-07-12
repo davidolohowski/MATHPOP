@@ -8,4 +8,4 @@ Raw data and post-inference data from the original MATHPOP paper.
 * `prob_GC_data`: Probabilistic GC catalogs: files containing `_Jans` are catalogs based on SExtractor, others are based on DOLPHOT.
 * `sim`: Summarized data results from simulation study.
 * `summary_results.RDS`: Summarized data results fitted to the real data.
-* `v###`: Every file contains the MCMC results fitted to the SExtractor (with `_Jans`) and DOLPHOT (without `_Jans`) GC data.
+* `v###`: Every folder contains the MCMC results fitted to the SExtractor (with `_Jans`) and DOLPHOT (without `_Jans`) GC data in each image.
