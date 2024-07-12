@@ -328,7 +328,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -339,8 +339,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -353,9 +353,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MATHPOP/</code> <span
@@ -378,21 +378,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -483,15 +480,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree5c60e32db3c04ce7dd0410d373805ba740a0e18atargetblank5c60e32a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree74f7180081354b35a6572d1687661d954762175etargetblank74f7180a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/5c60e32db3c04ce7dd0410d373805ba740a0e18a" target="_blank">5c60e32</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/74f7180081354b35a6572d1687661d954762175e" target="_blank">74f7180</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree5c60e32db3c04ce7dd0410d373805ba740a0e18atargetblank5c60e32a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree74f7180081354b35a6572d1687661d954762175etargetblank74f7180a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -501,7 +498,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/5c60e32db3c04ce7dd0410d373805ba740a0e18a" target="_blank">5c60e32</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/74f7180081354b35a6572d1687661d954762175e" target="_blank">74f7180</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -544,9 +541,6 @@ Ignored files:
     Ignored:    data/v9wfc3/.DS_Store
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
-
-Unstaged changes:
-    Modified:   analysis/about.Rmd
 
 </code></pre>
 <p>
@@ -591,6 +585,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/29bc7ed53fd29f6f7c2741966a8286a386e8e2d5/analysis/about.Rmd" target="_blank">29bc7ed</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-12
+</td>
+<td>
+wflow_git_commit(all = T)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/29bc7ed53fd29f6f7c2741966a8286a386e8e2d5/docs/about.html" target="_blank">29bc7ed</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-12
+</td>
+<td>
+wflow_git_commit(all = T)
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1037,17 +1065,21 @@ tzcode source: internal
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+[1] workflowr_1.7.1
+
 loaded via a namespace (and not attached):
- [1] vctrs_0.6.5       cli_3.6.1         knitr_1.45        rlang_1.1.4      
- [5] xfun_0.41         stringi_1.8.4     promises_1.2.1    jsonlite_1.8.7   
- [9] workflowr_1.7.1   glue_1.6.2        rprojroot_2.0.4   git2r_0.33.0     
-[13] htmltools_0.5.8.1 httpuv_1.6.12     sass_0.4.7        fansi_1.0.6      
-[17] rmarkdown_2.25    jquerylib_0.1.4   evaluate_0.23     tibble_3.2.1     
-[21] fastmap_1.2.0     yaml_2.3.7        lifecycle_1.0.4   whisker_0.4.1    
-[25] stringr_1.5.1     compiler_4.3.2    fs_1.6.3          Rcpp_1.0.11      
-[29] pkgconfig_2.0.3   rstudioapi_0.15.0 later_1.3.1       digest_0.6.36    
-[33] R6_2.5.1          utf8_1.2.4        pillar_1.9.0      magrittr_2.0.3   
-[37] bslib_0.5.1       tools_4.3.2       cachem_1.0.8     </code></pre>
+ [1] vctrs_0.6.5       httr_1.4.7        cli_3.6.1         knitr_1.45       
+ [5] rlang_1.1.4       xfun_0.41         stringi_1.8.4     processx_3.8.2   
+ [9] promises_1.2.1    jsonlite_1.8.7    glue_1.6.2        rprojroot_2.0.4  
+[13] git2r_0.33.0      htmltools_0.5.8.1 httpuv_1.6.12     ps_1.7.5         
+[17] sass_0.4.7        fansi_1.0.6       rmarkdown_2.25    jquerylib_0.1.4  
+[21] tibble_3.2.1      evaluate_0.23     fastmap_1.2.0     yaml_2.3.7       
+[25] lifecycle_1.0.4   whisker_0.4.1     stringr_1.5.1     compiler_4.3.2   
+[29] fs_1.6.3          pkgconfig_2.0.3   Rcpp_1.0.11       rstudioapi_0.15.0
+[33] later_1.3.1       digest_0.6.36     R6_2.5.1          utf8_1.2.4       
+[37] pillar_1.9.0      callr_3.7.3       magrittr_2.0.3    bslib_0.5.1      
+[41] tools_4.3.2       cachem_1.0.8      getPass_0.2-4    </code></pre>
 </div>
 </div>
 
