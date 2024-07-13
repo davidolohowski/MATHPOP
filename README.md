@@ -9,7 +9,7 @@ img[alt$=">"] {
   float: top;
   position: relative;
 }
-<style>
+</style>
 
 ![image alt >](docs/assets/mathpop_hex_sticker.png)
 
