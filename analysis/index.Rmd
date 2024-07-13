@@ -7,8 +7,20 @@ output:
 editor_options:
   chunk_output_type: console
 ---
-
+```{css, echo = F}
+img[alt$=">"] {
+  display: block;
+  max-width: 25%;
+  margin:10px; 
+  float: right;
+  float: top;
+  position: relative;
+}
+```
 ## MATHPOP
+
+![image alt >](assets/mathpop_hex_sticker.png)
+
 
 Welcome to MATHPOP, a `R` software for inferring globular cluster (GC) counts in low-surface brightness galaxies (LSBGs) and ultra-diffuse galaxies (UDGs). The `R` code in this repo is written based on the framework of MArk-dependently THinned POint Process (MATHPOP) proposed by Li et al. (2024), "*Discovery of Two Ultra-Diffuse Galaxies with Unusually Bright Globular Cluster Luminosity Functions via a Mark-Dependently Thinned Point Process (MATHPOP)*".
 
