@@ -10,8 +10,8 @@ editor_options:
 ```{css, echo = F}
 img[alt$=">"] {
   display: block;
-  max-width: 25%;
-  margin:10px; 
+  max-width: 20%;
+  margin:20px; 
   float: right;
   float: top;
   position: relative;
