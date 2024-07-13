@@ -1,6 +1,6 @@
 # MATHPOP
 
-<img src="docs/assets/mathpop_hex_sticker.png" width="50">
+<img src="docs/assets/mathpop_hex_sticker.png" align="right" width="100px">
 
 Source code and analysis repository for the [MATHPOP][] project, used to infer globular cluster counts and their luminosity functions in Ultra-Diffuse Galaxies.
 
