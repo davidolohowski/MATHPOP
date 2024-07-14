@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-MATHPOP is available under the [GNU GPL-v3.0][] license. For proper attribution, please cite the original MATHPOP paper that describes the method:
+MATHPOP is available under the [GNU GPL-v3.0][https://www.gnu.org/licenses/gpl-3.0.en.html] license. For proper attribution, please cite the original MATHPOP paper that describes the method:
 
 > Li et al. (2024) "Discovery of Two Ultra-Diffuse Galaxies with Unusually Bright Globular Cluster Luminosity Functions via a Mark-Dependently Thinned Point Process (MATHPOP)", submitted to the Astrophysical Journal.
 
