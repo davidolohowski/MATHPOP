@@ -1,6 +1,6 @@
 # MATHPOP
 
-<img src="docs/assets/mathpop_hex_sticker.png" align="right" width="100px">
+<img src="docs/assets/mathpop_hex_sticker.png" align="right" width="150px">
 
 The MATHPOP project is an `R` software developed to help astrophysicists infer globular cluster counts and their luminosity functions in Ultra-Diffuse Galaxies. This repo contains the source code and various analysis files for the MATHPOP project.
 
