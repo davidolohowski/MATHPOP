@@ -42,7 +42,7 @@ This vignette contains the analysis and code that compares the results obtained 
 
 R27 is in the field V10-WFC3 and R84 is in the field V7-ACS. We first read in the GC data for R27 from both DOLPHOT and SExtractor in below:
 
-```{r, echo = T, message=F}
+```{r, echo = T, message=F, warning=F}
 library(tidyverse)
 library(sf)
 library(sp)
