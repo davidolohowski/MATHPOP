@@ -220,19 +220,17 @@ res_prob <- fit_MATHPOP(Data = Y_obs, spat_dom = spat_dom,
 
 The `fit_MATHPOP` function has the following arguments:
 
-* `Data` data.frame. Each row is an observed GC or point source in the data. Requires at least the columns `x`, `y` for the spatial coordinates of GCs (in physical coordinates), and the magnitudes `M`. If there are more columns, they need to be the probabilities a point source is a GC.
-* `spat_dom` List. A list object containing a list of `vertices` and a list of the number of integration grid `n_grid`.
-* `fixed_Theta` List. A list that specifies the known parameters of GC system, which contains two list objects `gal` and `UDG` that specify the respective known parameters of normal galaxies and UDGs. If there are no normal galaxies in the data, `gal` does not need to be specified.
-* `prior` List. A list that specifies the parameter values of the prior distributions of the model parameters. See above Section on prior.
-* `p = 1` Numeric. Crowding effect. Either a numeric value between $(0,1)$, or a numeric vector whose entries are all in $(0,1)$ and length equal to `n_grid` in `spat_dom` with each numeric element being the crowding effect at the location of the spatial grid. In the current implementation, it is assumed that it is $1$ (no crowding). 
-* `cf_error` List. List of parameters for completeness fraction and measurement uncertainties. See above Section.
-* `M` Integer. Total number of iteration to run the MCMC algorithm.
-* `Theta = NULL` List. Starting values of the MCMC chain. Specified internally.
-* `tune` List. Tuning parameters for initial MCMC pilot run.
-* `n = 1000` Integer. Initial MCMC pilot run iteration. Specified internally.
-* `gamma = 0.1` Numeric $(>0)$. Scaling parameter for adaptive MCMC. Specified internally.
-* `prob_model = TRUE` Logical. Whether the GC data used is a probabilistic catalog or a binary catalog. 
-* `seed = 12345` Integer. Random seed.
-* `burnin = 0.1` Numeric. A real number between $0$ and $1$. Percentage of the sample to be discarded as burn-in for MCMC.
-
+* `Data` A data.frame: Each row is an observed GC or point source in the data. Requires at least the columns named `x`, `y` for the spatial coordinates of GCs (in physical coordinates), and the magnitudes named `M`. If there are more columns, they need to be the probabilities a point source is a GC.
+* `spat_dom` A List. A list object containing a list called `vertices` that gives the vertices of the spatial domain, and a list of the number of integration grid called `n_grid`.
+* `fixed_Theta` A List. A list that specifies the known parameters of GC system, which contains two list objects `gal` and `UDG` that specify the respective known parameters of normal galaxies and UDGs. If there are no normal galaxies in the data, `gal` does not need to be specified.
+* `prior` A List. A list that specifies the parameter values of the prior distributions of the model parameters, specified in a similar fashion as `fixed_Theta`. See also the previous Section on prior specification.
+* `p = 1` A numeric value or vector. Crowding effect. Either a numeric value between $(0,1)$, or a numeric vector whose entries are all in $(0,1)$ and length equal to `n_grid` in `spat_dom`, with each numeric element being the crowding effect at the location of the spatial grid. In the current implementation, it is default to 1 (no crowding).
+* `cf_error` A List. List of parameters for completeness fraction and measurement uncertainties. See above Section.
+* `M` An integer. Total number of iteration to run the MCMC algorithm.
+* `Theta = NULL` A List. Starting values of the MCMC chain. Default to `NULL`, and specified internally.
+* `tune` A List. Tuning parameters for initial MCMC pilot run.
+* `n = 1000` An integer. Initial MCMC pilot run iteration. Default to 1000.
+* `prob_model = TRUE` Logical. Whether the GC data used is a probabilistic catalog or a binary catalog. Default to `TRUE.`
+* `seed = 12345` An integer. Random seed value. Default to 12345.
+* `burnin = 0.1` A data frame with `floor(burn_in*M)` number of rows that gives the posterior sample of the fitted MATHPOP model.
 
