@@ -560,15 +560,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree79bc13debfffae14d5a10f47074de5da248bb26ftargetblank79bc13da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree6263b2cf5ba5265cb047a02019c2946f2dd9973etargetblank6263b2ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/79bc13debfffae14d5a10f47074de5da248bb26f" target="_blank">79bc13d</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/6263b2cf5ba5265cb047a02019c2946f2dd9973e" target="_blank">6263b2c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree79bc13debfffae14d5a10f47074de5da248bb26ftargetblank79bc13da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree6263b2cf5ba5265cb047a02019c2946f2dd9973etargetblank6263b2ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -578,7 +578,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/79bc13debfffae14d5a10f47074de5da248bb26f" target="_blank">79bc13d</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/6263b2cf5ba5265cb047a02019c2946f2dd9973e" target="_blank">6263b2c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -624,12 +624,6 @@ Ignored files:
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
 
-Untracked files:
-    Untracked:  analysis/CMD_plot_2-1.aux
-    Untracked:  analysis/CMD_plot_2-1.log
-    Untracked:  analysis/CMD_plot_2-1.pdf
-    Untracked:  analysis/plot_ps-1.aux
-
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -674,6 +668,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/6263b2cf5ba5265cb047a02019c2946f2dd9973e/analysis/data_process.Rmd" target="_blank">6263b2c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+wflow_publish("analysis/data_process.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/230837c4a450792704e0895edf4b3e11687d06af/docs/data_process.html" target="_blank">230837c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1033,13 +1061,11 @@ for (i in ps_harris_fnames) {
 <h3>SExtractor</h3>
 <p>For the SExtractor data, a different parametric finite-mixture model
 was used. For a detailed explanation of the method, see Appendix B.2 of
-the original Li et al. (2024) paper. We have written a function called
-<code>mix_func()</code> in the <code>code/help_functions.R</code> to fit
-the parametric finite-mixture model.</p>
+the original Li et al. (2024) paper.</p>
 <p>Similar to DOLPHOT data, we apply our proposed parametric
 finite-mixture model to the measurement uncertainty jittered
 color-magnitude data for 500 times, this is carried out by the function
-<code>meas_uncertain_mix_func()</code>:</p>
+<code>MATHPOP::meas_uncertain_mix_func()</code>:</p>
 <pre class="r"><code># This may take a while, but still much faster than the previous non-parametric finite mixture model used for DOLPHOT
 Jans_res &lt;- meas_uncertain_mix_func(dat = dat_Jans, n_iter = 500)</code></pre>
 <p>Get the results from the previous run, and attach it to the
@@ -1131,6 +1157,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/230837c4a450792704e0895edf4b3e11687d06af/docs/figure/data_process.Rmd/gc_prob-1.png" target="_blank">230837c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/davidolohowski/MATHPOP/blob/225599a26caecef29e59c2509af90aba7d565c27/docs/figure/data_process.Rmd/gc_prob-1.png" target="_blank">225599a</a>
@@ -1232,6 +1269,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/230837c4a450792704e0895edf4b3e11687d06af/docs/figure/data_process.Rmd/figure8a-1.png" target="_blank">230837c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/davidolohowski/MATHPOP/blob/225599a26caecef29e59c2509af90aba7d565c27/docs/figure/data_process.Rmd/figure8a-1.png" target="_blank">225599a</a>
 </td>
 <td>
@@ -1299,6 +1347,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/230837c4a450792704e0895edf4b3e11687d06af/docs/figure/data_process.Rmd/figure8b-1.png" target="_blank">230837c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/davidolohowski/MATHPOP/blob/225599a26caecef29e59c2509af90aba7d565c27/docs/figure/data_process.Rmd/figure8b-1.png" target="_blank">225599a</a>
 </td>
 <td>
@@ -1361,10 +1420,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] MATHPOP_0.0.0.9000 Rcpp_1.0.12        mixtools_2.0.0     tikzDevice_0.12.6 
- [5] lubridate_1.9.3    forcats_1.0.0      stringr_1.5.1      dplyr_1.1.4       
- [9] purrr_1.0.2        readr_2.1.5        tidyr_1.3.1        tibble_3.2.1      
-[13] ggplot2_3.5.1      tidyverse_2.0.0    workflowr_1.7.1   
+ [1] MATHPOP_0.0.0.9   Rcpp_1.0.12       mixtools_2.0.0    tikzDevice_0.12.6
+ [5] lubridate_1.9.3   forcats_1.0.0     stringr_1.5.1     dplyr_1.1.4      
+ [9] purrr_1.0.2       readr_2.1.5       tidyr_1.3.1       tibble_3.2.1     
+[13] ggplot2_3.5.1     tidyverse_2.0.0   workflowr_1.7.1  
 
 loaded via a namespace (and not attached):
   [1] tensorA_0.36.2.1       rstudioapi_0.16.0      jsonlite_1.8.8        
