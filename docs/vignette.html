@@ -560,15 +560,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree225599a26caecef29e59c2509af90aba7d565c27targetblank225599aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreef59fb122b28f752ed117f32e81e789a4a73f562btargetblankf59fb12a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/225599a26caecef29e59c2509af90aba7d565c27" target="_blank">225599a</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/f59fb122b28f752ed117f32e81e789a4a73f562b" target="_blank">f59fb12</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree225599a26caecef29e59c2509af90aba7d565c27targetblank225599aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreef59fb122b28f752ed117f32e81e789a4a73f562btargetblankf59fb12a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -578,7 +578,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/225599a26caecef29e59c2509af90aba7d565c27" target="_blank">225599a</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/f59fb122b28f752ed117f32e81e789a4a73f562b" target="_blank">f59fb12</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -624,11 +624,6 @@ Ignored files:
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
 
-Unstaged changes:
-    Modified:   analysis/CMD_plot_2-1.aux
-    Deleted:    analysis/CMD_plot_2-1.log
-    Deleted:    analysis/CMD_plot_2-1.pdf
-
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -673,6 +668,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/f59fb122b28f752ed117f32e81e789a4a73f562b/analysis/vignette.Rmd" target="_blank">f59fb12</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+wflow_publish("analysis/vignette.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/230837c4a450792704e0895edf4b3e11687d06af/docs/vignette.html" target="_blank">230837c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1377,49 +1406,49 @@ following <code>fit_MATHPOP</code> function.</p>
 <p>The <code>fit_MATHPOP</code> function has the following
 arguments:</p>
 <ul>
-<li><code>Data</code> data.frame. Each row is an observed GC or point
-source in the data. Requires at least the columns <code>x</code>,
+<li><code>Data</code> A data.frame: Each row is an observed GC or point
+source in the data. Requires at least the columns named <code>x</code>,
 <code>y</code> for the spatial coordinates of GCs (in physical
-coordinates), and the magnitudes <code>M</code>. If there are more
+coordinates), and the magnitudes named <code>M</code>. If there are more
 columns, they need to be the probabilities a point source is a GC.</li>
-<li><code>spat_dom</code> List. A list object containing a list of
-<code>vertices</code> and a list of the number of integration grid
+<li><code>spat_dom</code> A List. A list object containing a list called
+<code>vertices</code> that gives the vertices of the spatial domain, and
+a list of the number of integration grid called
 <code>n_grid</code>.</li>
-<li><code>fixed_Theta</code> List. A list that specifies the known
+<li><code>fixed_Theta</code> A List. A list that specifies the known
 parameters of GC system, which contains two list objects
 <code>gal</code> and <code>UDG</code> that specify the respective known
 parameters of normal galaxies and UDGs. If there are no normal galaxies
 in the data, <code>gal</code> does not need to be specified.</li>
-<li><code>prior</code> List. A list that specifies the parameter values
-of the prior distributions of the model parameters. See above Section on
-prior.</li>
-<li><code>p = 1</code> Numeric. Crowding effect. Either a numeric value
-between <span class="math inline">\((0,1)\)</span>, or a numeric vector
-whose entries are all in <span class="math inline">\((0,1)\)</span> and
-length equal to <code>n_grid</code> in <code>spat_dom</code> with each
-numeric element being the crowding effect at the location of the spatial
-grid. In the current implementation, it is assumed that it is <span
-class="math inline">\(1\)</span> (no crowding).</li>
-<li><code>cf_error</code> List. List of parameters for completeness
+<li><code>prior</code> A List. A list that specifies the parameter
+values of the prior distributions of the model parameters, specified in
+a similar fashion as <code>fixed_Theta</code>. See also the previous
+Section on prior specification.</li>
+<li><code>p = 1</code> A numeric value or vector. Crowding effect.
+Either a numeric value between <span
+class="math inline">\((0,1)\)</span>, or a numeric vector whose entries
+are all in <span class="math inline">\((0,1)\)</span> and length equal
+to <code>n_grid</code> in <code>spat_dom</code>, with each numeric
+element being the crowding effect at the location of the spatial grid.
+In the current implementation, it is default to 1 (no crowding).</li>
+<li><code>cf_error</code> A List. List of parameters for completeness
 fraction and measurement uncertainties. See above Section.</li>
-<li><code>M</code> Integer. Total number of iteration to run the MCMC
+<li><code>M</code> An integer. Total number of iteration to run the MCMC
 algorithm.</li>
-<li><code>Theta = NULL</code> List. Starting values of the MCMC chain.
-Specified internally.</li>
-<li><code>tune</code> List. Tuning parameters for initial MCMC pilot
+<li><code>Theta = NULL</code> A List. Starting values of the MCMC chain.
+Default to <code>NULL</code>, and specified internally.</li>
+<li><code>tune</code> A List. Tuning parameters for initial MCMC pilot
 run.</li>
-<li><code>n = 1000</code> Integer. Initial MCMC pilot run iteration.
-Specified internally.</li>
-<li><code>gamma = 0.1</code> Numeric <span
-class="math inline">\((&gt;0)\)</span>. Scaling parameter for adaptive
-MCMC. Specified internally.</li>
+<li><code>n = 1000</code> An integer. Initial MCMC pilot run iteration.
+Default to 1000.</li>
 <li><code>prob_model = TRUE</code> Logical. Whether the GC data used is
-a probabilistic catalog or a binary catalog.</li>
-<li><code>seed = 12345</code> Integer. Random seed.</li>
-<li><code>burnin = 0.1</code> Numeric. A real number between <span
-class="math inline">\(0\)</span> and <span
-class="math inline">\(1\)</span>. Percentage of the sample to be
-discarded as burn-in for MCMC.</li>
+a probabilistic catalog or a binary catalog. Default to
+<code>TRUE.</code></li>
+<li><code>seed = 12345</code> An integer. Random seed value. Default to
+12345.</li>
+<li><code>burnin = 0.1</code> A data frame with
+<code>floor(burn_in*M)</code> number of rows that gives the posterior
+sample of the fitted MATHPOP model.</li>
 </ul>
 <br>
 <p>
@@ -1448,9 +1477,9 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] MATHPOP_0.0.0.9000 lubridate_1.9.3    forcats_1.0.0      stringr_1.5.1     
- [5] dplyr_1.1.4        purrr_1.0.2        readr_2.1.5        tidyr_1.3.1       
- [9] tibble_3.2.1       ggplot2_3.5.1      tidyverse_2.0.0    workflowr_1.7.1   
+ [1] MATHPOP_0.0.0.9 lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1  
+ [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.5     tidyr_1.3.1    
+ [9] tibble_3.2.1    ggplot2_3.5.1   tidyverse_2.0.0 workflowr_1.7.1
 
 loaded via a namespace (and not attached):
   [1] tensorA_0.36.2.1       rstudioapi_0.16.0      jsonlite_1.8.8        
