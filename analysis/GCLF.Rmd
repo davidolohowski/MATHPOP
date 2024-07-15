@@ -58,8 +58,7 @@ library(ggpubr)
 library(wesanderson)
 library(reshape2)
 library(modeest)
-
-sourceCpp('code/cpp_help_func.cpp')
+library(MATHPOP)
 ```
 
 ## R27 GCLF

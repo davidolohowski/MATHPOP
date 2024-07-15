@@ -59,10 +59,7 @@ library(spatstat)
 library(VGAM)
 library(reshape2)
 library(wesanderson)
-
-# load required functions
-sourceCpp('code/cpp_help_func.cpp')
-source('code/fit_mod_MCMC.R')
+library(MATHPOP)
 ```
 
 Since we are running thousands of simulations with different parameter configuration, we needed to run the `R` source file on a remote HPC server operated under Unix. Thus, the original source code for conducting the simulations was written to handle HPC server file read-in. The two lines of code below are passed to the HPC server to generate different simulations based on the `sim_id` argument. If you only run the simulation a few times on a local machine, you do not need this.
@@ -109,7 +106,7 @@ par <- expand.grid(N = c(0, 5, 10, 20, 40, 80),
 
 # other model parameters
 set.seed(sim_id)
-b0 <- 0.037 # IGM GC intensity
+l0 <- 0.037 # IGM GC intensity
 c <- matrix(runif(2, 8, 68), ncol = 2) # location of the simulated UDG (within the box [8,68]X[8,68])
 N <- par$N[par_id] # GC count in UDG
 R_eff <- 2 # half-number radius
@@ -125,7 +122,7 @@ We then simulate the observed GC point pattern and the magnitudes, and plot it. 
 
 ```{r, warning=F}
 # generate data with measurement uncertainty using the provided parameters. Note that the measurement uncertainty specification is set to the ACS images from DOLPHOT as default
-Y <- simulate_Y_noisy(S, b0, c, N, R_eff, e, n, theta, mu, sigma)
+Y <- simulate_Y_noisy(S, l0, c, N, R_eff, e, n, theta, mu, sigma)
 # remove faint GCs according to the completeness fraction
 Y_obs_n <- simulate_Yf_noise(Y, Lim)
 
@@ -140,7 +137,7 @@ After the data is simulated, it can now be passed to the `fit_MATHPOP` function 
 The prior distribution of the model parameters under simulations are as below (see [here](vignette.html) on how to construct the prior distribution parameter list):
 
 ```{r}
-prior <- list(IGM = list(b0 = c(log(0.03), 0.4), # IGM GC prior
+prior <- list(IGM = list(l0 = c(log(0.03), 0.4), # IGM GC prior
                          mu = data.frame(a = 26.3, b = 0.5),
                          sigma = data.frame(a = log(1.3), b = 0.25)), 
               
@@ -183,7 +180,7 @@ for (sim_id in 1:2700) {
   iter <- (sim_id %% 150)*(sim_id %% 150 != 0) + 150*(sim_id %% 150 == 0)
   
   set.seed(sim_id)
-  b0 <- 0.037
+  l0 <- 0.037
   c <- matrix(runif(2, 8, 68), ncol = 2)
   N <- par$N[par_id]
   R_eff <- 1
@@ -195,7 +192,7 @@ for (sim_id in 1:2700) {
   UDG_ID <- 'sim_U'
   
   # simulate the GC data with measurement uncertainty in GC magnitudes using the measurement uncertainty specification from J24
-  Y <- simulate_Y_noisy(S, b0, c, N, R_eff, e, n, theta, mu, sigma, a = 0.07477, b = 0.75094)
+  Y <- simulate_Y_noisy(S, l0, c, N, R_eff, e, n, theta, mu, sigma, b0 = 0.07477, b1 = 0.75094)
   # remove faint GCs according to completeness fraction
   Yf_n <- simulate_Yf_noise(Y, Lim, alpha = 6.56)
   # remove sources fainter than the canonical limit (as done in J24)

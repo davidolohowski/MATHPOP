@@ -18,7 +18,11 @@ MATHPOP is available under the [GNU GPL-v3.0][] license. For proper attribution,
 
 > Li et al. (2024) "Discovery of Two Ultra-Diffuse Galaxies with Unusually Bright Globular Cluster Luminosity Functions via a Mark-Dependently Thinned Point Process (MATHPOP)", submitted to the Astrophysical Journal.
 
-An `R` package is currently under development, and will be made publicly available at this repo as well as CRAN upon publication of the original MATHPOP paper.
+The `R` package for MATHPOP is not yet available on CRAN, but you can access it through Github in `R` by
+
+```
+devtools::install_github('davidolohowski/MATHPOP_R_pkg')
+```
 
 This project is generated using the [workflowr][] package.
 

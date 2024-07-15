@@ -59,9 +59,7 @@ library(ggpubr)
 library(wesanderson)
 library(reshape2)
 library(tikzDevice)
-
-sourceCpp('code/cpp_help_func.cpp')
-source('code/fit_mod_MCMC.R')
+library(MATHPOP)
 
 # DOLPHOT V10WFC3
 V10WFC <- read_csv('data/prob_GC_data/v10wfc3_pGC.csv')

@@ -49,24 +49,7 @@ To start, we need to load the necessary `R` packages:
 
 ```{r packages, echo=TRUE, results = 'hide', message=FALSE}
 library(tidyverse)
-library(sf)
-library(sp)
-library(raster)
-library(Rcpp)
-library(RcppArmadillo)
-library(spatstat)
-library(VGAM)
-```
-
-If you have not installed the above packages, install them with the command `install.packages('package name')` change `package name` to the name of whatever packages you need.
-
-### Load required functions from source files
-
-Next, load all the required functions through the source files as below. Make sure that the working directory is the one you are currently at. If you have downloaded the entire `R` project repository from Github, and you are working within the project directory, you should be fine.
-
-```{r sources, echo=TRUE, results = 'hide', message=FALSE}
-sourceCpp('code/cpp_help_func.cpp') # Necessary help functions written in C++
-source('code/fit_mod_MCMC.R') # Source file for running the model
+library(MATHPOP)
 ```
 
 ### Load data
@@ -195,7 +178,7 @@ We now specify the prior distributions of the model parameters. We need to creat
 Similar to the specification of `fixed_Theta`, the prior list contains three individual list objects that specify the prior of GCs from IGM, normal galaxies, and UDGs:
 
 ```{r prior}
-prior <- list(IGM = list(b0 = c(a = log(0.05), b = 0.4), # GC intensity in IGM
+prior <- list(IGM = list(l0 = c(a = log(0.05), b = 0.4), # GC intensity in IGM
                          mu = c(a = 26.3, b = 0.5), # GCLF TO point for IGM GCs
                          sigma = c(a = log(1.3), b = 0.25)), # GCLF dispersion for IGM GCs
               
@@ -221,7 +204,7 @@ Note that we currently do not allow changing the type of prior distributions, on
 Since we use an adaptive MCMC algorithm, the chain requires an initial pilot run of standard Metropolis-Hasting algorithm, which requires specification of step-size (tuning) parameters for the chain to jump. Below are some specification of the tuning parameters. You can certainly change these as you wish.
 
 ```{r}
-tune <- list(b0 = 0.01, Ng = 0.25, Nu = 0.1, R = 0.1, n = 0.1, mu = 0.1, sigma = 0.1)
+tune <- list(l0 = 0.01, Ng = 0.25, Nu = 0.1, R = 0.1, n = 0.1, mu = 0.1, sigma = 0.1)
 ```
 
 ## Fitting the Model

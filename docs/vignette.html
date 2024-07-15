@@ -13,7 +13,7 @@
 
 <title>MATHPOP Tutorial</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -408,7 +408,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -419,8 +419,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -429,13 +429,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-08
+<strong>Last updated:</strong> 2024-07-15
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MATHPOP/</code> <span
@@ -458,18 +458,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -560,15 +563,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreebd30aeb460e07081932c2a0c76a9c6f3b6ebcb70targetblankbd30aeba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree2cffd07ae64f94ea836c2e711a88220e23c3f9dctargetblank2cffd07a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/bd30aeb460e07081932c2a0c76a9c6f3b6ebcb70" target="_blank">bd30aeb</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/2cffd07ae64f94ea836c2e711a88220e23c3f9dc" target="_blank">2cffd07</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreebd30aeb460e07081932c2a0c76a9c6f3b6ebcb70targetblankbd30aeba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree2cffd07ae64f94ea836c2e711a88220e23c3f9dctargetblank2cffd07a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -578,7 +581,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/bd30aeb460e07081932c2a0c76a9c6f3b6ebcb70" target="_blank">bd30aeb</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/2cffd07ae64f94ea836c2e711a88220e23c3f9dc" target="_blank">2cffd07</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -594,7 +597,11 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
     Ignored:    analysis/.DS_Store
+    Ignored:    analysis/figure/
+    Ignored:    code/.DS_Store
     Ignored:    data/.DS_Store
     Ignored:    data/GC_prob/.DS_Store
     Ignored:    data/point_source_data/.DS_Store
@@ -620,6 +627,15 @@ Ignored files:
     Ignored:    data/v9wfc3/.DS_Store
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
+
+Untracked files:
+    Untracked:  analysis/plot_ps-1.aux
+    Untracked:  analysis/plot_ps-1.log
+
+Unstaged changes:
+    Deleted:    analysis/appendix.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/vignette.Rmd
 
 </code></pre>
 <p>
@@ -665,6 +681,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/c598132300ae4add50758ba7e7dffd7231935ff8/docs/vignette.html" target="_blank">c598132</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1035,27 +1068,7 @@ and <code>RStudio</code>, and have the data at hand. The data can either
 be a probabilistic GC catalog or a binary GC catalog.</p>
 <p>To start, we need to load the necessary <code>R</code> packages:</p>
 <pre class="r"><code>library(tidyverse)
-library(sf)
-library(sp)
-library(raster)
-library(Rcpp)
-library(RcppArmadillo)
-library(spatstat)
-library(VGAM)</code></pre>
-<p>If you have not installed the above packages, install them with the
-command <code>install.packages('package name')</code> change
-<code>package name</code> to the name of whatever packages you need.</p>
-</div>
-<div id="load-required-functions-from-source-files"
-class="section level3">
-<h3>Load required functions from source files</h3>
-<p>Next, load all the required functions through the source files as
-below. Make sure that the working directory is the one you are currently
-at. If you have downloaded the entire <code>R</code> project repository
-from Github, and you are working within the project directory, you
-should be fine.</p>
-<pre class="r"><code>sourceCpp(&#39;code/cpp_help_func.cpp&#39;) # Necessary help functions written in C++
-source(&#39;code/fit_mod_MCMC.R&#39;) # Source file for running the model</code></pre>
+library(MATHPOP)</code></pre>
 </div>
 <div id="load-data" class="section level3">
 <h3>Load data</h3>
@@ -1296,7 +1309,7 @@ matter).</p>
 <p>Similar to the specification of <code>fixed_Theta</code>, the prior
 list contains three individual list objects that specify the prior of
 GCs from IGM, normal galaxies, and UDGs:</p>
-<pre class="r"><code>prior &lt;- list(IGM = list(b0 = c(a = log(0.05), b = 0.4), # GC intensity in IGM
+<pre class="r"><code>prior &lt;- list(IGM = list(l0 = c(a = log(0.05), b = 0.4), # GC intensity in IGM
                          mu = c(a = 26.3, b = 0.5), # GCLF TO point for IGM GCs
                          sigma = c(a = log(1.3), b = 0.25)), # GCLF dispersion for IGM GCs
               
@@ -1325,7 +1338,7 @@ initial pilot run of standard Metropolis-Hasting algorithm, which
 requires specification of step-size (tuning) parameters for the chain to
 jump. Below are some specification of the tuning parameters. You can
 certainly change these as you wish.</p>
-<pre class="r"><code>tune &lt;- list(b0 = 0.01, Ng = 0.25, Nu = 0.1, R = 0.1, n = 0.1, mu = 0.1, sigma = 0.1)</code></pre>
+<pre class="r"><code>tune &lt;- list(l0 = 0.01, Ng = 0.25, Nu = 0.1, R = 0.1, n = 0.1, mu = 0.1, sigma = 0.1)</code></pre>
 </div>
 <div id="fitting-the-model" class="section level2">
 <h2>Fitting the Model</h2>
@@ -1406,51 +1419,61 @@ time zone: America/Toronto
 tzcode source: internal
 
 attached base packages:
-[1] splines   stats4    stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] progress_1.2.2           VGAM_1.1-9               spatstat_3.0-7          
- [4] spatstat.linnet_3.1-3    spatstat.model_3.2-8     rpart_4.1.21            
- [7] spatstat.explore_3.2-5   nlme_3.1-163             spatstat.random_3.2-1   
-[10] spatstat.geom_3.2-7      spatstat.data_3.0-3      RcppArmadillo_0.12.6.6.0
-[13] Rcpp_1.0.11              raster_3.6-26            sp_2.1-1                
-[16] sf_1.0-14                lubridate_1.9.3          forcats_1.0.0           
-[19] stringr_1.5.1            dplyr_1.1.4              purrr_1.0.2             
-[22] readr_2.1.4              tidyr_1.3.0              tibble_3.2.1            
-[25] ggplot2_3.4.4            tidyverse_2.0.0          workflowr_1.7.1         
+ [1] MATHPOP_0.0.0.9000 lubridate_1.9.3    forcats_1.0.0      stringr_1.5.1     
+ [5] dplyr_1.1.4        purrr_1.0.2        readr_2.1.5        tidyr_1.3.1       
+ [9] tibble_3.2.1       ggplot2_3.5.1      tidyverse_2.0.0   
 
 loaded via a namespace (and not attached):
- [1] DBI_1.1.3             deldir_1.0-9          rlang_1.1.4          
- [4] magrittr_2.0.3        git2r_0.33.0          e1071_1.7-13         
- [7] compiler_4.3.2        getPass_0.2-4         mgcv_1.9-0           
-[10] callr_3.7.3           vctrs_0.6.5           pkgconfig_2.0.3      
-[13] crayon_1.5.2          fastmap_1.2.0         magick_2.8.3         
-[16] labeling_0.4.3        utf8_1.2.4            promises_1.2.1       
-[19] rmarkdown_2.25        tzdb_0.4.0            ps_1.7.5             
-[22] tinytex_0.48          bit_4.0.5             xfun_0.41            
-[25] cachem_1.0.8          jsonlite_1.8.7        goftest_1.2-3        
-[28] highr_0.10            later_1.3.1           spatstat.utils_3.0-4 
-[31] terra_1.7-55          parallel_4.3.2        prettyunits_1.2.0    
-[34] R6_2.5.1              bslib_0.5.1           stringi_1.8.4        
-[37] jquerylib_0.1.4       assertthat_0.2.1      knitr_1.45           
-[40] tensor_1.5            filehash_2.4-5        klippy_0.0.0.9500    
-[43] httpuv_1.6.12         Matrix_1.6-3          timechange_0.2.0     
-[46] tidyselect_1.2.0      rstudioapi_0.15.0     abind_1.4-5          
-[49] yaml_2.3.7            codetools_0.2-19      processx_3.8.2       
-[52] qpdf_1.3.3            lattice_0.22-5        withr_2.5.2          
-[55] askpass_1.2.0         evaluate_0.23         units_0.8-4          
-[58] proxy_0.4-27          polyclip_1.10-6       pillar_1.9.0         
-[61] whisker_0.4.1         KernSmooth_2.23-22    generics_0.1.3       
-[64] vroom_1.6.4           rprojroot_2.0.4       hms_1.1.3            
-[67] munsell_0.5.0         scales_1.3.0          class_7.3-22         
-[70] glue_1.6.2            tikzDevice_0.12.5     tools_4.3.2          
-[73] pdftools_3.4.0        fs_1.6.3              grid_4.3.2           
-[76] colorspace_2.1-0      cli_3.6.1             spatstat.sparse_3.0-3
-[79] fansi_1.0.6           gtable_0.3.4          sass_0.4.7           
-[82] digest_0.6.36         classInt_0.4-10       farver_2.1.1         
-[85] htmltools_0.5.8.1     lifecycle_1.0.4       httr_1.4.7           
-[88] bit64_4.0.5          </code></pre>
+  [1] tensorA_0.36.2.1       rstudioapi_0.16.0      jsonlite_1.8.8        
+  [4] magrittr_2.0.3         magick_2.8.3           spatstat.utils_3.0-5  
+  [7] farver_2.1.2           rmarkdown_2.27         fs_1.6.4              
+ [10] vctrs_0.6.5            spatstat.explore_3.2-7 askpass_1.2.0         
+ [13] terra_1.7-78           tinytex_0.51           htmltools_0.5.8.1     
+ [16] progress_1.2.3         distributional_0.4.0   raster_3.6-26         
+ [19] sass_0.4.9             KernSmooth_2.23-22     bslib_0.7.0           
+ [22] pdftools_3.4.0         htmlwidgets_1.6.4      plyr_1.8.9            
+ [25] plotly_4.10.4          cachem_1.1.0           whisker_0.4.1         
+ [28] lifecycle_1.0.4        pkgconfig_2.0.3        Matrix_1.6-3          
+ [31] R6_2.5.1               fastmap_1.2.0          tikzDevice_0.12.6     
+ [34] clue_0.3-65            digest_0.6.36          colorspace_2.1-0      
+ [37] ggnewscale_0.4.10      spatial_7.3-17         rprojroot_2.0.4       
+ [40] tensor_1.5             spatstat.linnet_3.1-5  labeling_0.4.3        
+ [43] fansi_1.0.6            spatstat.sparse_3.1-0  timechange_0.3.0      
+ [46] httr_1.4.7             polyclip_1.10-6        abind_1.4-5           
+ [49] mgcv_1.9-0             compiler_4.3.2         proxy_0.4-27          
+ [52] bit64_4.0.5            withr_3.0.0            backports_1.5.0       
+ [55] DBI_1.2.3              spatstat.model_3.2-11  highr_0.11            
+ [58] HDInterval_0.2.4       MASS_7.3-60            classInt_0.4-10       
+ [61] loo_2.7.0              fBasics_4032.96        wesanderson_0.3.7     
+ [64] tools_4.3.2            units_0.8-5            filehash_2.4-6        
+ [67] httpuv_1.6.12          goftest_1.2-3          glue_1.7.0            
+ [70] stabledist_0.7-1       nlme_3.1-163           promises_1.3.0        
+ [73] grid_4.3.2             sf_1.0-16              checkmate_2.3.1       
+ [76] reshape2_1.4.4         cluster_2.1.4          generics_0.1.3        
+ [79] gtable_0.3.5           spatstat.data_3.1-2    tzdb_0.4.0            
+ [82] class_7.3-22           data.table_1.15.4      hms_1.1.3             
+ [85] sp_2.1-4               utf8_1.2.4             rmutil_1.1.10         
+ [88] spatstat.geom_3.2-9    pillar_1.9.0           vroom_1.6.5           
+ [91] posterior_1.6.0        later_1.3.2            splines_4.3.2         
+ [94] lattice_0.22-5         klippy_0.0.0.9500      bit_4.0.5             
+ [97] survival_3.5-7         deldir_2.0-4           tidyselect_1.2.1      
+[100] knitr_1.48             git2r_0.33.0           gridExtra_2.3         
+[103] stats4_4.3.2           xfun_0.45              mixtools_2.0.0        
+[106] matrixStats_1.3.0      timeDate_4032.109      stringi_1.8.4         
+[109] VGAM_1.1-11            qpdf_1.3.3             workflowr_1.7.1       
+[112] lazyeval_0.2.2         yaml_2.3.9             evaluate_0.24.0       
+[115] codetools_0.2-19       kernlab_0.9-32         spatstat_3.0-8        
+[118] timeSeries_4032.109    cli_3.6.3              rpart_4.1.21          
+[121] priorsense_1.0.1       segmented_2.1-0        munsell_0.5.1         
+[124] jquerylib_0.1.4        Rcpp_1.0.12            stable_1.1.6          
+[127] spatstat.random_3.2-3  parallel_4.3.2         modeest_2.4.0         
+[130] assertthat_0.2.1       prettyunits_1.2.0      ggstar_1.0.4          
+[133] viridisLite_0.4.2      scales_1.3.0           e1071_1.7-14          
+[136] ggridges_0.5.6         statip_0.2.3           crayon_1.5.3          
+[139] rlang_1.1.4           </code></pre>
 </div>
 </div>
 

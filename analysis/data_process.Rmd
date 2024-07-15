@@ -49,9 +49,7 @@ library(tidyverse)
 library(tikzDevice)
 library(mixtools)
 library(Rcpp)
-
-sourceCpp('code/cpp_help_func.cpp')
-source('code/help_functions.R')
+library(MATHPOP)
 
 # Read in DOLPHOT point source data
 fnames <- list.files('data/point_source_data/')

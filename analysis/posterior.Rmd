@@ -59,6 +59,7 @@ library(ggnewscale)
 library(modeest)
 library(reshape2)
 library(HDInterval)
+library(MATHPOP)
 
 # read in file paths
 fnames <- list.files('data/')

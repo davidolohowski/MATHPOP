@@ -7,6 +7,11 @@ output:
 editor_options:
   chunk_output_type: console
 ---
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
 ```{css, echo = F}
 img[alt$=">"] {
   display: block;
@@ -32,9 +37,13 @@ Welcome to MATHPOP, a `R` software for inferring globular cluster (GC) counts in
 
 If you are an absolute beginner of `R`, there are a LOT of resources and tutorials teaching how to use `R`. The best (in my opinion) resource is the book '*R for Data Science*' by Hadley Wickham, and [here](https://r4ds.hadley.nz/) is a free online version of the book.
 
-## Download the Repo
+## Install the MATHPOP R package
 
-To use the code for your own data, go to the MATHPOP [Github repo](https://github.com/davidolohowski/MATHPOP) and download the repository. The `R` code to fit the MATHPOP model is contained in the `code/` directory. The `data/` directory contains the GC data analyzed in the original paper.
+To use MATHPOP for your own data, download and install the MATHPOP `R` package by running
+
+```{r, echo = T, eval=F}
+devtools::install_github('davidolohowski/MATHPOP_R_pkg')
+```
 
 ## Quick Start
 
