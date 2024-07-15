@@ -13,7 +13,7 @@
 
 <title>Simulation Analysis</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -429,7 +429,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-08
+<strong>Last updated:</strong> 2024-07-15
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -560,15 +560,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree036b66f5d6921e69fe96507a3d102dd7d474388etargetblank036b66fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree225599a26caecef29e59c2509af90aba7d565c27targetblank225599aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/036b66f5d6921e69fe96507a3d102dd7d474388e" target="_blank">036b66f</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/225599a26caecef29e59c2509af90aba7d565c27" target="_blank">225599a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree036b66f5d6921e69fe96507a3d102dd7d474388etargetblank036b66fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree225599a26caecef29e59c2509af90aba7d565c27targetblank225599aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -578,7 +578,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/036b66f5d6921e69fe96507a3d102dd7d474388e" target="_blank">036b66f</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/225599a26caecef29e59c2509af90aba7d565c27" target="_blank">225599a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -594,7 +594,10 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
     Ignored:    analysis/.DS_Store
+    Ignored:    code/.DS_Store
     Ignored:    data/.DS_Store
     Ignored:    data/GC_prob/.DS_Store
     Ignored:    data/point_source_data/.DS_Store
@@ -620,6 +623,11 @@ Ignored files:
     Ignored:    data/v9wfc3/.DS_Store
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
+
+Unstaged changes:
+    Modified:   analysis/CMD_plot_2-1.aux
+    Deleted:    analysis/CMD_plot_2-1.log
+    Deleted:    analysis/CMD_plot_2-1.pdf
 
 </code></pre>
 <p>
@@ -665,6 +673,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/79bc13debfffae14d5a10f47074de5da248bb26f/analysis/simulation.Rmd" target="_blank">79bc13d</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+wflow_git_commit(all = T)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/5d884ff46251aace0db6733f9c31d0782d88102a/docs/simulation.html" target="_blank">5d884ff</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -782,8 +824,9 @@ results.</p>
 <p>We first illustrate our approach for generating simulated data.
 First, load the required packages and help functions:</p>
 <pre class="r"><code>library(tidyverse)
-library(posterior)
-library(HDInterval)
+library(posterior)</code></pre>
+<pre><code>Warning: package &#39;posterior&#39; was built under R version 4.3.3</code></pre>
+<pre class="r"><code>library(HDInterval)
 library(modeest)
 library(ggstar)
 library(tikzDevice)
@@ -791,15 +834,15 @@ library(sf)
 library(sp)
 library(raster)
 library(Rcpp)
-library(RcppArmadillo)
-library(spatstat)
-library(VGAM)
-library(reshape2)
+library(RcppArmadillo)</code></pre>
+<pre><code>Warning: package &#39;RcppArmadillo&#39; was built under R version 4.3.3</code></pre>
+<pre class="r"><code>library(spatstat)</code></pre>
+<pre><code>Warning: package &#39;spatstat.data&#39; was built under R version 4.3.3</code></pre>
+<pre class="r"><code>library(VGAM)</code></pre>
+<pre><code>Warning: package &#39;VGAM&#39; was built under R version 4.3.3</code></pre>
+<pre class="r"><code>library(reshape2)
 library(wesanderson)
-
-# load required functions
-sourceCpp(&#39;code/cpp_help_func.cpp&#39;)
-source(&#39;code/fit_mod_MCMC.R&#39;)</code></pre>
+library(MATHPOP)</code></pre>
 <p>Since we are running thousands of simulations with different
 parameter configuration, we needed to run the <code>R</code> source file
 on a remote HPC server operated under Unix. Thus, the original source
@@ -857,7 +900,7 @@ par &lt;- expand.grid(N = c(0, 5, 10, 20, 40, 80),
 
 # other model parameters
 set.seed(sim_id)
-b0 &lt;- 0.037 # IGM GC intensity
+l0 &lt;- 0.037 # IGM GC intensity
 c &lt;- matrix(runif(2, 8, 68), ncol = 2) # location of the simulated UDG (within the box [8,68]X[8,68])
 N &lt;- par$N[par_id] # GC count in UDG
 R_eff &lt;- 2 # half-number radius
@@ -871,7 +914,7 @@ UDG_ID &lt;- &#39;sim_U&#39;</code></pre>
 and plot it. The red point and the cluster of GC at the lower-mid region
 is the simulated GC system.</p>
 <pre class="r"><code># generate data with measurement uncertainty using the provided parameters. Note that the measurement uncertainty specification is set to the ACS images from DOLPHOT as default
-Y &lt;- simulate_Y_noisy(S, b0, c, N, R_eff, e, n, theta, mu, sigma)
+Y &lt;- simulate_Y_noisy(S, l0, c, N, R_eff, e, n, theta, mu, sigma)
 # remove faint GCs according to the completeness fraction
 Y_obs_n &lt;- simulate_Yf_noise(Y, Lim)
 
@@ -929,7 +972,7 @@ such cases, set the argument <code>prob_model = FALSE</code> in the
 <p>The prior distribution of the model parameters under simulations are
 as below (see <a href="vignette.html">here</a> on how to construct the
 prior distribution parameter list):</p>
-<pre class="r"><code>prior &lt;- list(IGM = list(b0 = c(log(0.03), 0.4), # IGM GC prior
+<pre class="r"><code>prior &lt;- list(IGM = list(l0 = c(log(0.03), 0.4), # IGM GC prior
                          mu = data.frame(a = 26.3, b = 0.5),
                          sigma = data.frame(a = log(1.3), b = 0.25)), 
               
@@ -972,7 +1015,7 @@ for (sim_id in 1:2700) {
   iter &lt;- (sim_id %% 150)*(sim_id %% 150 != 0) + 150*(sim_id %% 150 == 0)
   
   set.seed(sim_id)
-  b0 &lt;- 0.037
+  l0 &lt;- 0.037
   c &lt;- matrix(runif(2, 8, 68), ncol = 2)
   N &lt;- par$N[par_id]
   R_eff &lt;- 1
@@ -984,7 +1027,7 @@ for (sim_id in 1:2700) {
   UDG_ID &lt;- &#39;sim_U&#39;
   
   # simulate the GC data with measurement uncertainty in GC magnitudes using the measurement uncertainty specification from J24
-  Y &lt;- simulate_Y_noisy(S, b0, c, N, R_eff, e, n, theta, mu, sigma, a = 0.07477, b = 0.75094)
+  Y &lt;- simulate_Y_noisy(S, l0, c, N, R_eff, e, n, theta, mu, sigma, b0 = 0.07477, b1 = 0.75094)
   # remove faint GCs according to completeness fraction
   Yf_n &lt;- simulate_Yf_noise(Y, Lim, alpha = 6.56)
   # remove sources fainter than the canonical limit (as done in J24)
@@ -1191,6 +1234,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/5d884ff46251aace0db6733f9c31d0782d88102a/docs/figure/simulation.Rmd/unnamed-chunk-12-1.png" target="_blank">5d884ff</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-08
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/davidolohowski/MATHPOP/blob/4ed641c259ec0c086648083add5b046be933e84b/docs/figure/simulation.Rmd/unnamed-chunk-12-1.png" target="_blank">4ed641c</a>
 </td>
 <td>
@@ -1232,54 +1286,59 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] progress_1.2.2           wesanderson_0.3.7        reshape2_1.4.4          
- [4] VGAM_1.1-9               spatstat_3.0-7           spatstat.linnet_3.1-3   
- [7] spatstat.model_3.2-8     rpart_4.1.21             spatstat.explore_3.2-5  
-[10] nlme_3.1-163             spatstat.random_3.2-1    spatstat.geom_3.2-7     
-[13] spatstat.data_3.0-3      RcppArmadillo_0.12.6.6.0 Rcpp_1.0.11             
-[16] raster_3.6-26            sp_2.1-1                 sf_1.0-14               
-[19] tikzDevice_0.12.5        ggstar_1.0.4             modeest_2.4.0           
-[22] HDInterval_0.2.4         posterior_1.5.0          lubridate_1.9.3         
+ [1] MATHPOP_0.0.0.9000       wesanderson_0.3.7        reshape2_1.4.4          
+ [4] VGAM_1.1-11              spatstat_3.0-8           spatstat.linnet_3.1-5   
+ [7] spatstat.model_3.2-11    rpart_4.1.21             spatstat.explore_3.2-7  
+[10] nlme_3.1-163             spatstat.random_3.2-3    spatstat.geom_3.2-9     
+[13] spatstat.data_3.1-2      RcppArmadillo_0.12.8.4.0 Rcpp_1.0.12             
+[16] raster_3.6-26            sp_2.1-4                 sf_1.0-16               
+[19] tikzDevice_0.12.6        ggstar_1.0.4             modeest_2.4.0           
+[22] HDInterval_0.2.4         posterior_1.6.0          lubridate_1.9.3         
 [25] forcats_1.0.0            stringr_1.5.1            dplyr_1.1.4             
-[28] purrr_1.0.2              readr_2.1.4              tidyr_1.3.0             
-[31] tibble_3.2.1             ggplot2_3.4.4            tidyverse_2.0.0         
+[28] purrr_1.0.2              readr_2.1.5              tidyr_1.3.1             
+[31] tibble_3.2.1             ggplot2_3.5.1            tidyverse_2.0.0         
 [34] workflowr_1.7.1         
 
 loaded via a namespace (and not attached):
-  [1] tensorA_0.36.2        rstudioapi_0.15.0     jsonlite_1.8.7       
-  [4] magrittr_2.0.3        magick_2.8.3          spatstat.utils_3.0-4 
-  [7] farver_2.1.1          rmarkdown_2.25        fs_1.6.3             
- [10] vctrs_0.6.5           askpass_1.2.0         terra_1.7-55         
- [13] tinytex_0.48          htmltools_0.5.8.1     distributional_0.3.2 
- [16] sass_0.4.7            KernSmooth_2.23-22    bslib_0.5.1          
- [19] pdftools_3.4.0        plyr_1.8.9            cachem_1.0.8         
- [22] whisker_0.4.1         lifecycle_1.0.4       pkgconfig_2.0.3      
- [25] Matrix_1.6-3          R6_2.5.1              fastmap_1.2.0        
- [28] clue_0.3-65           digest_0.6.36         colorspace_2.1-0     
- [31] spatial_7.3-17        ps_1.7.5              rprojroot_2.0.4      
- [34] tensor_1.5            labeling_0.4.3        fansi_1.0.6          
- [37] spatstat.sparse_3.0-3 timechange_0.2.0      httr_1.4.7           
- [40] polyclip_1.10-6       abind_1.4-5           mgcv_1.9-0           
- [43] compiler_4.3.2        proxy_0.4-27          withr_2.5.2          
- [46] backports_1.4.1       DBI_1.1.3             highr_0.10           
- [49] classInt_0.4-10       fBasics_4032.96       zipfR_0.6-70         
- [52] tools_4.3.2           units_0.8-4           filehash_2.4-5       
- [55] httpuv_1.6.12         goftest_1.2-3         glue_1.6.2           
- [58] stabledist_0.7-1      callr_3.7.3           promises_1.2.1       
- [61] grid_4.3.2            checkmate_2.3.1       getPass_0.2-4        
- [64] cluster_2.1.4         generics_0.1.3        gtable_0.3.4         
- [67] tzdb_0.4.0            class_7.3-22          hms_1.1.3            
- [70] utf8_1.2.4            rmutil_1.1.10         pillar_1.9.0         
- [73] later_1.3.1           lattice_0.22-5        klippy_0.0.0.9500    
- [76] deldir_1.0-9          tidyselect_1.2.0      knitr_1.45           
- [79] git2r_0.33.0          gridExtra_2.3         xfun_0.41            
- [82] timeDate_4022.108     stringi_1.8.4         qpdf_1.3.3           
- [85] yaml_2.3.7            evaluate_0.23         codetools_0.2-19     
- [88] timeSeries_4031.107   cli_3.6.1             munsell_0.5.0        
- [91] processx_3.8.2        jquerylib_0.1.4       stable_1.1.6         
- [94] parallel_4.3.2        assertthat_0.2.1      prettyunits_1.2.0    
- [97] scales_1.3.0          e1071_1.7-13          crayon_1.5.2         
-[100] statip_0.2.3          rlang_1.1.4          </code></pre>
+  [1] later_1.3.2           klippy_0.0.0.9500     polyclip_1.10-6      
+  [4] lifecycle_1.0.4       rprojroot_2.0.4       processx_3.8.4       
+  [7] lattice_0.22-5        MASS_7.3-60           backports_1.5.0      
+ [10] magrittr_2.0.3        plotly_4.10.4         sass_0.4.9           
+ [13] rmarkdown_2.27        jquerylib_0.1.4       yaml_2.3.9           
+ [16] httpuv_1.6.12         askpass_1.2.0         spatstat.sparse_3.1-0
+ [19] DBI_1.2.3             abind_1.4-5           mixtools_2.0.0       
+ [22] tensorA_0.36.2.1      git2r_0.33.0          rmutil_1.1.10        
+ [25] spatstat.utils_3.0-5  terra_1.7-78          units_0.8-5          
+ [28] goftest_1.2-3         spatial_7.3-17        codetools_0.2-19     
+ [31] pdftools_3.4.0        tidyselect_1.2.1      filehash_2.4-6       
+ [34] farver_2.1.2          stable_1.1.6          matrixStats_1.3.0    
+ [37] jsonlite_1.8.8        e1071_1.7-14          ggridges_0.5.6       
+ [40] survival_3.5-7        segmented_2.1-0       tools_4.3.2          
+ [43] ggnewscale_0.4.10     progress_1.2.3        glue_1.7.0           
+ [46] gridExtra_2.3         xfun_0.45             mgcv_1.9-0           
+ [49] distributional_0.4.0  priorsense_1.0.1      loo_2.7.0            
+ [52] withr_3.0.0           timeSeries_4032.109   fastmap_1.2.0        
+ [55] fansi_1.0.6           callr_3.7.6           digest_0.6.36        
+ [58] timechange_0.3.0      R6_2.5.1              qpdf_1.3.3           
+ [61] colorspace_2.1-0      tensor_1.5            utf8_1.2.4           
+ [64] generics_0.1.3        data.table_1.15.4     class_7.3-22         
+ [67] prettyunits_1.2.0     httr_1.4.7            htmlwidgets_1.6.4    
+ [70] whisker_0.4.1         pkgconfig_2.0.3       gtable_0.3.5         
+ [73] timeDate_4032.109     htmltools_0.5.8.1     clue_0.3-65          
+ [76] scales_1.3.0          knitr_1.48            rstudioapi_0.16.0    
+ [79] tzdb_0.4.0            statip_0.2.3          checkmate_2.3.1      
+ [82] proxy_0.4-27          cachem_1.1.0          KernSmooth_2.23-22   
+ [85] parallel_4.3.2        fBasics_4032.96       pillar_1.9.0         
+ [88] grid_4.3.2            vctrs_0.6.5           promises_1.3.0       
+ [91] cluster_2.1.4         evaluate_0.24.0       tinytex_0.51         
+ [94] magick_2.8.3          cli_3.6.3             compiler_4.3.2       
+ [97] rlang_1.1.4           crayon_1.5.3          labeling_0.4.3       
+[100] classInt_0.4-10       ps_1.7.7              getPass_0.2-4        
+[103] plyr_1.8.9            fs_1.6.4              stringi_1.8.4        
+[106] zipfR_0.6-70          viridisLite_0.4.2     deldir_2.0-4         
+[109] assertthat_0.2.1      munsell_0.5.1         lazyeval_0.2.2       
+[112] Matrix_1.6-3          hms_1.1.3             stabledist_0.7-1     
+[115] highr_0.11            kernlab_0.9-32        bslib_0.7.0          </code></pre>
 </div>
 </div>
 
