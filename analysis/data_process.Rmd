@@ -111,9 +111,9 @@ for (i in ps_harris_fnames) {
 
 ### SExtractor
 
-For the SExtractor data, a different parametric finite-mixture model was used. For a detailed explanation of the method, see Appendix B.2 of the original Li et al. (2024) paper. We have written a function called `mix_func()` in the `code/help_functions.R` to fit the parametric finite-mixture model.
+For the SExtractor data, a different parametric finite-mixture model was used. For a detailed explanation of the method, see Appendix B.2 of the original Li et al. (2024) paper.
 
-Similar to DOLPHOT data, we apply our proposed parametric finite-mixture model to the measurement uncertainty jittered color-magnitude data for 500 times, this is carried out by the function `meas_uncertain_mix_func()`:
+Similar to DOLPHOT data, we apply our proposed parametric finite-mixture model to the measurement uncertainty jittered color-magnitude data for 500 times, this is carried out by the function `MATHPOP::meas_uncertain_mix_func()`:
 
 ```{r jans_prob, echo = T, delete_cache = TRUE}
 # This may take a while, but still much faster than the previous non-parametric finite mixture model used for DOLPHOT
