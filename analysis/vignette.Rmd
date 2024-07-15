@@ -214,8 +214,8 @@ Now we are ready to fit the model. We run the model using the following `fit_MAT
 ```{r, eval = FALSE}
 res_prob <- fit_MATHPOP(Data = Y_obs, spat_dom = spat_dom, 
                         fixed_Theta = fixed_Theta, prior = prior, 
-                        cf_error = cf_error, M = 100000, 
-                        tune = tune, seed = 1)
+                        cf_error = cf_error, M = 200000, 
+                        tune = tune)
 ```
 
 The `fit_MATHPOP` function has the following arguments:
@@ -232,5 +232,5 @@ The `fit_MATHPOP` function has the following arguments:
 * `n = 1000` An integer. Initial MCMC pilot run iteration. Default to 1000.
 * `prob_model = TRUE` Logical. Whether the GC data used is a probabilistic catalog or a binary catalog. Default to `TRUE.`
 * `seed = 12345` An integer. Random seed value. Default to 12345.
-* `burnin = 0.1` A data frame with `floor(burn_in*M)` number of rows that gives the posterior sample of the fitted MATHPOP model.
+* `burnin = 0.1` A data frame with `floor(burn_in*M)` number of rows that gives the posterior sample of the fitted MATHPOP model. Default to 0.1.
 
