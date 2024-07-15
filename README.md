@@ -6,7 +6,13 @@ The MATHPOP project is an `R` software developed to help astrophysicists infer g
 
 For more details, please see the [MATHPOP][] webpage for a simple tutorial and all `RMarkdown` files to reproduce the results in the original MATHPOP paper.
 
-The main source code is contained in the `code/` folder. `data/` folder contains example data used in the MATHPOP paper and other post-inference data. `source/` folder contains old-version source code used to obtain results in the original paper.
+The `R` package for MATHPOP is not yet available on CRAN, but you can access it through Github in `R` by
+
+```
+devtools::install_github('davidolohowski/MATHPOP_R_pkg')
+```
+
+The `source/` folder in this repo contains the old version of the source code used to obtain results in the original paper.
 
 For bugs report, trouble-shooting, or questions, please open an [issue][].
 
@@ -17,12 +23,6 @@ MATHPOP was developed, and is maintained by David Li, a Ph.D. candidate in the [
 MATHPOP is available under the [GNU GPL-v3.0][] license. For proper attribution, please cite the original MATHPOP paper that describes the method:
 
 > Li et al. (2024) "Discovery of Two Ultra-Diffuse Galaxies with Unusually Bright Globular Cluster Luminosity Functions via a Mark-Dependently Thinned Point Process (MATHPOP)", submitted to the Astrophysical Journal.
-
-The `R` package for MATHPOP is not yet available on CRAN, but you can access it through Github in `R` by
-
-```
-devtools::install_github('davidolohowski/MATHPOP_R_pkg')
-```
 
 This project is generated using the [workflowr][] package.
 
