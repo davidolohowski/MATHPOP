@@ -560,15 +560,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreef59fb122b28f752ed117f32e81e789a4a73f562btargetblankf59fb12a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree9003d451b4f77920254599a17cde479b098a7ef1targetblank9003d45a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/f59fb122b28f752ed117f32e81e789a4a73f562b" target="_blank">f59fb12</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/9003d451b4f77920254599a17cde479b098a7ef1" target="_blank">9003d45</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreef59fb122b28f752ed117f32e81e789a4a73f562btargetblankf59fb12a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree9003d451b4f77920254599a17cde479b098a7ef1targetblank9003d45a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -578,7 +578,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/f59fb122b28f752ed117f32e81e789a4a73f562b" target="_blank">f59fb12</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/9003d451b4f77920254599a17cde479b098a7ef1" target="_blank">9003d45</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -668,6 +668,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/9003d451b4f77920254599a17cde479b098a7ef1/analysis/vignette.Rmd" target="_blank">9003d45</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+wflow_publish("analysis/vignette.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/dfd559fe6bbd517c409665382d81c6d497fee9f7/docs/vignette.html" target="_blank">dfd559f</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1401,8 +1435,8 @@ certainly change these as you wish.</p>
 following <code>fit_MATHPOP</code> function.</p>
 <pre class="r"><code>res_prob &lt;- fit_MATHPOP(Data = Y_obs, spat_dom = spat_dom, 
                         fixed_Theta = fixed_Theta, prior = prior, 
-                        cf_error = cf_error, M = 100000, 
-                        tune = tune, seed = 1)</code></pre>
+                        cf_error = cf_error, M = 200000, 
+                        tune = tune)</code></pre>
 <p>The <code>fit_MATHPOP</code> function has the following
 arguments:</p>
 <ul>
@@ -1448,7 +1482,7 @@ a probabilistic catalog or a binary catalog. Default to
 12345.</li>
 <li><code>burnin = 0.1</code> A data frame with
 <code>floor(burn_in*M)</code> number of rows that gives the posterior
-sample of the fitted MATHPOP model.</li>
+sample of the fitted MATHPOP model. Default to 0.1.</li>
 </ul>
 <br>
 <p>
