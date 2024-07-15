@@ -43,7 +43,7 @@ This vignette contains code to run the simulation study conducted in the MATHPOP
 
 We first illustrate our approach for generating simulated data. First, load the required packages and help functions:
 
-```{r, echo = T, message=F}
+```{r, echo = T, message=F, warning=F}
 library(tidyverse)
 library(posterior)
 library(HDInterval)
