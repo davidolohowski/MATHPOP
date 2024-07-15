@@ -41,7 +41,7 @@ This vignette provides the procedure and code that analyze the GCLFs of R27 and 
 
 As always, we first load the packages and read in the data. R27 is within the image V10WFC3, while W88 is in V11ACS.
 
-```{r, echo = T, message=F}
+```{r, echo = T, message=F, warning = F}
 library(tidyverse)
 library(sf)
 library(sp)
