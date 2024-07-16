@@ -560,15 +560,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreebb74ff7702afd6c2834f79a7df4a73877d502339targetblankbb74ff7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreeafdd6b7e00d3501d734e696f83c7c55f02f28658targetblankafdd6b7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/bb74ff7702afd6c2834f79a7df4a73877d502339" target="_blank">bb74ff7</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/afdd6b7e00d3501d734e696f83c7c55f02f28658" target="_blank">afdd6b7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreebb74ff7702afd6c2834f79a7df4a73877d502339targetblankbb74ff7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreeafdd6b7e00d3501d734e696f83c7c55f02f28658targetblankafdd6b7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -578,7 +578,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/bb74ff7702afd6c2834f79a7df4a73877d502339" target="_blank">bb74ff7</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/afdd6b7e00d3501d734e696f83c7c55f02f28658" target="_blank">afdd6b7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -624,11 +624,6 @@ Ignored files:
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
 
-Unstaged changes:
-    Modified:   analysis/CMD_plot_2-1.aux
-    Deleted:    analysis/CMD_plot_2-1.log
-    Deleted:    analysis/CMD_plot_2-1.pdf
-
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -673,6 +668,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/afdd6b7e00d3501d734e696f83c7c55f02f28658/analysis/posterior.Rmd" target="_blank">afdd6b7</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+wflow_publish("analysis/posterior.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/8ddd7dee2948352903a10a4566309b2e4d2a1b66/docs/posterior.html" target="_blank">8ddd7de</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-07-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1095,17 +1124,18 @@ model, see <a href="vignette.html">here</a>.</p>
 <p>Note that the MCMC results in the MATHPOP paper were obtained using
 an older version of the code contained in the <code>source/</code>
 folder of this repo. The current version of the code in the MATHPOP
-<code>R</code> package, i.e., the main <code>fit_MATHPOP</code> function
-was rewritten so that it is more user-friendly. Due to the update, it is
-unavoidable that the results from <code>fit_MATHPOP</code> do not match
-exactly with the results from the older code since various tuning and
-starting parameter values are specified individually for each data set
-that was fitted, while these are completely automatized in the current
-code. Because of the computational constraints, we did not rerun
-everything using the new code, but our testing shows that the new code
-provides entirely consistent results as the old code. If you wish to use
-the old code, please see the source files in the <code>source/</code>
-folder.</p>
+<code>R</code> package, i.e., the main <code>MATHPOP::fit_MATHPOP</code>
+function was rewritten so that it is more user-friendly. Due to the
+update, it is unavoidable that the results from
+<code>MATHPOP::fit_MATHPOP</code> do not match exactly with the results
+from the older code, since various tuning and starting parameter values
+for the MCMC algorithm were specified individually for each data set
+that was fitted under the old code. However, these are all completely
+automatized in the current code version. Because of the computational
+constraints, we did not rerun everything using the new code, but our
+testing shows that the new code provides entirely consistent results as
+the old code. If you wish to use the old code, please see the source
+files in the <code>source/</code> folder.</p>
 </div>
 <div id="post-inference-results" class="section level2">
 <h2>Post Inference Results</h2>
@@ -1423,12 +1453,12 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] MATHPOP_0.0.0.9000 HDInterval_0.2.4   reshape2_1.4.4     modeest_2.4.0     
- [5] ggnewscale_0.4.10  wesanderson_0.3.7  xtable_1.8-4       posterior_1.6.0   
- [9] tikzDevice_0.12.6  ggridges_0.5.6     ggpubr_0.6.0       lubridate_1.9.3   
-[13] forcats_1.0.0      stringr_1.5.1      dplyr_1.1.4        purrr_1.0.2       
-[17] readr_2.1.5        tidyr_1.3.1        tibble_3.2.1       ggplot2_3.5.1     
-[21] tidyverse_2.0.0    workflowr_1.7.1   
+ [1] MATHPOP_0.0.0.9   HDInterval_0.2.4  reshape2_1.4.4    modeest_2.4.0    
+ [5] ggnewscale_0.4.10 wesanderson_0.3.7 xtable_1.8-4      posterior_1.6.0  
+ [9] tikzDevice_0.12.6 ggridges_0.5.6    ggpubr_0.6.0      lubridate_1.9.3  
+[13] forcats_1.0.0     stringr_1.5.1     dplyr_1.1.4       purrr_1.0.2      
+[17] readr_2.1.5       tidyr_1.3.1       tibble_3.2.1      ggplot2_3.5.1    
+[21] tidyverse_2.0.0   workflowr_1.7.1  
 
 loaded via a namespace (and not attached):
   [1] splines_4.3.2          later_1.3.2            klippy_0.0.0.9500     
