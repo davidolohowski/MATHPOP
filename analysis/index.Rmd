@@ -38,7 +38,7 @@ If you are an absolute beginner of `R`, there are a LOT of resources and tutoria
 
 ## Install the MATHPOP R package
 
-To use MATHPOP for your own data, download and install the MATHPOP `R` package by running
+To use MATHPOP for your own data, download and install the MATHPOP `R` package by running the following code in `R` console.
 
 ```{r, echo = T, eval=F}
 devtools::install_github('davidolohowski/MATHPOP_R_pkg')
