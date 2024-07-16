@@ -47,8 +47,12 @@ This tutorial assumes that the users have installed `R` and `RStudio`, and have 
 
 To start, we need to load the necessary `R` packages:
 
-```{r packages, echo=TRUE, results = 'hide', message=FALSE}
+```{r packages, echo=TRUE, results = 'hide', message=FALSE, warning=F}
 library(tidyverse)
+library(posterior)
+library(modeest)
+library(reshape2)
+library(tikzDevice)
 library(MATHPOP)
 ```
 
@@ -212,10 +216,14 @@ tune <- list(l0 = 0.01, Ng = 0.25, Nu = 0.1, R = 0.1, n = 0.1, mu = 0.1, sigma =
 Now we are ready to fit the model. We run the model using the following `fit_MATHPOP` function. 
 
 ```{r, eval = FALSE}
+# The result here has been pre-run and saved. This generally takes an hour or two to finish, so only run it if you really need to.
 res_prob <- fit_MATHPOP(Data = Y_obs, spat_dom = spat_dom, 
                         fixed_Theta = fixed_Theta, prior = prior, 
                         cf_error = cf_error, M = 200000, 
                         tune = tune)
+
+# save the results (run once)
+# saveRDS(res_prob, 'data/v11acs/res_v11acs_example.RDS')
 ```
 
 The `fit_MATHPOP` function has the following arguments:
@@ -233,4 +241,57 @@ The `fit_MATHPOP` function has the following arguments:
 * `prob_model = TRUE` Logical. Whether the GC data used is a probabilistic catalog or a binary catalog. Default to `TRUE.`
 * `seed = 12345` An integer. Random seed value. Default to 12345.
 * `burnin = 0.1` A data frame with `floor(burn_in*M)` number of rows that gives the posterior sample of the fitted MATHPOP model. Default to 0.1.
+
+```{r,  echo = F, message=F}
+res_prob <- readRDS('data/v11acs/res_v11acs_example.RDS')
+```
+
+Now let us process the MCMC results and get some summary statistics and plots for the GC system parameters of the two UDGs in the image:
+
+```{r, echo = T, message = F}
+results <- as_draws_df(res_prob)
+
+# summary statistics of the GC system parameters of the two UDGs.
+print(summarise_draws(subset_draws(results, 
+                                   variable = c('N_W88', 'N_W89', 'R_W88', 'R_W89','n_W88', 'n_W89',
+                                                'mu_W88', 'mu_W89', 'sigma_W88', 'sigma_W89'))))
+```
+
+Get some histogram plots:
+
+```{r, echo = T, dev ='tikz', fig.process = pdf2png, fig.align='center', fig.cap='Posterior distributions of GC system parameters of the UDG W88.', message=F, warning=F}
+# Plot the posterior distributions of the GC system parameters of the UDG W88
+par_label <- as_labeller(c(`N_W88` = '$N_{\\mathrm{GC}}$', 
+                           `R_W88` = '$R_h$',
+                           `n_W88` = '$n$',
+                           `mu_W88` = '$\\mu_{\\mathrm{TO}}$',
+                           `sigma_W88` = '$\\sigma$'))
+
+res_prob[,c('N_W88', 'R_W88', 'n_W88', 'mu_W88', 'sigma_W88')] %>%
+  as.data.frame(.) %>%
+  mutate(N_W88 = rpois(nrow(.), N_W88)) %>%
+  melt(.) %>%
+  ggplot(aes(value)) + geom_histogram(aes(y = after_stat(count / sum(count)))) + facet_wrap(~variable, scales = 'free', labeller = par_label) + theme_minimal() + ylab('Density')
+```
+
+
+```{r, echo = T, dev ='tikz', fig.process = pdf2png, fig.align='center', fig.cap='Posterior distributions of GC system parameters of the UDG W89.', message=F, warning=F}
+# Plot the posterior distributions of the GC system parameters of the UDG W88
+par_label <- as_labeller(c(`N_W89` = '$N_{\\mathrm{GC}}$', 
+                           `R_W89` = '$R_h$',
+                           `n_W89` = '$n$',
+                           `mu_W89` = '$\\mu_{\\mathrm{TO}}$',
+                           `sigma_W89` = '$\\sigma$'))
+
+res_prob[,c('N_W89', 'R_W89', 'n_W89', 'mu_W89', 'sigma_W89')] %>%
+  as.data.frame(.) %>%
+  mutate(N_W89 = rpois(nrow(.), N_W89)) %>%
+  melt(.) %>%
+  ggplot(aes(value)) + geom_histogram(aes(y = after_stat(count / sum(count)))) + facet_wrap(~variable, scales = 'free', labeller = par_label) + theme_minimal() + ylab('Density')
+```
+
+
+
+
+
 
