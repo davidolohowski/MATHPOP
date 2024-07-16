@@ -4,6 +4,8 @@
 
 The MATHPOP project is an `R` software developed to help astrophysicists infer globular cluster counts and their luminosity functions in Ultra-Diffuse Galaxies. This repo contains the source code and various analysis files for the MATHPOP project.
 
+The MATHPOP project is based on the paper "*Discovery of Two Ultra-Diffuse Galaxies with Unusually Bright Globular Cluster Luminosity Functions via a Mark-Dependently Thinned Point Process (MATHPOP)*".
+
 For more details, please see the [MATHPOP][] webpage for a simple tutorial and all `RMarkdown` files to reproduce the results in the original MATHPOP paper.
 
 The `R` package for MATHPOP is not yet available on CRAN, but you can access it through Github in `R` by
