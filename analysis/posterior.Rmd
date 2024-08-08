@@ -250,14 +250,16 @@ N_sum <- bind_rows(summary_dat, summary_dat_J) %>%
 
 # plot it
 color <- c('Mean' = "#E1AF00", 'Mode' = "#F21A00")
-ggplot(N_sum, aes(value, Janssens, color = variable)) + 
+shape <- c('Mean' = 16, 'Mode' = 17)
+ggplot(N_sum, aes(value, Janssens, color = variable, shape = variable)) + 
   geom_rect(aes(xmin = N_HDI_0.68_lower, xmax = N_HDI_0.68_upper, ymin = Janssens - J_se, ymax = Janssens + J_se), fill = '#3B9AB2', color = 'black', alpha = 0.1, size = 0.1) + 
   geom_point(size = 1) + geom_abline(slope = 1, intercept = 0, linetype = 'dashed') +
-  xlab('$N_{\\mathrm{GC}}^{\\mathrm{est}}$ (Ours)') + ylab('$N_{\\mathrm{GC}}$ (J24)')  + coord_fixed() + labs(color = 'Estimator') +
+  xlab('$N_{\\mathrm{GC}}^{\\mathrm{est}}$ (Ours)') + ylab('$N_{\\mathrm{GC}}$ (J24)')  + coord_fixed() + labs(color = 'Estimator', shape = 'Estimator') +
   theme(panel.grid.major = element_blank(), panel.background = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "gray"),
         strip.background = element_blank()) +   
   scale_color_manual(values = color) +
+  scale_shape_manual(values = shape) +
   facet_wrap(.~data)
 ```
 
