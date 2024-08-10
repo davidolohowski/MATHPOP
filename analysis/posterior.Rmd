@@ -70,6 +70,7 @@ file_paths <- paste0('data/',fnames,'/')
 summary_NGC <- data.frame()
 summary_RGC <- data.frame()
 summary_muGC <- data.frame()
+summary_sigmaGC <- data.frame()
 
 # generate a data frame containing all summary statistics of the model parameters
 set.seed(123456)
@@ -87,10 +88,15 @@ for(i in 1:length(fnames)){
   
   # GCLF TO summary
   mu_GC <- as.data.frame(file_read[, grepl( "mu_" , names(file_read)) & !grepl( "gal" , names(file_read)) & !grepl( "_0" , names(file_read))])
+  
+  # GCLF sigma summary
+  sigma_GC <- as.data.frame(file_read[, grepl( "sigma_" , names(file_read)) & !grepl( "gal" , names(file_read)) & !grepl( "_0" , names(file_read))])
   UDG_ID <- gsub('N_', '', colnames(N_GC))
   colnames(N_GC) <- UDG_ID
   colnames(R_GC) <- UDG_ID
   colnames(mu_GC) <- UDG_ID
+  colnames(sigma_GC) <- UDG_ID
+
   
   # obtain summary statistics for GC counts
   N_GC <- melt(N_GC)
@@ -120,23 +126,40 @@ for(i in 1:length(fnames)){
                        mu_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
                        mu_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
                        mu_HDI_0.95_lower = function(x) hdi(x, 0.95)[1],
-                       mu_HDI_0.95_upper = function(x) hdi(x, 0.95)[2])) 
+                       mu_HDI_0.95_upper = function(x) hdi(x, 0.95)[2]))
+  
+  # obtain summary statistics for GCLF sigma
+  sigma_GC <- melt(sigma_GC)
+  summary_sigma <- sigma_GC %>%
+    rename(ID = variable) %>%
+    group_by(ID) %>%
+    summarise_all(list(sigma_mode = mlv, sigma_median = median, sigma_mean = mean,
+                       sigma_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       sigma_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       sigma_HDI_0.95_lower = function(x) hdi(x, 0.95)[1],
+                       sigma_HDI_0.95_upper = function(x) hdi(x, 0.95)[2]))
   
   summary_NGC <- bind_rows(summary_NGC, summary_N)
   summary_RGC <- bind_rows(summary_RGC, summary_R)
   summary_muGC <- bind_rows(summary_muGC, summary_mu)
+  summary_sigmaGC <- bind_rows(summary_sigmaGC, summary_sigma)
 }
 
 summary_NGC$ID <- as.character(summary_NGC$ID)
 summary_RGC$ID <- as.character(summary_RGC$ID)
 summary_muGC$ID <- as.character(summary_muGC$ID)
+summary_sigmaGC$ID <- as.character(summary_sigmaGC$ID)
+
 # W7 is observed in both V12-ACS and V14-ACS
-summary_NGC$ID[13] <- summary_RGC$ID[13] <- summary_muGC$ID[13] <- 'W7 (V12ACS)'
-summary_NGC$ID[22] <- summary_RGC$ID[22] <- summary_muGC$ID[22] <- 'W7 (V14ACS)'
+summary_NGC$ID[13] <- summary_RGC$ID[13] <- summary_muGC$ID[13] <- summary_sigmaGC$ID[13] <- 'W7 (V12ACS)'
+summary_NGC$ID[22] <- summary_RGC$ID[22] <- summary_muGC$ID[22] <- summary_sigmaGC$ID[22] <- 'W7 (V14ACS)'
 
 # post-processing
 summary_muGC <- summary_muGC %>%
   mutate(minus_mu = mu_mean - mu_HDI_0.68_lower, plus_mu = mu_HDI_0.68_upper - mu_mean)
+
+summary_sigmaGC <- summary_sigmaGC %>%
+  mutate(minus_sigma = sigma_mean - sigma_HDI_0.68_lower, plus_sigma = sigma_HDI_0.68_upper - sigma_mean)
 
 summary_RGC <- summary_RGC %>%
   mutate(minus_R = R_mode - R_HDI_0.68_lower, plus_R = R_HDI_0.68_upper - R_mode)
@@ -157,7 +180,7 @@ Jans_NGC <- data.frame(ID = summary_NGC$ID) %>%
 
 summary_NGC <- merge(summary_NGC, Jans_NGC)
   
-summary_dat <- merge(merge(summary_NGC, summary_muGC, by = 'ID'), summary_RGC, by = 'ID') %>%
+summary_dat <- merge(merge(merge(summary_NGC, summary_muGC, by = 'ID'), summary_RGC, by = 'ID'), summary_sigmaGC, by = 'ID') %>%
   arrange(desc(N_mode)) %>% 
   mutate(data = 'DOLPHOT')
 ```
