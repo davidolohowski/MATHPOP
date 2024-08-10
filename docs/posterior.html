@@ -429,7 +429,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-08-07
+<strong>Last updated:</strong> 2024-08-09
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -560,15 +560,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree76108470147577352c5a5a417c0d563585262601targetblank7610847a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreea7f5c61202b4d1a17e7f457bd72aed88f7d13bb7targetblanka7f5c61a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/davidolohowski/MATHPOP/tree/76108470147577352c5a5a417c0d563585262601" target="_blank">7610847</a>
+<a href="https://github.com/davidolohowski/MATHPOP/tree/a7f5c61202b4d1a17e7f457bd72aed88f7d13bb7" target="_blank">a7f5c61</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtree76108470147577352c5a5a417c0d563585262601targetblank7610847a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomdavidolohowskiMATHPOPtreea7f5c61202b4d1a17e7f457bd72aed88f7d13bb7targetblanka7f5c61a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -578,7 +578,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/davidolohowski/MATHPOP/tree/76108470147577352c5a5a417c0d563585262601" target="_blank">7610847</a>.
+<a href="https://github.com/davidolohowski/MATHPOP/tree/a7f5c61202b4d1a17e7f457bd72aed88f7d13bb7" target="_blank">a7f5c61</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -624,6 +624,9 @@ Ignored files:
     Ignored:    source/.DS_Store
     Ignored:    source/v8wfc3/
 
+Unstaged changes:
+    Modified:   method_compare-tikzDictionary
+
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -668,6 +671,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/a7f5c61202b4d1a17e7f457bd72aed88f7d13bb7/analysis/posterior.Rmd" target="_blank">a7f5c61</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-08-09
+</td>
+<td>
+wflow_publish("analysis/posterior.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/davidolohowski/MATHPOP/54d2e8cb584e887081af9c3c7536470f24416873/docs/posterior.html" target="_blank">54d2e8c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-08-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1275,6 +1312,7 @@ file_paths &lt;- paste0(&#39;data/&#39;,fnames,&#39;/&#39;)
 summary_NGC &lt;- data.frame()
 summary_RGC &lt;- data.frame()
 summary_muGC &lt;- data.frame()
+summary_sigmaGC &lt;- data.frame()
 
 # generate a data frame containing all summary statistics of the model parameters
 set.seed(123456)
@@ -1292,10 +1330,15 @@ for(i in 1:length(fnames)){
   
   # GCLF TO summary
   mu_GC &lt;- as.data.frame(file_read[, grepl( &quot;mu_&quot; , names(file_read)) &amp; !grepl( &quot;gal&quot; , names(file_read)) &amp; !grepl( &quot;_0&quot; , names(file_read))])
+  
+  # GCLF sigma summary
+  sigma_GC &lt;- as.data.frame(file_read[, grepl( &quot;sigma_&quot; , names(file_read)) &amp; !grepl( &quot;gal&quot; , names(file_read)) &amp; !grepl( &quot;_0&quot; , names(file_read))])
   UDG_ID &lt;- gsub(&#39;N_&#39;, &#39;&#39;, colnames(N_GC))
   colnames(N_GC) &lt;- UDG_ID
   colnames(R_GC) &lt;- UDG_ID
   colnames(mu_GC) &lt;- UDG_ID
+  colnames(sigma_GC) &lt;- UDG_ID
+
   
   # obtain summary statistics for GC counts
   N_GC &lt;- melt(N_GC)
@@ -1325,23 +1368,40 @@ for(i in 1:length(fnames)){
                        mu_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
                        mu_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
                        mu_HDI_0.95_lower = function(x) hdi(x, 0.95)[1],
-                       mu_HDI_0.95_upper = function(x) hdi(x, 0.95)[2])) 
+                       mu_HDI_0.95_upper = function(x) hdi(x, 0.95)[2]))
+  
+  # obtain summary statistics for GCLF sigma
+  sigma_GC &lt;- melt(sigma_GC)
+  summary_sigma &lt;- sigma_GC %&gt;%
+    rename(ID = variable) %&gt;%
+    group_by(ID) %&gt;%
+    summarise_all(list(sigma_mode = mlv, sigma_median = median, sigma_mean = mean,
+                       sigma_HDI_0.68_lower = function(x) hdi(x, 0.68)[1],
+                       sigma_HDI_0.68_upper = function(x) hdi(x, 0.68)[2],
+                       sigma_HDI_0.95_lower = function(x) hdi(x, 0.95)[1],
+                       sigma_HDI_0.95_upper = function(x) hdi(x, 0.95)[2]))
   
   summary_NGC &lt;- bind_rows(summary_NGC, summary_N)
   summary_RGC &lt;- bind_rows(summary_RGC, summary_R)
   summary_muGC &lt;- bind_rows(summary_muGC, summary_mu)
+  summary_sigmaGC &lt;- bind_rows(summary_sigmaGC, summary_sigma)
 }
 
 summary_NGC$ID &lt;- as.character(summary_NGC$ID)
 summary_RGC$ID &lt;- as.character(summary_RGC$ID)
 summary_muGC$ID &lt;- as.character(summary_muGC$ID)
+summary_sigmaGC$ID &lt;- as.character(summary_sigmaGC$ID)
+
 # W7 is observed in both V12-ACS and V14-ACS
-summary_NGC$ID[13] &lt;- summary_RGC$ID[13] &lt;- summary_muGC$ID[13] &lt;- &#39;W7 (V12ACS)&#39;
-summary_NGC$ID[22] &lt;- summary_RGC$ID[22] &lt;- summary_muGC$ID[22] &lt;- &#39;W7 (V14ACS)&#39;
+summary_NGC$ID[13] &lt;- summary_RGC$ID[13] &lt;- summary_muGC$ID[13] &lt;- summary_sigmaGC$ID[13] &lt;- &#39;W7 (V12ACS)&#39;
+summary_NGC$ID[22] &lt;- summary_RGC$ID[22] &lt;- summary_muGC$ID[22] &lt;- summary_sigmaGC$ID[22] &lt;- &#39;W7 (V14ACS)&#39;
 
 # post-processing
 summary_muGC &lt;- summary_muGC %&gt;%
   mutate(minus_mu = mu_mean - mu_HDI_0.68_lower, plus_mu = mu_HDI_0.68_upper - mu_mean)
+
+summary_sigmaGC &lt;- summary_sigmaGC %&gt;%
+  mutate(minus_sigma = sigma_mean - sigma_HDI_0.68_lower, plus_sigma = sigma_HDI_0.68_upper - sigma_mean)
 
 summary_RGC &lt;- summary_RGC %&gt;%
   mutate(minus_R = R_mode - R_HDI_0.68_lower, plus_R = R_HDI_0.68_upper - R_mode)
@@ -1362,7 +1422,7 @@ Jans_NGC &lt;- data.frame(ID = summary_NGC$ID) %&gt;%
 
 summary_NGC &lt;- merge(summary_NGC, Jans_NGC)
   
-summary_dat &lt;- merge(merge(summary_NGC, summary_muGC, by = &#39;ID&#39;), summary_RGC, by = &#39;ID&#39;) %&gt;%
+summary_dat &lt;- merge(merge(merge(summary_NGC, summary_muGC, by = &#39;ID&#39;), summary_RGC, by = &#39;ID&#39;), summary_sigmaGC, by = &#39;ID&#39;) %&gt;%
   arrange(desc(N_mode)) %&gt;% 
   mutate(data = &#39;DOLPHOT&#39;)</code></pre>
 <p>We will do the same for results obtained using SExtractor (J24)
@@ -1491,6 +1551,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/davidolohowski/MATHPOP/blob/54d2e8cb584e887081af9c3c7536470f24416873/docs/figure/posterior.Rmd/GC_comp-1.png" target="_blank">54d2e8c</a>
+</td>
+<td>
+david.li
+</td>
+<td>
+2024-08-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/davidolohowski/MATHPOP/blob/230837c4a450792704e0895edf4b3e11687d06af/docs/figure/posterior.Rmd/GC_comp-1.png" target="_blank">230837c</a>
