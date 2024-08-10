@@ -105,6 +105,7 @@ log_lik_mag_R27 <- function(par, M_dat) {
 # allocate objects for 1000 iterations of the MLE
 res_lik_R27_sim <- matrix(0, nrow = 1000, ncol = 2)
 mu_sd_R27 <- numeric(1000)
+sig_sd_R27 <- numeric(1000)
 p_val_R27 <- numeric(1000)
 M_R27 <- c()
 
@@ -118,6 +119,7 @@ for(i in 1:1000){
                  method = "L-BFGS-B", lower = c(24, 0.5), upper = c(26.7, 1.9), hessian = T)
   res_lik_R27_sim[i,] <- res_i$par
   mu_sd_R27[i] <- sqrt(solve(res_i$hessian)[1,1])
+  sig_sd_R27[i] <- sqrt(solve(res_i$hessian)[2,2])
   p_val_R27[i] <- pnorm((26.3 - res_i$par[1])/mu_sd_R27[i], 0, 1, lower.tail = F)
 }
 
@@ -197,6 +199,7 @@ log_lik_mag_W88 <- function(par, M_dat) {
 # allocate objects for 1000 iterations of the MLE
 res_lik_W88_sim <- matrix(0, nrow = 1000, ncol = 2)
 mu_sd_W88 <- numeric(1000)
+sig_sd_W88 <- numeric(1000)
 p_val_W88 <- numeric(1000)
 M_W88 <- c()
 
@@ -210,6 +213,7 @@ for(i in 1:1000){
                  method = "L-BFGS-B", lower = c(24, 0.5), upper = c(26.7, 1.9), hessian = T)
   res_lik_W88_sim[i,] <- res_i$par
   mu_sd_W88[i] <- sqrt(solve(res_i$hessian)[1,1])
+  sig_sd_W88[i] <- sqrt(solve(res_i$hessian)[2,2])
   p_val_W88[i] <- pnorm((26.3 - res_i$par[1])/mu_sd_W88[i], 0, 1, lower.tail = F)
 }
 
