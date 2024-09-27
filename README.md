@@ -20,7 +20,7 @@ For bugs report, trouble-shooting, or questions, please open an [issue][].
 
 ## Attribution
 
-MATHPOP was developed, and is maintained by David Li, a Ph.D. candidate in the [Astrostatistics Research Team (ART)][] and the [Department of Statistical Sciences][] at [The University of Toronto][]. He is funded by the [Canadian Statistical Sciences Institute (CANSSI)][] under a [CANSSI Multi-disciplinary Doctoral Trainee Program][], and a [Doctoral Fellow][] in the [Data Sciences Institute (DSI)][].
+MATHPOP was developed, and is maintained by [David Li][], a Ph.D. candidate in the [Astrostatistics Research Team (ART)][] and the [Department of Statistical Sciences][] at [The University of Toronto][]. He is funded by the [Canadian Statistical Sciences Institute (CANSSI)][] under a [CANSSI Multi-disciplinary Doctoral Trainee Program][], and a [Doctoral Fellow][] in the [Data Sciences Institute (DSI)][].
 
 MATHPOP is available under the [GNU GPL-v3.0][] license. For proper attribution, please cite the original MATHPOP paper that describes the method:
 
@@ -28,8 +28,9 @@ MATHPOP is available under the [GNU GPL-v3.0][] license. For proper attribution,
 
 This project is generated using the [workflowr][] package.
 
+[David Li]: https://www.ddavidli.com
 [workflowr]: https://github.com/workflowr/workflowr
-[MATHPOP]: http://ddavidli.com/MATHPOP/
+[MATHPOP]: http://davidolohowski.github.io/MATHPOP/
 [issue]: https://github.com/davidolohowski/MATHPOP/issues
 [Astrostatistics Research Team (ART)]: https://astrostatuoft.com/
 [Department of Statistical Sciences]: https://www.statistics.utoronto.ca/
